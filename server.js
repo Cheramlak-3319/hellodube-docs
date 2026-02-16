@@ -19,7 +19,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5555",
-      "https://helloo-pass-swagger-qan33.vercel.app/",
+      "https://helloo-pass-swagger-qan33.vercel.app", // Old URL
+      /\.vercel\.app$/, // This allow ALL your vercel preview/production URLs
     ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -30,10 +31,14 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // Load generated OpenAPI files
-const dubeFull = YAML.load(path.resolve("openapi/dube-full.yaml"));
-const dubeReadOnly = YAML.load(path.resolve("openapi/dube-readonly.yaml"));
-const wfpFull = YAML.load(path.resolve("openapi/wfp-full.yaml"));
-const wfpReadOnly = YAML.load(path.resolve("openapi/wfp-readonly.yaml"));
+const dubeFull = YAML.load(path.join(__dirname, "openapi", "dube-full.yaml"));
+const dubeReadOnly = YAML.load(
+  path.join(__dirname, "openapi", "dube-readonly.yaml"),
+);
+const wfpFull = YAML.load(path.join(__dirname, "openapi", "wfp-full.yaml"));
+const wfpReadOnly = YAML.load(
+  path.join(__dirname, "openapi", "wfp-readonly.yaml"),
+);
 
 const serveSwaggerUI = (swaggerDoc, allowedRoles) => {
   return (req, res, next) => {
