@@ -17,7 +17,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5555", "https://lucid-beauty.up.railway.app"],
+    origin: [
+      "http://localhost:5555",
+      "https://helloo-pass-swagger-qan33.vercel.app/",
+    ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
