@@ -1,0 +1,1200 @@
+openapi: 3.0.3
+info:
+  title: Dube International & WFP Unified API
+  description: |
+    Master OpenAPI specification.  
+    **Do not edit generated files** – edit this master and run `npm run generate-docs`.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@dubeinternational.com
+  license:
+    name: Proprietary
+    url: https://www.dubeinternational.com/terms
+servers:
+  - url: http://localhost:5555
+    description: Development server
+  - url: https://helloomarket.com/api
+    description: Belcash production (public, read‑only)
+tags:
+  - name: Authentication
+    description: User registration and login
+  - name: Dube International
+    description: Dube core business operations
+  - name: WFP
+    description: World Food Programme operations
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT token from `/api/auth/login`. Format: `Bearer <token>`'
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+      description: Number of results to return
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Pagination offset
+    page:
+      name: Page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Page number
+    countryCode:
+      name: countryCode
+      in: query
+      schema:
+        type: string
+        pattern: ^[A-Z]{2}$
+      description: ISO 3166-1 alpha-2 country code
+      example: ET
+    startDate:
+      name: start
+      in: query
+      schema:
+        type: string
+        format: date
+      description: Start date (YYYY-MM-DD)
+    endDate:
+      name: end
+      in: query
+      schema:
+        type: string
+        format: date
+      description: End date (YYYY-MM-DD)
+    mobile:
+      name: mobile
+      in: query
+      schema:
+        type: string
+      description: Mobile number (full or partial)
+    userId:
+      name: userId
+      in: query
+      schema:
+        type: integer
+      description: 6‑digit user ID
+    project:
+      name: project
+      in: query
+      schema:
+        type: string
+      description: Project name
+    active:
+      name: active
+      in: query
+      schema:
+        type: string
+        enum:
+          - '1'
+          - '0'
+      description: Active status
+    wallet:
+      name: wallet
+      in: query
+      schema:
+        type: string
+      description: Wallet identifier
+    voucher:
+      name: voucher
+      in: query
+      schema:
+        type: string
+      description: Voucher code or ID
+    cycle:
+      name: cycle
+      in: query
+      schema:
+        type: string
+      description: Cycle identifier
+    cycleFilter:
+      name: cycleFilter
+      in: query
+      schema:
+        type: string
+      description: Filter transactions by cycle
+    dateFrom:
+      name: dateFrom
+      in: query
+      schema:
+        type: string
+        format: date
+      description: Start date filter
+    dateTo:
+      name: dateTo
+      in: query
+      schema:
+        type: string
+        format: date
+      description: End date filter
+    walletId:
+      name: walletId
+      in: query
+      schema:
+        type: string
+      description: Unique wallet ID
+    houseHoldId:
+      name: houseHoldId
+      in: query
+      schema:
+        type: string
+      description: Unique household ID (alternative spelling)
+    householdId:
+      name: householdId
+      in: query
+      schema:
+        type: string
+      description: Unique household ID
+  responses:
+    BadRequest:
+      description: Bad request – invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized – missing or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Forbidden – insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Invalid credentials
+        timestamp:
+          type: string
+          format: date-time
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@dube.com
+        password:
+          type: string
+          format: password
+          example: password123
+    RegisterRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - role
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        role:
+          type: string
+          enum:
+            - dube-admin
+            - dube-viewer
+            - wfp-admin
+            - wfp-viewer
+    AuthTokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    Project:
+      type: object
+      properties:
+        projectName:
+          type: string
+        countryCode:
+          type: string
+        countryName:
+          type: string
+        creditDisbursementWallet:
+          type: string
+        earningWallet:
+          type: string
+        settlementBank:
+          type: string
+        settlementAccount:
+          type: string
+    Supplier:
+      type: object
+      properties:
+        name:
+          type: string
+        wallet:
+          type: string
+        walletBalance:
+          type: string
+        pendingWalletBalance:
+          type: string
+        mobile:
+          type: string
+        userId:
+          type: string
+        status:
+          type: string
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: string
+        idList:
+          type: string
+        receiptFilename:
+          type: string
+        uploadedOn:
+          type: string
+          format: date-time
+        order:
+          type: array
+          items:
+            type: object
+            properties:
+              earningWallet:
+                type: string
+              productId:
+                type: string
+              price:
+                type: string
+              quantity:
+                type: string
+              supplier_name:
+                type: string
+              supplier_id:
+                type: string
+              order_date:
+                type: string
+                format: date
+              hellooMarketOrderId:
+                type: string
+        status:
+          type: string
+    Merchant:
+      type: object
+      properties:
+        userid:
+          type: string
+        fullname:
+          type: string
+        businessName:
+          type: string
+        mobile:
+          type: string
+        createdon:
+          type: string
+          format: date-time
+        project:
+          type: string
+        initialdeposit:
+          type: string
+        bnpl:
+          type: string
+        active:
+          type: string
+        lastTrxnDate:
+          type: string
+          format: date-time
+        language:
+          type: string
+        wallets:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              wallettype:
+                type: string
+              balance:
+                type: string
+              bnpl:
+                type: string
+        foodCategory:
+          type: string
+    Customer:
+      type: object
+      properties:
+        userid:
+          type: string
+        fullname:
+          type: string
+        mobile:
+          type: string
+        creditwallet:
+          type: string
+        purchasewallet:
+          type: string
+        purchasebalance:
+          type: string
+        createdon:
+          type: string
+          format: date-time
+        createdby:
+          type: string
+        merchantName:
+          type: string
+        merchantUserId:
+          type: string
+        active:
+          type: string
+        bnpl:
+          type: string
+        otheCreditLines:
+          type: array
+        gifts:
+          type: array
+    Invoice:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        merchantName:
+          type: string
+        merchantUserId:
+          type: string
+        merchantMobile:
+          type: string
+        customerName:
+          type: string
+        customerMobile:
+          type: string
+        amount:
+          type: number
+        transactionDate:
+          type: string
+          format: date-time
+        transactionStatus:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        overdue:
+          type: boolean
+        repayed:
+          type: string
+        repayment:
+          type: array
+    SystemTotals:
+      type: object
+      properties:
+        numberOfActiveMerchants:
+          type: string
+        numberOfActiveCustomers:
+          type: number
+        totalNumberOfMerchants:
+          type: string
+        totalNumberOfSuppliers:
+          type: string
+        totalNumberOfCustomers:
+          type: string
+        totalNumberOfMerchantsWithActivePINs:
+          type: string
+        totalNumberOfCustomersWithActivePINs:
+          type: string
+        totalNumberOfLoggedInMerchants:
+          type: string
+        totalNumberOfLoggedInCustomers:
+          type: string
+        totalInvoiceAmount:
+          type: number
+        totalNumberOfInvoices:
+          type: string
+        totalCashInAmount:
+          type: string
+        totalNumberOfCashIns:
+          type: string
+        totalCashoutAmount:
+          type: string
+        totalNumberOfCashouts:
+          type: string
+        totalCreditAmount:
+          type: string
+        totalNumberOfCredit:
+          type: string
+        totalRepayedAmount:
+          type: string
+        totalNumberOfRepayment:
+          type: string
+        totalUnpaidInvoicesAmount:
+          type: string
+        totalNumberOfUnpaidInvoices:
+          type: string
+        totalOverdueInvoicesAmount:
+          type: string
+        totalNumberOfOverdueInvoices:
+          type: string
+        totalTransfersCount:
+          type: string
+        totalNumberOfTransfers:
+          type: string
+    RepaymentHistory:
+      type: object
+      properties:
+        transactionList:
+          type: string
+        transactionID:
+          type: string
+        paidFrom:
+          type: string
+        payerName:
+          type: string
+        payerMobile:
+          type: string
+        payerUserId:
+          type: string
+        repaidAmount:
+          type: string
+        repaymentStatus:
+          type: string
+        repaymentDate:
+          type: string
+        wallets:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              wallettype:
+                type: string
+              balance:
+                type: string
+              bnpl:
+                type: string
+        foodCategory:
+          type: string
+        invoice:
+          type: array
+          items:
+            type: object
+            properties:
+              transactionId:
+                type: string
+              wallettype:
+                type: string
+              amount:
+                type: number
+              transactionDate:
+                type: string
+                format: date-time
+    TopUpHistory:
+      type: object
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        walletType:
+          type: string
+        userId:
+          type: string
+        transactionID:
+          type: string
+        financialInstitution:
+          type: string
+        amount:
+          type: string
+        invoiceID:
+          type: string
+        InvoiceReference:
+          type: string
+        tracenumber:
+          type: string
+        transactionStatus:
+          type: string
+        transactionDate:
+          type: string
+        transactionData:
+          type: object
+    WFPBeneficiary:
+      type: object
+      properties:
+        mainWallet:
+          type: string
+        beneficiaryName:
+          type: string
+        mobile:
+          type: string
+        mainWalletBalance:
+          type: string
+        subWallets:
+          type: array
+          items:
+            type: object
+            properties:
+              walletName:
+                type: string
+              walletBalance:
+                type: string
+              cycle:
+                type: string
+    WFPInvoice:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        merchantUserId:
+          type: string
+        merchantName:
+          type: string
+        merchantMobile:
+          type: string
+        householdId:
+          type: string
+        customerName:
+          type: string
+        customerMobile:
+          type: string
+        amount:
+          type: number
+        transactionDate:
+          type: string
+        transactionStatus:
+          type: string
+        remark:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryName:
+                type: string
+              order:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    itemName:
+                      type: string
+                    unitPrice:
+                      type: string
+                    quantity:
+                      type: string
+    WFPCashout:
+      type: object
+      properties:
+        wallet:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        mobile:
+          type: string
+        bank:
+          type: string
+        accountNumber:
+          type: string
+        amount:
+          type: string
+        status:
+          type: string
+        requestDate:
+          type: string
+        transactionData:
+          type: object
+    WFPCreditTransfer:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        householdId:
+          type: string
+        wallet:
+          type: string
+        customerName:
+          type: string
+        customerMobile:
+          type: string
+        amount:
+          type: string
+        transactionDate:
+          type: string
+        transactionData:
+          type: string
+        transactionStatus:
+          type: string
+        cycle:
+          type: string
+    WFPOnboardingAgent:
+      type: object
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        active:
+          type: string
+        registeredOn:
+          type: string
+    WFPHealthOfficer:
+      type: object
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        active:
+          type: string
+        registeredOn:
+          type: string
+    WFPDummyVoucher:
+      type: object
+      properties:
+        userId:
+          type: string
+        balance:
+          type: number
+        createdOn:
+          type: string
+          format: date-time
+        creditWallet:
+          type: string
+    WFPVoucher:
+      type: object
+      properties:
+        householdId:
+          type: string
+        name:
+          type: string
+        mobile:
+          type: string
+        wallet:
+          type: string
+        woreda:
+          type: string
+        kebele:
+          type: string
+        balance:
+          type: string
+        updatedOn:
+          type: string
+          format: date-time
+        createdOn:
+          type: string
+          format: date-time
+        linked:
+          type: boolean
+        active:
+          type: string
+        cycle:
+          type: string
+security:
+  - bearerAuth: []
+paths:
+  /api/wfp/getbeneficiarylist.php:
+    get:
+      tags:
+        - WFP
+      summary: Get beneficiary list
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPBeneficiary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getallinvoices.php:
+    get:
+      tags:
+        - WFP
+      summary: Get all invoices
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPInvoice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/gettotalinvoices.php:
+    get:
+      tags:
+        - WFP
+      summary: Get total invoices
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: object
+                    properties:
+                      totalAmount:
+                        type: string
+                      totalNumber:
+                        type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/gettotalcredit.php:
+    get:
+      tags:
+        - WFP
+      summary: Get total credit
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: object
+                    properties:
+                      totalAmount:
+                        type: string
+                      totalNumber:
+                        type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getcashouttotals.php:
+    get:
+      tags:
+        - WFP
+      summary: Get cashout totals
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      parameters:
+        - $ref: '#/components/parameters/voucher'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/dateFrom'
+        - $ref: '#/components/parameters/dateTo'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: object
+                    properties:
+                      totalCashoutAmount:
+                        type: string
+                      totalCashoutNumber:
+                        type: string
+                      totalCashoutFeeAmount:
+                        type: string
+                      totalCashoutFeeNumber:
+                        type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getcashouthistory.php:
+    get:
+      tags:
+        - WFP
+      summary: Get cashout history
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPCashout'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getcredittransferhistory.php:
+    get:
+      tags:
+        - WFP
+      summary: Get credit transfer history
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      parameters:
+        - $ref: '#/components/parameters/walletId'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/houseHoldId'
+        - $ref: '#/components/parameters/householdId'
+        - $ref: '#/components/parameters/dateTo'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/cycle'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPCreditTransfer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getonboardingagentlist.php:
+    get:
+      tags:
+        - WFP
+      summary: Get onboarding agent list
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPOnboardingAgent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/gettotals.php:
+    get:
+      tags:
+        - WFP
+      summary: Get WFP system totals
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      parameters:
+        - $ref: '#/components/parameters/startDate'
+        - $ref: '#/components/parameters/endDate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: object
+                    properties:
+                      totalCashoutAmount:
+                        type: string
+                      totalCashoutNumber:
+                        type: number
+                      totalCreditAmount:
+                        type: string
+                      totalCreditNumber:
+                        type: string
+                      totalInvoiceAmount:
+                        type: string
+                      totalInvoiceNumber:
+                        type: string
+                      totalBenefitedMerchantAmount:
+                        type: string
+                      totalBenefitedMerchantNumber:
+                        type: string
+                      totalBenefitedBeneficiaryAmount:
+                        type: number
+                      totalBenefitedBeneficiaryNumber:
+                        type: string
+                      totalPurchases:
+                        type: object
+                        properties:
+                          Vegetables:
+                            type: string
+                          Eggs:
+                            type: string
+                          Oil:
+                            type: string
+                          Fruits:
+                            type: string
+                          Cereal:
+                            type: string
+                          Pulses:
+                            type: string
+                          Salt:
+                            type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/gethealthofficerlist.php:
+    get:
+      tags:
+        - WFP
+      summary: Get health officer list
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPHealthOfficer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/generatedummyvouchers.php:
+    get:
+      tags:
+        - WFP
+      summary: Generate dummy vouchers
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: Dummy vouchers generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPDummyVoucher'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/wfp/getvoucherslist.php:
+    get:
+      tags:
+        - WFP
+      summary: Get vouchers list
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WFPVoucher'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
