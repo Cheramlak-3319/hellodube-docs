@@ -4,8 +4,8 @@
   "description": "Dube International & WFP API with role‑based Swagger UI",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node func/server.js",
+    "dev": "nodemon func/server.js",
     "seed": "node scripts/seedUsers.js",
     "generate-docs": "node scripts/generate-docs.js",
     "test-auth": "node test-auth.js"

@@ -4,14 +4,14 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const path = require("path");
-const { verifyToken, checkRole } = require("./middleware/auth");
-const { extractToken } = require("./middleware/auth");
+const { verifyToken, checkRole } = require("../middleware/auth");
+const { extractToken } = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const authRoutes = require("./routes/authRoutes");
-const dubeRoutes = require("./routes/dubeRoutes");
-const wfpRoutes = require("./routes/wfpRoutes");
+const authRoutes = require("../routes/authRoutes");
+const dubeRoutes = require("../routes/dubeRoutes");
+const wfpRoutes = require("../routes/wfpRoutes");
 
 const app = express();
 app.use(express.json());
@@ -28,17 +28,13 @@ app.use(
 );
 
 // Serve static login page
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.resolve("public")));
 
 // Load generated OpenAPI files
-const dubeFull = YAML.load(path.join(__dirname, "openapi", "dube-full.yaml"));
-const dubeReadOnly = YAML.load(
-  path.join(__dirname, "openapi", "dube-readonly.yaml"),
-);
-const wfpFull = YAML.load(path.join(__dirname, "openapi", "wfp-full.yaml"));
-const wfpReadOnly = YAML.load(
-  path.join(__dirname, "openapi", "wfp-readonly.yaml"),
-);
+const dubeFull = YAML.load(path.resolve("openapi/dube-full.yaml"));
+const dubeReadOnly = YAML.load(path.resolve("openapi/dube-readonly.yaml"));
+const wfpFull = YAML.load(path.resolve("openapi/wfp-full.yaml"));
+const wfpReadOnly = YAML.load(path.resolve("openapi/wfp-readonly.yaml"));
 
 const serveSwaggerUI = (swaggerDoc, allowedRoles) => {
   return (req, res, next) => {
