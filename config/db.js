@@ -8,7 +8,7 @@ async function connectDB() {
   if (cached.conn) return cached.conn;
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(process.env.MONGODB_URI)
+      .connect(process.env.MONGO_URI)
       .then((mongoose) => {
         console.log("✅ MongoDB connected");
         return mongoose;
