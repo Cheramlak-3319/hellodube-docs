@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5555",
-      "https://hellodube-docs.vercel.app/", // Old URL
+      "https://hellodube-docs-miv3.vercel.app/", // Old URL
       /\.vercel\.app$/, // This allow ALL your vercel preview/production URLs
     ],
     credentials: true,
