@@ -36,55 +36,51 @@ const dubeReadOnly = YAML.load(path.resolve("openapi/dube-readonly.yaml"));
 const wfpFull = YAML.load(path.resolve("openapi/wfp-full.yaml"));
 const wfpReadOnly = YAML.load(path.resolve("openapi/wfp-readonly.yaml"));
 
-const serveSwaggerUI = (swaggerDoc, allowedRoles) => {
-  return (req, res, next) => {
-    // 🐛 DEBUG – remove after fixing
-    console.log("🐛 Swagger UI access attempt");
-    console.log("   - URL:", req.originalUrl);
-    console.log("   - Query token:", req.query.token);
+// ========== SWAGGER UI ROUTES - FIXED ==========
 
+// Helper to set up each Swagger route properly
+const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
+  // 1. Serve static assets (CSS, JS, images) - NO AUTH REQUIRED
+  const serveFiles = swaggerUi.serveFiles(swaggerDoc, {
+    swaggerOptions: { persistAuthorization: true },
+  });
+
+  // This handles all sub-requests (like .css, .js, .png)
+  app.use(routePath, (req, res, next) => {
+    // Let swagger-ui-express handle static files
+    serveFiles(req, res, next);
+  });
+
+  // 2. Main page - REQUIRES AUTHENTICATION
+  app.get(routePath, (req, res, next) => {
+    // Extract token from query or header
     const token = extractToken(req);
-    console.log(
-      "   - Extracted token:",
-      token ? token.substring(0, 20) + "..." : "❌ NONE",
-    );
 
     if (!token) {
-      console.log("   ❌ No token found");
       return res
         .status(401)
         .json({ error: true, message: "No token provided." });
     }
 
-    // 🔑 Check if secret is loaded
-    if (!process.env.JWT_SECRET) {
-      console.error("❌ JWT_SECRET is UNDEFINED!");
-      return res
-        .status(500)
-        .json({ error: true, message: "Server configuration error." });
-    }
-
+    // Verify token
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("   ✅ Token verified. Role:", decoded.role);
       req.user = decoded;
     } catch (err) {
-      console.error("   ❌ JWT Verify Error:", err.message);
       return res
         .status(401)
         .json({ error: true, message: "Invalid or expired token." });
     }
 
-    // 👮 Check role
+    // Check role
     if (!allowedRoles.includes(req.user.role)) {
-      console.log(`   ❌ Role ${req.user.role} not in`, allowedRoles);
       return res.status(403).json({
         error: true,
         message: "Access denied. Insufficient permissions.",
       });
     }
 
-    // ✅ Serve Swagger UI with token pre‑authorized
+    // Serve Swagger UI with token pre‑authorized
     swaggerUi.setup(swaggerDoc, {
       swaggerOptions: {
         persistAuthorization: true,
@@ -97,47 +93,14 @@ const serveSwaggerUI = (swaggerDoc, allowedRoles) => {
         },
       },
     })(req, res, next);
-  };
+  });
 };
 
-// ========== FIXED SWAGGER UI ROUTES ==========
-// Static assets first (no auth), then main page (with auth)
-
-// ---------- DUBE ADMIN ----------
-app.use(
-  "/api-docs/dube/admin",
-  swaggerUi.serveFiles(dubeFull, {
-    swaggerOptions: { persistAuthorization: true },
-  }),
-);
-app.get("/api-docs/dube/admin", serveSwaggerUI(dubeFull, ["dube-admin"]));
-
-// ---------- DUBE VIEWER ----------
-app.use(
-  "/api-docs/dube/viewer",
-  swaggerUi.serveFiles(dubeReadOnly, {
-    swaggerOptions: { persistAuthorization: true },
-  }),
-);
-app.get("/api-docs/dube/viewer", serveSwaggerUI(dubeReadOnly, ["dube-viewer"]));
-
-// ---------- WFP ADMIN ----------
-app.use(
-  "/api-docs/wfp/admin",
-  swaggerUi.serveFiles(wfpFull, {
-    swaggerOptions: { persistAuthorization: true },
-  }),
-);
-app.get("/api-docs/wfp/admin", serveSwaggerUI(wfpFull, ["wfp-admin"]));
-
-// ---------- WFP VIEWER ----------
-app.use(
-  "/api-docs/wfp/viewer",
-  swaggerUi.serveFiles(wfpReadOnly, {
-    swaggerOptions: { persistAuthorization: true },
-  }),
-);
-app.get("/api-docs/wfp/viewer", serveSwaggerUI(wfpReadOnly, ["wfp-viewer"]));
+// Set up all four routes
+setupSwaggerRoute("/api-docs/dube/admin", dubeFull, ["dube-admin"]);
+setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
+setupSwaggerRoute("/api-docs/wfp/admin", wfpFull, ["wfp-admin"]);
+setupSwaggerRoute("/api-docs/wfp/viewer", wfpReadOnly, ["wfp-viewer"]);
 
 // ---------- HEALTH ----------
 app.get("/health", (req, res) => {
