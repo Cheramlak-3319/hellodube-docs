@@ -42,20 +42,21 @@ const wfpReadOnly = YAML.load(
 
 // ========== SWAGGER UI ROUTES - FIXED ==========
 
-// Helper to set up each Swagger route properly
+// Serve static assets without authentication
+app.use("/api-docs", (req, res, next) => {
+  // Allow all static files (CSS, JS, JSON, images)
+  if (req.path.match(/\.(css|js|json|png|ico|map)$/)) {
+    return next();
+  }
+  next();
+});
+
+// Helper to set up each Swagger route
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
-  // 1. Serve static assets (CSS, JS, images) - NO AUTH REQUIRED
-  const serveFiles = swaggerUi.serveFiles(swaggerDoc, {
-    swaggerOptions: { persistAuthorization: true },
-  });
+  // Serve the static assets using swagger-ui-express
+  app.use(routePath, swaggerUi.serve);
 
-  // This handles all sub-requests (like .css, .js, .png)
-  app.use(routePath, (req, res, next) => {
-    // Let swagger-ui-express handle static files
-    serveFiles(req, res, next);
-  });
-
-  // 2. Main page - REQUIRES AUTHENTICATION
+  // Handle the main page with authentication
   app.get(routePath, (req, res, next) => {
     // Extract token from query or header
     const token = extractToken(req);
@@ -66,7 +67,6 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
         .json({ error: true, message: "No token provided." });
     }
 
-    // Verify token
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
@@ -76,12 +76,8 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
         .json({ error: true, message: "Invalid or expired token." });
     }
 
-    // Check role
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({
-        error: true,
-        message: "Access denied. Insufficient permissions.",
-      });
+      return res.status(403).json({ error: true, message: "Access denied." });
     }
 
     // Serve Swagger UI with token pre‑authorized
@@ -143,18 +139,17 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const uri =
-      "mongodb+srv://cheeman:9Bcts_2015@atlascluster.untqfzs.mongodb.net/documentiation?retryWrites=true&w=majority";
+    const uri = process.env.MONGO_URI;
     if (!uri) {
       throw new Error("❌ MONGO_URI is not defined in environment variables");
     }
 
     console.log("🔄 Connecting to MongoDB...");
+
+    // ✅ FIXED: Remove invalid options, use only valid ones
     cached.promise = mongoose
       .connect(uri, {
-        bufferCommands: false,
-        bufferMaxCommandResult: 0,
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 5000, // Keep this one – it's valid
       })
       .then((mongoose) => {
         console.log("✅ MongoDB connected successfully");
@@ -162,7 +157,7 @@ async function connectDB() {
       })
       .catch((err) => {
         console.error("❌ MongoDB connection error:", err.message);
-        cached.promise = null;
+        cached.promise = null; // Reset so future attempts can retry
         throw err;
       });
   }
