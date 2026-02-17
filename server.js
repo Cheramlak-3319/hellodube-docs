@@ -4,14 +4,14 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const path = require("path");
-const { verifyToken, checkRole } = require("../middleware/auth");
-const { extractToken } = require("../middleware/auth");
+const { verifyToken, checkRole } = require("./middleware/auth");
+const { extractToken } = require("./middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const authRoutes = require("../routes/authRoutes");
-const dubeRoutes = require("../routes/dubeRoutes");
-const wfpRoutes = require("../routes/wfpRoutes");
+const authRoutes = require("./routes/authRoutes");
+const dubeRoutes = require("./routes/dubeRoutes");
+const wfpRoutes = require("./routes/wfpRoutes");
 
 const app = express();
 app.use(express.json());
