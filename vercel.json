@@ -8,8 +8,12 @@
   ],
   "routes": [
     {
+      "src": "/api-docs/(.*)\\.(css|js|json|png|ico|map)$",
+      "dest": "/server.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "/server.js"
     }
   ]
 }

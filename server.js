@@ -47,14 +47,11 @@ const wfpReadOnly = YAML.load(
 
 // ========== SWAGGER UI ROUTES - FIXED ==========
 
-// Serve static assets without authentication
-app.use("/api-docs", (req, res, next) => {
-  // Allow all static files (CSS, JS, JSON, images)
-  if (req.path.match(/\.(css|js|json|png|ico|map)$/)) {
-    return next();
-  }
-  next();
-});
+// Serve Swagger UI static assets from node_modules
+app.use(
+  "/api-docs",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist")),
+);
 
 // Helper to set up each Swagger route
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
