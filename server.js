@@ -28,13 +28,17 @@ app.use(
 );
 
 // Serve static login page
-app.use(express.static(path.resolve("public")));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Load generated OpenAPI files
-const dubeFull = YAML.load(path.resolve("openapi/dube-full.yaml"));
-const dubeReadOnly = YAML.load(path.resolve("openapi/dube-readonly.yaml"));
-const wfpFull = YAML.load(path.resolve("openapi/wfp-full.yaml"));
-const wfpReadOnly = YAML.load(path.resolve("openapi/wfp-readonly.yaml"));
+// Load generated OpenAPI files - using __dirname for reliable paths
+const dubeFull = YAML.load(path.join(__dirname, "openapi/dube-full.yaml"));
+const dubeReadOnly = YAML.load(
+  path.join(__dirname, "openapi/dube-readonly.yaml"),
+);
+const wfpFull = YAML.load(path.join(__dirname, "openapi/wfp-full.yaml"));
+const wfpReadOnly = YAML.load(
+  path.join(__dirname, "openapi/wfp-readonly.yaml"),
+);
 
 // ========== SWAGGER UI ROUTES - FIXED ==========
 
@@ -125,36 +129,87 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dube", verifyToken, dubeRoutes);
 app.use("/api/wfp", verifyToken, wfpRoutes);
 
-// ---------- MONGODB CONNECTION (cached for serverless) ----------
+// ========== MONGODB CONNECTION (cached for serverless) ==========
+
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function connectDB() {
-  if (cached.conn) return cached.conn;
+  if (cached.conn) {
+    console.log("✅ Using existing MongoDB connection");
+    return cached.conn;
+  }
+
   if (!cached.promise) {
+    const uri =
+      "mongodb+srv://cheeman:9Bcts_2015@atlascluster.untqfzs.mongodb.net/documentiation?retryWrites=true&w=majority";
+    if (!uri) {
+      throw new Error("❌ MONGO_URI is not defined in environment variables");
+    }
+
+    console.log("🔄 Connecting to MongoDB...");
     cached.promise = mongoose
-      .connect(process.env.MONGO_URI)
+      .connect(uri, {
+        bufferCommands: false,
+        bufferMaxCommandResult: 0,
+        serverSelectionTimeoutMS: 5000,
+      })
       .then((mongoose) => {
-        console.log("✅ MongoDB connected");
+        console.log("✅ MongoDB connected successfully");
         return mongoose;
+      })
+      .catch((err) => {
+        console.error("❌ MongoDB connection error:", err.message);
+        cached.promise = null;
+        throw err;
       });
   }
-  cached.conn = await cached.promise;
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (err) {
+    cached.promise = null;
+    throw err;
+  }
+
   return cached.conn;
 }
 
-// Middleware to ensure DB is connected before any request (optional but safe)
+// Middleware to ensure DB is connected before handling requests
 app.use(async (req, res, next) => {
+  // Skip database for public/test endpoints that don't need it
+  const publicPaths = [
+    "/health",
+    "/api/test/public",
+    "/login.html",
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api-docs",
+  ];
+
+  if (publicPaths.some((path) => req.path.startsWith(path))) {
+    return next();
+  }
+
+  // Also skip static assets for Swagger UI
+  if (
+    req.path.includes("/api-docs/") &&
+    req.path.match(/\.(css|js|png|ico|map)$/)
+  ) {
+    return next();
+  }
+
   try {
     await connectDB();
     next();
   } catch (err) {
-    console.error("❌ DB connection middleware error:", err);
-    res
-      .status(500)
-      .json({ error: true, message: "Database connection failed" });
+    console.error("❌ Database connection failed:", err.message);
+    res.status(503).json({
+      error: true,
+      message: "Service temporarily unavailable - database connection failed",
+    });
   }
 });
 
