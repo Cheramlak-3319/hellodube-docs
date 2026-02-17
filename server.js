@@ -19,8 +19,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5555",
-      "https://hellodube-docs.vercel.app/", // Old URL
-      /\.vercel\.app$/, // This allow ALL your vercel preview/production URLs
+      "https://hellodube-docs.vercel.app",
+      /\.vercel\.app$/,
     ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -100,39 +100,44 @@ const serveSwaggerUI = (swaggerDoc, allowedRoles) => {
   };
 };
 
-// ---------- DUBE SWAGGER ----------
+// ========== FIXED SWAGGER UI ROUTES ==========
+// Static assets first (no auth), then main page (with auth)
+
+// ---------- DUBE ADMIN ----------
 app.use(
   "/api-docs/dube/admin",
   swaggerUi.serveFiles(dubeFull, {
     swaggerOptions: { persistAuthorization: true },
   }),
-  serveSwaggerUI(dubeFull, ["dube-admin"]),
 );
+app.get("/api-docs/dube/admin", serveSwaggerUI(dubeFull, ["dube-admin"]));
 
+// ---------- DUBE VIEWER ----------
 app.use(
   "/api-docs/dube/viewer",
   swaggerUi.serveFiles(dubeReadOnly, {
     swaggerOptions: { persistAuthorization: true },
   }),
-  serveSwaggerUI(dubeReadOnly, ["dube-viewer"]),
 );
+app.get("/api-docs/dube/viewer", serveSwaggerUI(dubeReadOnly, ["dube-viewer"]));
 
-// ---------- WFP SWAGGER ----------
+// ---------- WFP ADMIN ----------
 app.use(
   "/api-docs/wfp/admin",
   swaggerUi.serveFiles(wfpFull, {
     swaggerOptions: { persistAuthorization: true },
   }),
-  serveSwaggerUI(wfpFull, ["wfp-admin"]),
 );
+app.get("/api-docs/wfp/admin", serveSwaggerUI(wfpFull, ["wfp-admin"]));
 
+// ---------- WFP VIEWER ----------
 app.use(
   "/api-docs/wfp/viewer",
   swaggerUi.serveFiles(wfpReadOnly, {
     swaggerOptions: { persistAuthorization: true },
   }),
-  serveSwaggerUI(wfpReadOnly, ["wfp-viewer"]),
 );
+app.get("/api-docs/wfp/viewer", serveSwaggerUI(wfpReadOnly, ["wfp-viewer"]));
 
 // ---------- HEALTH ----------
 app.get("/health", (req, res) => {
@@ -198,7 +203,7 @@ if (require.main === module) {
   (async () => {
     try {
       console.log("🚀 Starting server...");
-      await connectDB(); // ensure DB is connected before listening
+      await connectDB();
 
       const PORT = process.env.PORT || 5555;
       const server = app.listen(PORT, () => {
@@ -218,7 +223,6 @@ if (require.main === module) {
         console.log(`🔐 Login page: http://localhost:${PORT}/login.html`);
       });
 
-      // Handle server errors
       server.on("error", (err) => {
         console.error("❌ Server error:", err);
         process.exit(1);
