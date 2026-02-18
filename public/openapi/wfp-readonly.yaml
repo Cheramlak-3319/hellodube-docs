@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Dube International & WFP Unified API
+  title: HellOOpass Global & WFP Unified API
   description: |
     Master OpenAPI specification.  
     **Do not edit generated files** – edit this master and run `npm run generate-docs`.
@@ -29,7 +29,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'JWT token from `/api/auth/login`. Format: `Bearer <token>`'
+      description: "JWT token from `/api/auth/login`. Format: `Bearer <token>`"
   parameters:
     limit:
       name: limit
@@ -102,8 +102,8 @@ components:
       schema:
         type: string
         enum:
-          - '1'
-          - '0'
+          - "1"
+          - "0"
       description: Active status
     wallet:
       name: wallet
@@ -167,25 +167,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Unauthorized:
       description: Unauthorized – missing or invalid token
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Forbidden:
       description: Forbidden – insufficient permissions
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     ServerError:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     ErrorResponse:
       type: object
@@ -752,7 +752,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -767,15 +767,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPBeneficiary'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPBeneficiary"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getallinvoices.php:
     get:
       tags:
@@ -785,7 +785,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -800,15 +800,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPInvoice'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPInvoice"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/gettotalinvoices.php:
     get:
       tags:
@@ -818,7 +818,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -835,14 +835,14 @@ paths:
                         type: string
                       totalNumber:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/gettotalcredit.php:
     get:
       tags:
@@ -852,7 +852,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -869,14 +869,14 @@ paths:
                         type: string
                       totalNumber:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getcashouttotals.php:
     get:
       tags:
@@ -886,13 +886,13 @@ paths:
         - wfp-admin
         - wfp-viewer
       parameters:
-        - $ref: '#/components/parameters/voucher'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/dateFrom'
-        - $ref: '#/components/parameters/dateTo'
-        - $ref: '#/components/parameters/limit'
+        - $ref: "#/components/parameters/voucher"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/dateFrom"
+        - $ref: "#/components/parameters/dateTo"
+        - $ref: "#/components/parameters/limit"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -913,14 +913,14 @@ paths:
                         type: string
                       totalCashoutFeeNumber:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getcashouthistory.php:
     get:
       tags:
@@ -930,7 +930,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -945,15 +945,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPCashout'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPCashout"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getcredittransferhistory.php:
     get:
       tags:
@@ -963,15 +963,15 @@ paths:
         - wfp-admin
         - wfp-viewer
       parameters:
-        - $ref: '#/components/parameters/walletId'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/houseHoldId'
-        - $ref: '#/components/parameters/householdId'
-        - $ref: '#/components/parameters/dateTo'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/cycle'
+        - $ref: "#/components/parameters/walletId"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/houseHoldId"
+        - $ref: "#/components/parameters/householdId"
+        - $ref: "#/components/parameters/dateTo"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/cycle"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -986,15 +986,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPCreditTransfer'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPCreditTransfer"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getonboardingagentlist.php:
     get:
       tags:
@@ -1004,7 +1004,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1019,15 +1019,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPOnboardingAgent'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPOnboardingAgent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/gettotals.php:
     get:
       tags:
@@ -1037,10 +1037,10 @@ paths:
         - wfp-admin
         - wfp-viewer
       parameters:
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1090,14 +1090,14 @@ paths:
                             type: string
                           Salt:
                             type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/gethealthofficerlist.php:
     get:
       tags:
@@ -1107,10 +1107,10 @@ paths:
         - wfp-admin
         - wfp-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1125,15 +1125,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPHealthOfficer'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPHealthOfficer"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/generatedummyvouchers.php:
     get:
       tags:
@@ -1143,7 +1143,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: Dummy vouchers generated
           content:
             application/json:
@@ -1156,15 +1156,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPDummyVoucher'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPDummyVoucher"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/wfp/getvoucherslist.php:
     get:
       tags:
@@ -1174,7 +1174,7 @@ paths:
         - wfp-admin
         - wfp-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1189,12 +1189,12 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/WFPVoucher'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/WFPVoucher"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"

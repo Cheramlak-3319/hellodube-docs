@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Dube International & WFP Unified API
+  title: HellOOpass Global & WFP Unified API
   description: |
     Master OpenAPI specification.  
     **Do not edit generated files** – edit this master and run `npm run generate-docs`.
@@ -29,7 +29,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'JWT token from `/api/auth/login`. Format: `Bearer <token>`'
+      description: "JWT token from `/api/auth/login`. Format: `Bearer <token>`"
   parameters:
     limit:
       name: limit
@@ -102,8 +102,8 @@ components:
       schema:
         type: string
         enum:
-          - '1'
-          - '0'
+          - "1"
+          - "0"
       description: Active status
     wallet:
       name: wallet
@@ -167,25 +167,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Unauthorized:
       description: Unauthorized – missing or invalid token
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Forbidden:
       description: Forbidden – insufficient permissions
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     ServerError:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
   schemas:
     ErrorResponse:
       type: object
@@ -752,11 +752,11 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -771,15 +771,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Project'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Project"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getsupplierlist.php:
     get:
       tags:
@@ -789,12 +789,12 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -809,15 +809,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Supplier'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Supplier"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getreceiptlist.php:
     get:
       tags:
@@ -827,11 +827,11 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -846,15 +846,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Receipt'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Receipt"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/gettotals.php:
     get:
       tags:
@@ -864,10 +864,10 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -878,15 +878,15 @@ paths:
                     type: boolean
                     example: false
                   message:
-                    $ref: '#/components/schemas/SystemTotals'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                    $ref: "#/components/schemas/SystemTotals"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/gettotals.php:
     get:
       tags:
@@ -896,10 +896,10 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -932,14 +932,14 @@ paths:
                         type: number
                       totalNumberOfInvoices:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/gettotalsleapfrog.php:
     get:
       tags:
@@ -949,10 +949,10 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -993,14 +993,14 @@ paths:
                         type: number
                       totalNumberOfOverdueInvoices:
                         type: number
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getrepaymenthistorylist.php:
     get:
       tags:
@@ -1010,12 +1010,12 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1030,15 +1030,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/RepaymentHistory'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/RepaymentHistory"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/registerproject.php:
     post:
       tags:
@@ -1070,7 +1070,7 @@ paths:
                 settlementBank:
                   type: string
       responses:
-        '201':
+        "201":
           description: Project created
           content:
             application/json:
@@ -1082,14 +1082,14 @@ paths:
                     example: true
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/registersupplier.php:
     post:
       tags:
@@ -1118,7 +1118,7 @@ paths:
                 dialCode:
                   type: string
       responses:
-        '201':
+        "201":
           description: Supplier created
           content:
             application/json:
@@ -1130,14 +1130,14 @@ paths:
                     example: true
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/registersupplierproduct.php:
     post:
       tags:
@@ -1188,7 +1188,7 @@ paths:
                 incrementPercent:
                   type: string
       responses:
-        '201':
+        "201":
           description: Product created
           content:
             application/json:
@@ -1200,14 +1200,14 @@ paths:
                     example: true
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/updatereceiptstatus.php:
     post:
       tags:
@@ -1230,10 +1230,10 @@ paths:
                 status:
                   type: string
                   enum:
-                    - '1'
-                    - '0'
+                    - "1"
+                    - "0"
       responses:
-        '200':
+        "200":
           description: Status updated
           content:
             application/json:
@@ -1245,14 +1245,14 @@ paths:
                     example: false
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getrepaymenthistorylist.php:
     get:
       tags:
@@ -1262,12 +1262,12 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1282,15 +1282,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/RepaymentHistory'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/RepaymentHistory"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getcustomerlist.php:
     get:
       tags:
@@ -1300,12 +1300,12 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1320,15 +1320,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Customer'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Customer"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getallcustomers.php:
     get:
       tags:
@@ -1337,12 +1337,12 @@ paths:
       x-roles:
         - dube-admin
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/countryCode'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/countryCode"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1396,14 +1396,14 @@ paths:
                                 type: string
                               sponsorPhone:
                                 type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/changephonenumber.php:
     post:
       tags:
@@ -1429,7 +1429,7 @@ paths:
                 dialCode:
                   type: string
       responses:
-        '200':
+        "200":
           description: Phone number updated
           content:
             application/json:
@@ -1441,14 +1441,14 @@ paths:
                     example: false
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/changename.php:
     post:
       tags:
@@ -1471,7 +1471,7 @@ paths:
                 fullName:
                   type: string
       responses:
-        '200':
+        "200":
           description: Name updated
           content:
             application/json:
@@ -1483,14 +1483,14 @@ paths:
                     example: false
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getcustomercredithistory.php:
     post:
       tags:
@@ -1525,7 +1525,7 @@ paths:
                 offset:
                   type: integer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1555,14 +1555,14 @@ paths:
                         transactionDate:
                           type: string
                           format: date-time
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getcustomerlistofmerchant.php:
     post:
       tags:
@@ -1582,7 +1582,7 @@ paths:
                 mobile:
                   type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1619,14 +1619,14 @@ paths:
                           type: array
                         creditRepayment:
                           type: array
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/customerselfregistration.php:
     post:
       tags:
@@ -1653,7 +1653,7 @@ paths:
                 dialCode:
                   type: string
       responses:
-        '201':
+        "201":
           description: User registered
           content:
             application/json:
@@ -1665,14 +1665,14 @@ paths:
                     example: false
                   message:
                     type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getallinvoices.php:
     get:
       tags:
@@ -1682,13 +1682,13 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/wallet'
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
+        - $ref: "#/components/parameters/wallet"
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1703,15 +1703,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Invoice'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Invoice"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getopeninvoices.php:
     get:
       tags:
@@ -1721,13 +1721,13 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/wallet'
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
+        - $ref: "#/components/parameters/wallet"
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1761,14 +1761,14 @@ paths:
                           type: string
                         overdue:
                           type: boolean
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getinvoicesandrepayments.php:
     get:
       tags:
@@ -1778,7 +1778,7 @@ paths:
         - dube-admin
         - dube-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1807,14 +1807,14 @@ paths:
                         type: string
                       totalInvoiceNumber:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/international/getmerchantlist.php:
     get:
       tags:
@@ -1824,15 +1824,15 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/mobile'
-        - $ref: '#/components/parameters/project'
-        - $ref: '#/components/parameters/countryCode'
-        - $ref: '#/components/parameters/active'
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/mobile"
+        - $ref: "#/components/parameters/project"
+        - $ref: "#/components/parameters/countryCode"
+        - $ref: "#/components/parameters/active"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1847,15 +1847,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Merchant'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/Merchant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/gettopuphistory.php:
     get:
       tags:
@@ -1865,13 +1865,13 @@ paths:
         - dube-admin
         - dube-viewer
       parameters:
-        - $ref: '#/components/parameters/wallet'
-        - $ref: '#/components/parameters/startDate'
-        - $ref: '#/components/parameters/endDate'
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
+        - $ref: "#/components/parameters/wallet"
+        - $ref: "#/components/parameters/startDate"
+        - $ref: "#/components/parameters/endDate"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/offset"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1884,15 +1884,15 @@ paths:
                   message:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TopUpHistory'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                      $ref: "#/components/schemas/TopUpHistory"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getcashinandouttotals.php:
     get:
       tags:
@@ -1902,7 +1902,7 @@ paths:
         - dube-admin
         - dube-viewer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1927,14 +1927,14 @@ paths:
                         type: string
                       totalNumberOfCredit:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getpaymenthistory.php:
     post:
       tags:
@@ -1969,7 +1969,7 @@ paths:
                 offset:
                   type: integer
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -2003,14 +2003,14 @@ paths:
                           format: date-time
                         remark:
                           type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /api/dube/getcashouthistory.php:
     post:
       tags:
@@ -2034,7 +2034,7 @@ paths:
                 id:
                   type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -2065,11 +2065,11 @@ paths:
                         type: string
                       transactionDate:
                         type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
