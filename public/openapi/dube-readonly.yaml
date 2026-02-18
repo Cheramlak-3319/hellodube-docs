@@ -2,8 +2,7 @@ openapi: 3.0.3
 info:
   title: HellOOpass Global & WFP Unified API
   description: |
-    Master OpenAPI specification.  
-    **Do not edit generated files** – edit this master and run `npm run generate-docs`.
+    Master OpenAPI specification.
   version: 1.0.0
   contact:
     name: API Support
