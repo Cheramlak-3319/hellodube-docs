@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HellOOpass × WFP · Login</title>
+    <title>HellOOpass × WFP · Register</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -18,7 +18,6 @@
         --text-dark: #1f1f1f;
         --input-bg: #fff;
         --input-border: #d1d1d1;
-        --demo-bg: #f4f4f4;
       }
 
       /* =================== Global =================== */
@@ -39,7 +38,7 @@
       }
 
       /* =================== Container =================== */
-      .login-wrapper {
+      .register-wrapper {
         width: 100%;
         max-width: 480px;
         background: #fff;
@@ -49,7 +48,7 @@
         color: var(--text-dark);
       }
 
-      .login-wrapper h2 {
+      .register-wrapper h2 {
         font-size: 1.9rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
@@ -60,44 +59,16 @@
         font-size: 0.95rem;
         color: #555;
         text-align: center;
-        margin-bottom: 1.5rem;
-      }
-
-      /* =================== Demo Accounts =================== */
-      .demo-credentials {
-        background: var(--demo-bg);
-        border-left: 4px solid var(--primary-green);
-        padding: 1rem 1.2rem;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        font-size: 0.85rem;
-      }
-      .demo-credentials h4 {
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-      }
-      .demo-credentials ul {
-        list-style: none;
-        padding-left: 0;
-        display: grid;
-        gap: 0.4rem;
-      }
-      .demo-credentials li {
-        color: #333;
-      }
-      .demo-credentials strong {
-        background: rgba(0, 168, 132, 0.1);
-        padding: 0 0.4rem;
-        border-radius: 12px;
+        margin-bottom: 1.8rem;
       }
 
       /* =================== Form =================== */
       form {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.1rem;
       }
+
       .form-group {
         display: flex;
         flex-direction: column;
@@ -119,7 +90,8 @@
         color: #999;
         font-size: 0.85rem;
       }
-      input {
+      input,
+      select {
         width: 100%;
         padding: 0.85rem 1rem 0.85rem 2.7rem;
         border-radius: 14px;
@@ -129,10 +101,19 @@
         background: var(--input-bg);
         color: var(--text-dark);
       }
-      input:focus {
+      input:focus,
+      select:focus {
         outline: none;
         border-color: var(--primary-green);
         box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.2);
+      }
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        cursor: pointer;
       }
 
       /* =================== Button =================== */
@@ -182,33 +163,34 @@
 
       /* =================== Responsive =================== */
       @media (max-width: 520px) {
-        .login-wrapper {
+        .register-wrapper {
           padding: 1.5rem;
         }
       }
     </style>
   </head>
   <body>
-    <div class="login-wrapper">
-      <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
-      <div class="subtitle">Access HellOOpass × WFP Unified API 🌐</div>
+    <div class="register-wrapper">
+      <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+      <div class="subtitle">Register to join HellOOpass × WFP 🌐</div>
 
-      <!-- Demo accounts -->
-      <div class="demo-credentials">
-        <h4>Demo Accounts</h4>
-        <ul>
-          <li><strong>admin@dube.com</strong> / password123 (Dúbè Âdmîn)</li>
-          <li><strong>viewer@dube.com</strong> / password123 (Dúbè Vîêwér)</li>
-          <li>
-            <strong>wfpadmin@example.com</strong> / password123 (WFP Âdmîn)
-          </li>
-          <li>
-            <strong>wfpviewer@example.com</strong> / password123 (WFP Vîêwêr)
-          </li>
-        </ul>
-      </div>
+      <form id="registerForm">
+        <div class="form-group">
+          <label>First Name</label>
+          <div class="input-icon">
+            <i class="fas fa-user"></i
+            ><input type="text" id="firstName" placeholder="Júlio" required />
+          </div>
+        </div>
 
-      <form id="loginForm">
+        <div class="form-group">
+          <label>Last Name</label>
+          <div class="input-icon">
+            <i class="fas fa-user"></i
+            ><input type="text" id="lastName" placeholder="Dôe" required />
+          </div>
+        </div>
+
         <div class="form-group">
           <label>Email</label>
           <div class="input-icon">
@@ -235,8 +217,22 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label>Role</label>
+          <div class="input-icon">
+            <i class="fas fa-user-shield"></i>
+            <select id="role" required>
+              <option value="" disabled selected>Select your role</option>
+              <option value="dube-viewer">Dúbè Vîêwér</option>
+              <option value="dube-admin">Dúbè Âdmîn</option>
+              <option value="wfp-viewer">WFP Vîêwêr</option>
+              <option value="wfp-admin">WFP Âdmîn</option>
+            </select>
+          </div>
+        </div>
+
         <button type="submit">
-          Sign In <i class="fas fa-arrow-right-to-bracket"></i>
+          Create Account <i class="fas fa-arrow-right-to-bracket"></i>
         </button>
       </form>
 
@@ -245,42 +241,68 @@
     </div>
 
     <script>
-      document
-        .getElementById("loginForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const email = document.getElementById("email").value.trim();
-          const password = document.getElementById("password").value;
+      const registerForm = document.getElementById("registerForm");
 
-          try {
-            const res = await fetch("/api/auth/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email, password }),
-            });
+      function showError(message) {
+        const errorDiv = document.getElementById("error");
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 5000);
+      }
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Login failed");
+      function showSuccess(message) {
+        const successDiv = document.getElementById("success");
+        successDiv.textContent = message;
+        successDiv.style.display = "block";
+        setTimeout(() => {
+          successDiv.style.display = "none";
+        }, 5000);
+      }
 
-            const token = data.tokens.accessToken;
-            localStorage.setItem("jwt-token", token);
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-            const role = data.user.role;
-            let swaggerPath = "";
-            if (role === "dube-admin") swaggerPath = "/api-docs/dube/admin";
-            else if (role === "dube-viewer")
-              swaggerPath = "/api-docs/dube/viewer";
-            else if (role === "wfp-admin") swaggerPath = "/api-docs/wfp/admin";
-            else if (role === "wfp-viewer")
-              swaggerPath = "/api-docs/wfp/viewer";
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
 
-            window.location.href = `${swaggerPath}?token=${encodeURIComponent(token)}`;
-          } catch (err) {
-            const errorDiv = document.getElementById("error");
-            errorDiv.textContent = err.message;
-            errorDiv.style.display = "block";
+        if (password.length < 6) {
+          showError("Password must be at least 6 characters");
+          return;
+        }
+
+        try {
+          const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              email,
+              password,
+              role,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            showError(data.message || "Registration failed");
+            return;
           }
-        });
+
+          showSuccess("Account created successfully! Redirecting to login...");
+          setTimeout(() => {
+            window.location.href = "/login.html"; // Redirect after success
+          }, 2000);
+        } catch (err) {
+          showError("Network error. Please try again.");
+        }
+      });
     </script>
   </body>
 </html>
