@@ -743,7 +743,7 @@ components:
 security:
   - bearerAuth: []
 paths:
-  /api/dube/international/getprojectlist.php:
+  /dube/international/getprojectlist.php:
     get:
       tags:
         - Dube International
@@ -780,7 +780,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getsupplierlist.php:
+  /dube/international/getsupplierlist.php:
     get:
       tags:
         - Dube International
@@ -818,7 +818,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getreceiptlist.php:
+  /dube/international/getreceiptlist.php:
     get:
       tags:
         - Dube International
@@ -855,7 +855,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/gettotals.php:
+  /dube/international/gettotals.php:
     get:
       tags:
         - Dube International
@@ -887,7 +887,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/gettotals.php:
+  /dube/gettotals.php:
     get:
       tags:
         - Dube International
@@ -940,7 +940,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/gettotalsleapfrog.php:
+  /dube/international/gettotalsleapfrog.php:
     get:
       tags:
         - Dube International
@@ -1001,7 +1001,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getrepaymenthistorylist.php:
+  /dube/getrepaymenthistorylist.php:
     get:
       tags:
         - Dube International
@@ -1039,7 +1039,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/registerproject.php:
+  /dube/international/registerproject.php:
     post:
       tags:
         - Dube International
@@ -1090,7 +1090,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/registersupplier.php:
+  /dube/international/registersupplier.php:
     post:
       tags:
         - Dube International
@@ -1138,7 +1138,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/registersupplierproduct.php:
+  /dube/international/registersupplierproduct.php:
     post:
       tags:
         - Dube International
@@ -1208,7 +1208,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/updatereceiptstatus.php:
+  /dube/international/updatereceiptstatus.php:
     post:
       tags:
         - Dube International
@@ -1253,7 +1253,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getrepaymenthistorylist.php:
+  /dube/international/getrepaymenthistorylist.php:
     get:
       tags:
         - Dube International
@@ -1291,7 +1291,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getcustomerlist.php:
+  /dube/international/getcustomerlist.php:
     get:
       tags:
         - Dube International
@@ -1329,7 +1329,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getallcustomers.php:
+  /dube/getallcustomers.php:
     get:
       tags:
         - Dube International
@@ -1404,7 +1404,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/changephonenumber.php:
+  /dube/international/changephonenumber.php:
     post:
       tags:
         - Dube International
@@ -1449,7 +1449,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/changename.php:
+  /dube/changename.php:
     post:
       tags:
         - Dube International
@@ -1491,7 +1491,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getcustomercredithistory.php:
+  /dube/getcustomercredithistory.php:
     post:
       tags:
         - Dube International
@@ -1563,7 +1563,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getcustomerlistofmerchant.php:
+  /dube/getcustomerlistofmerchant.php:
     post:
       tags:
         - Dube International
@@ -1627,7 +1627,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/customerselfregistration.php:
+  /dube/international/customerselfregistration.php:
     post:
       tags:
         - Dube International
@@ -1673,7 +1673,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getallinvoices.php:
+  /dube/international/getallinvoices.php:
     get:
       tags:
         - Dube International
@@ -1712,7 +1712,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getopeninvoices.php:
+  /dube/getopeninvoices.php:
     get:
       tags:
         - Dube International
@@ -1769,7 +1769,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getinvoicesandrepayments.php:
+  /dube/getinvoicesandrepayments.php:
     get:
       tags:
         - Dube International
@@ -1815,7 +1815,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getmerchantlist.php:
+  /dube/international/getmerchantlist.php:
     get:
       tags:
         - Dube International
@@ -1856,7 +1856,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/gettopuphistory.php:
+  /dube/gettopuphistory.php:
     get:
       tags:
         - Dube International
@@ -1893,7 +1893,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getcashinandouttotals.php:
+  /dube/getcashinandouttotals.php:
     get:
       tags:
         - Dube International
@@ -1935,7 +1935,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getpaymenthistory.php:
+  /dube/getpaymenthistory.php:
     post:
       tags:
         - Dube International
@@ -2011,7 +2011,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getcashouthistory.php:
+  /dube/getcashouthistory.php:
     post:
       tags:
         - Dube International

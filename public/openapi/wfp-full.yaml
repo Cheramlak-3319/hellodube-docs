@@ -743,7 +743,7 @@ components:
 security:
   - bearerAuth: []
 paths:
-  /api/wfp/getbeneficiarylist.php:
+  /wfp/getbeneficiarylist.php:
     get:
       tags:
         - WFP
@@ -776,7 +776,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getallinvoices.php:
+  /wfp/getallinvoices.php:
     get:
       tags:
         - WFP
@@ -809,7 +809,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotalinvoices.php:
+  /wfp/gettotalinvoices.php:
     get:
       tags:
         - WFP
@@ -843,7 +843,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotalcredit.php:
+  /wfp/gettotalcredit.php:
     get:
       tags:
         - WFP
@@ -877,7 +877,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcashouttotals.php:
+  /wfp/getcashouttotals.php:
     get:
       tags:
         - WFP
@@ -921,7 +921,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcashouthistory.php:
+  /wfp/getcashouthistory.php:
     get:
       tags:
         - WFP
@@ -954,7 +954,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcredittransferhistory.php:
+  /wfp/getcredittransferhistory.php:
     get:
       tags:
         - WFP
@@ -995,7 +995,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getonboardingagentlist.php:
+  /wfp/getonboardingagentlist.php:
     get:
       tags:
         - WFP
@@ -1028,7 +1028,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotals.php:
+  /wfp/gettotals.php:
     get:
       tags:
         - WFP
@@ -1098,7 +1098,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gethealthofficerlist.php:
+  /wfp/gethealthofficerlist.php:
     get:
       tags:
         - WFP
@@ -1134,7 +1134,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/registerhealthofficer.php:
+  /wfp/registerhealthofficer.php:
     post:
       tags:
         - WFP
@@ -1176,7 +1176,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/changebeneficiarystatus.php:
+  /wfp/changebeneficiarystatus.php:
     post:
       tags:
         - WFP
@@ -1218,7 +1218,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/registeronboardingagents.php:
+  /wfp/registeronboardingagents.php:
     post:
       tags:
         - WFP
@@ -1260,7 +1260,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/updateonboardingagent.php:
+  /wfp/updateonboardingagent.php:
     post:
       tags:
         - WFP
@@ -1302,7 +1302,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/updatefoodcategorylist.php:
+  /wfp/updatefoodcategorylist.php:
     post:
       tags:
         - WFP
@@ -1346,7 +1346,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/transfercredit.php:
+  /wfp/transfercredit.php:
     post:
       tags:
         - WFP
@@ -1396,7 +1396,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/validatedisbursement.php:
+  /wfp/validatedisbursement.php:
     post:
       tags:
         - WFP
@@ -1446,7 +1446,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/generatedummyvouchers.php:
+  /wfp/generatedummyvouchers.php:
     get:
       tags:
         - WFP
@@ -1477,7 +1477,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getvoucherslist.php:
+  /wfp/getvoucherslist.php:
     get:
       tags:
         - WFP
@@ -1508,5 +1508,255 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wfp/getallcycles.php:
+    get:
+      tags:
+        - WFP
+      summary: Get All Cycles
+      description: Retrieve all program cycles
+      x-roles:
+        - wfp-admin
+        - wfp-viewer
+      responses:
+        "200":
+          description: Cycles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  totalCount:
+                    type: string
+                    example: "32"
+                  message:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "RUdxSUC9-PhW5-3MDW-5uuI-mOTiaYyjAQN0"
+                        cycle:
+                          type: string
+                          example: "Cycle-13 SSC"
+                        active:
+                          type: string
+                          example: "1"
+                        startDate:
+                          type: string
+                          example: "2025-02-14"
+                        endDate:
+                          type: string
+                          example: "2025-02-14"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wfp/registerCycle:
+    post:
+      tags:
+        - WFP
+      summary: Register Program Cycle
+      description: Register a new program cycle
+      x-roles:
+        - wfp-admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - categoryName
+                - startDate
+                - endDate
+              properties:
+                categoryName:
+                  type: string
+                  example: "Oil"
+                startDate:
+                  type: string
+                  format: date-time
+                  example: "2022-01-01T00:00:00Z"
+                endDate:
+                  type: string
+                  format: date-time
+                  example: "2022-01-01T00:00:00Z"
+      responses:
+        "201":
+          description: Cycle registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Cycle registered successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "RUdxSUC9-PhW5-3MDW-5uuI-mOTiaYyjAQN0"
+                      cycle:
+                        type: string
+                        example: "Cycle-13 SSC"
+                      startDate:
+                        type: string
+                        example: "2025-02-14"
+                      endDate:
+                        type: string
+                        example: "2025-02-14"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wfp/updatecycle.php:
+    post:
+      tags:
+        - WFP
+      summary: Update Program Cycle
+      description: Update an existing program cycle
+      x-roles:
+        - wfp-admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - endDate
+              properties:
+                id:
+                  type: string
+                  example: "Ywh8Epr6-CDd3-PgQs-BcRr-vtRYzr8GlTP4"
+                endDate:
+                  type: string
+                  format: date
+                  example: "2025-02-14"
+                startDate:
+                  type: string
+                  format: date
+                  example: "2025-01-01"
+                active:
+                  type: string
+                  enum: ["0", "1"]
+                  example: "1"
+      responses:
+        "200":
+          description: Cycle updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Cycle updated successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "Ywh8Epr6-CDd3-PgQs-BcRr-vtRYzr8GlTP4"
+                      cycle:
+                        type: string
+                        example: "Cycle-13 SSC"
+                      active:
+                        type: string
+                        example: "1"
+                      startDate:
+                        type: string
+                        example: "2025-01-01"
+                      endDate:
+                        type: string
+                        example: "2025-02-14"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wfp/cancelcycle.php:
+    post:
+      tags:
+        - WFP
+      summary: Cancel Program Cycle
+      description: Cancel or delete an existing program cycle
+      x-roles:
+        - wfp-admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cycleId
+              properties:
+                cycleId:
+                  type: string
+                  example: "Ywh8Epr6-CDd3-PgQs-BcRr-vtRYzr8GlTP4"
+      responses:
+        "200":
+          description: Cycle cancelled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Cycle cancelled successfully."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          description: Cycle not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Cycle not found."
         "500":
           $ref: "#/components/responses/ServerError"

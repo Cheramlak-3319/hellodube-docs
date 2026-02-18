@@ -743,7 +743,7 @@ components:
 security:
   - bearerAuth: []
 paths:
-  /api/wfp/getbeneficiarylist.php:
+  /wfp/getbeneficiarylist.php:
     get:
       tags:
         - WFP
@@ -776,7 +776,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getallinvoices.php:
+  /wfp/getallinvoices.php:
     get:
       tags:
         - WFP
@@ -809,7 +809,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotalinvoices.php:
+  /wfp/gettotalinvoices.php:
     get:
       tags:
         - WFP
@@ -843,7 +843,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotalcredit.php:
+  /wfp/gettotalcredit.php:
     get:
       tags:
         - WFP
@@ -877,7 +877,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcashouttotals.php:
+  /wfp/getcashouttotals.php:
     get:
       tags:
         - WFP
@@ -921,7 +921,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcashouthistory.php:
+  /wfp/getcashouthistory.php:
     get:
       tags:
         - WFP
@@ -954,7 +954,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getcredittransferhistory.php:
+  /wfp/getcredittransferhistory.php:
     get:
       tags:
         - WFP
@@ -995,7 +995,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getonboardingagentlist.php:
+  /wfp/getonboardingagentlist.php:
     get:
       tags:
         - WFP
@@ -1028,7 +1028,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gettotals.php:
+  /wfp/gettotals.php:
     get:
       tags:
         - WFP
@@ -1098,7 +1098,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/gethealthofficerlist.php:
+  /wfp/gethealthofficerlist.php:
     get:
       tags:
         - WFP
@@ -1134,7 +1134,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/generatedummyvouchers.php:
+  /wfp/generatedummyvouchers.php:
     get:
       tags:
         - WFP
@@ -1165,7 +1165,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/wfp/getvoucherslist.php:
+  /wfp/getvoucherslist.php:
     get:
       tags:
         - WFP
@@ -1198,3 +1198,54 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
+  /wfp/getallcycles.php:
+  get:
+    tags:
+      - WFP
+    summary: Get All Cycles
+    description: Retrieve all program cycles
+    x-roles:
+      - wfp-admin
+      - wfp-viewer
+    responses:
+      "200":
+        description: Cycles retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: boolean
+                  example: false
+                totalCount:
+                  type: string
+                  example: "32"
+                message:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "RUdxSUC9-PhW5-3MDW-5uuI-mOTiaYyjAQN0"
+                      cycle:
+                        type: string
+                        example: "Cycle-13 SSC"
+                      active:
+                        type: string
+                        example: "1"
+                      startDate:
+                        type: string
+                        example: "2025-02-14"
+                      endDate:
+                        type: string
+                        example: "2025-02-14"
+      "400":
+        $ref: "#/components/responses/BadRequest"
+      "401":
+        $ref: "#/components/responses/Unauthorized"
+      "403":
+        $ref: "#/components/responses/Forbidden"
+      "500":
+        $ref: "#/components/responses/ServerError"

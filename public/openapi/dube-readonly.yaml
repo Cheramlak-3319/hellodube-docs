@@ -743,7 +743,7 @@ components:
 security:
   - bearerAuth: []
 paths:
-  /api/dube/international/getprojectlist.php:
+  /dube/international/getprojectlist.php:
     get:
       tags:
         - Dube International
@@ -780,7 +780,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getsupplierlist.php:
+  /dube/international/getsupplierlist.php:
     get:
       tags:
         - Dube International
@@ -818,7 +818,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getreceiptlist.php:
+  /dube/international/getreceiptlist.php:
     get:
       tags:
         - Dube International
@@ -855,7 +855,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/gettotals.php:
+  /dube/international/gettotals.php:
     get:
       tags:
         - Dube International
@@ -887,7 +887,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/gettotals.php:
+  /dube/gettotals.php:
     get:
       tags:
         - Dube International
@@ -940,7 +940,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/gettotalsleapfrog.php:
+  /dube/international/gettotalsleapfrog.php:
     get:
       tags:
         - Dube International
@@ -1001,7 +1001,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getrepaymenthistorylist.php:
+  /dube/getrepaymenthistorylist.php:
     get:
       tags:
         - Dube International
@@ -1039,7 +1039,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getrepaymenthistorylist.php:
+  /dube/international/getrepaymenthistorylist.php:
     get:
       tags:
         - Dube International
@@ -1077,7 +1077,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getcustomerlist.php:
+  /dube/international/getcustomerlist.php:
     get:
       tags:
         - Dube International
@@ -1115,7 +1115,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getallinvoices.php:
+  /dube/international/getallinvoices.php:
     get:
       tags:
         - Dube International
@@ -1154,7 +1154,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getopeninvoices.php:
+  /dube/getopeninvoices.php:
     get:
       tags:
         - Dube International
@@ -1211,7 +1211,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getinvoicesandrepayments.php:
+  /dube/getinvoicesandrepayments.php:
     get:
       tags:
         - Dube International
@@ -1257,7 +1257,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/international/getmerchantlist.php:
+  /dube/international/getmerchantlist.php:
     get:
       tags:
         - Dube International
@@ -1298,7 +1298,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/gettopuphistory.php:
+  /dube/gettopuphistory.php:
     get:
       tags:
         - Dube International
@@ -1335,7 +1335,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
-  /api/dube/getcashinandouttotals.php:
+  /dube/getcashinandouttotals.php:
     get:
       tags:
         - Dube International
