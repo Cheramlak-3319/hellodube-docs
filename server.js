@@ -4,7 +4,8 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const path = require("path");
-const { verifyToken, extractToken } = require("./middleware/auth");
+const { verifyToken } = require("./middleware/auth");
+const { extractToken } = require("./middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -26,10 +27,11 @@ app.use(
   }),
 );
 
-// Serve static files
+// Serve static login page
 app.use(express.static(path.join(__dirname, "public")));
 
-// Load OpenAPI files
+// Load generated OpenAPI files - using __dirname for reliable paths
+// Load generated OpenAPI files from public folder
 const dubeFull = YAML.load(
   path.join(__dirname, "public", "openapi", "dube-full.yaml"),
 );
@@ -357,13 +359,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// ========== SWAGGER UI ROUTES ==========
+// ========== SWAGGER UI ROUTES - FIXED ==========
+
+// Serve Swagger UI static assets from node_modules
+app.use(
+  "/api-docs",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist")),
+);
+
+// Helper to set up each Swagger route
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
-  // Serve static assets
+  // Serve the static assets using swagger-ui-express
   app.use(routePath, swaggerUi.serve);
 
-  // Main page with authentication
+  // Handle the main page with authentication
   app.get(routePath, (req, res, next) => {
+    // Extract token from query or header
     const token = extractToken(req);
 
     if (!token) {
@@ -385,7 +396,7 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
       return res.status(403).json({ error: true, message: "Access denied." });
     }
 
-    // Serve Swagger UI with minimal options - logout handled by middleware
+    // Serve Swagger UI with token pre‑authorized
     swaggerUi.setup(swaggerDoc, {
       swaggerOptions: {
         persistAuthorization: true,
@@ -397,7 +408,6 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
           },
         },
       },
-      customSiteTitle: "Dube API Docs",
     })(req, res, next);
   });
 };
@@ -408,12 +418,31 @@ setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
 setupSwaggerRoute("/api-docs/wfp/admin", wfpFull, ["wfp-admin"]);
 setupSwaggerRoute("/api-docs/wfp/viewer", wfpReadOnly, ["wfp-viewer"]);
 
+// ---------- HEALTH ----------
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    mongodb:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    uptime: process.uptime(),
+  });
+});
+
+// ---------- TEST ENDPOINTS ----------
+app.get("/api/test/public", (req, res) => {
+  res.json({ success: true, message: "Public endpoint" });
+});
+app.get("/api/test/auth", verifyToken, (req, res) => {
+  res.json({ success: true, user: req.user });
+});
+
 // ---------- API ROUTES ----------
 app.use("/api/auth", authRoutes);
 app.use("/api/dube", verifyToken, dubeRoutes);
 app.use("/api/wfp", verifyToken, wfpRoutes);
 
-// ========== MONGODB CONNECTION ==========
+// ========== MONGODB CONNECTION (cached for serverless) ==========
+
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
@@ -432,15 +461,19 @@ async function connectDB() {
     }
 
     console.log("🔄 Connecting to MongoDB...");
+
+    // ✅ FIXED: Remove invalid options, use only valid ones
     cached.promise = mongoose
-      .connect(uri, { serverSelectionTimeoutMS: 5000 })
+      .connect(uri, {
+        serverSelectionTimeoutMS: 5000, // Keep this one – it's valid
+      })
       .then((mongoose) => {
         console.log("✅ MongoDB connected successfully");
         return mongoose;
       })
       .catch((err) => {
         console.error("❌ MongoDB connection error:", err.message);
-        cached.promise = null;
+        cached.promise = null; // Reset so future attempts can retry
         throw err;
       });
   }
@@ -451,23 +484,27 @@ async function connectDB() {
     cached.promise = null;
     throw err;
   }
+
   return cached.conn;
 }
 
-// Database middleware
+// Middleware to ensure DB is connected before handling requests
 app.use(async (req, res, next) => {
+  // Skip database for public/test endpoints that don't need it
   const publicPaths = [
+    "/health",
+    "/api/test/public",
     "/login.html",
     "/api/auth/login",
     "/api/auth/register",
-    "/api/test/public",
-    "/health",
+    "/api-docs",
   ];
 
   if (publicPaths.some((path) => req.path.startsWith(path))) {
     return next();
   }
 
+  // Also skip static assets for Swagger UI
   if (
     req.path.includes("/api-docs/") &&
     req.path.match(/\.(css|js|png|ico|map)$/)
