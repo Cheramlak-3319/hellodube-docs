@@ -4,7 +4,7 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const path = require("path");
-const { verifyToken, checkRole } = require("./middleware/auth");
+const { verifyToken } = require("./middleware/auth");
 const { extractToken } = require("./middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -43,14 +43,6 @@ const wfpFull = YAML.load(
 );
 const wfpReadOnly = YAML.load(
   path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
-);
-
-// ========== SWAGGER UI ROUTES - FIXED ==========
-
-// Serve Swagger UI static assets from node_modules
-app.use(
-  "/api-docs",
-  express.static(path.join(__dirname, "node_modules/swagger-ui-dist")),
 );
 
 // Helper to set up each Swagger route
@@ -103,24 +95,6 @@ setupSwaggerRoute("/api-docs/dube/admin", dubeFull, ["dube-admin"]);
 setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
 setupSwaggerRoute("/api-docs/wfp/admin", wfpFull, ["wfp-admin"]);
 setupSwaggerRoute("/api-docs/wfp/viewer", wfpReadOnly, ["wfp-viewer"]);
-
-// ---------- HEALTH ----------
-app.get("/health", (req, res) => {
-  res.json({
-    status: "healthy",
-    mongodb:
-      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-    uptime: process.uptime(),
-  });
-});
-
-// ---------- TEST ENDPOINTS ----------
-app.get("/api/test/public", (req, res) => {
-  res.json({ success: true, message: "Public endpoint" });
-});
-app.get("/api/test/auth", verifyToken, (req, res) => {
-  res.json({ success: true, user: req.user });
-});
 
 // ---------- API ROUTES ----------
 app.use("/api/auth", authRoutes);
@@ -177,14 +151,7 @@ async function connectDB() {
 // Middleware to ensure DB is connected before handling requests
 app.use(async (req, res, next) => {
   // Skip database for public/test endpoints that don't need it
-  const publicPaths = [
-    "/health",
-    "/api/test/public",
-    "/login.html",
-    "/api/auth/login",
-    "/api/auth/register",
-    "/api-docs",
-  ];
+  const publicPaths = ["/login.html", "/api/auth/login", "/api/auth/register"];
 
   if (publicPaths.some((path) => req.path.startsWith(path))) {
     return next();
