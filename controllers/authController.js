@@ -104,11 +104,150 @@ class AuthController {
     }
   }
 
+  /**
+   * Refresh access token using refresh token
+   */
   async refresh(req, res) {
-    /* ... */
+    try {
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(400).json({
+          error: true,
+          message: "Refresh token is required",
+        });
+      }
+
+      // Verify the refresh token
+      let decoded;
+      try {
+        decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      } catch (err) {
+        return res.status(401).json({
+          error: true,
+          message: "Invalid or expired refresh token",
+        });
+      }
+
+      // Check if refresh token exists in database
+      const tokenDoc = await Token.findOne({
+        token: refreshToken,
+        userId: decoded.userId,
+      });
+
+      if (!tokenDoc) {
+        return res.status(403).json({
+          error: true,
+          message: "Refresh token not found or revoked",
+        });
+      }
+
+      // Get user
+      const user = await User.findById(decoded.userId);
+      if (!user) {
+        // Clean up orphaned token
+        await Token.deleteOne({ _id: tokenDoc._id });
+        return res.status(404).json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      // Generate new tokens
+      const tokens = generateTokens(user);
+
+      // Remove old refresh token and save new one
+      await Token.deleteOne({ _id: tokenDoc._id });
+      await saveRefreshToken(
+        user._id,
+        tokens.refreshToken,
+        req.ip,
+        req.headers["user-agent"],
+      );
+
+      return res.status(200).json({
+        error: false,
+        message: "Tokens refreshed successfully",
+        tokens: {
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+        },
+      });
+    } catch (err) {
+      console.error("Refresh token error:", err);
+      return res.status(500).json({
+        error: true,
+        message: "Failed to refresh token",
+      });
+    }
   }
+
+  /**
+   * Logout user - invalidate refresh token
+   */
   async logout(req, res) {
-    /* ... */
+    try {
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(400).json({
+          error: true,
+          message: "Refresh token is required",
+        });
+      }
+
+      // Remove the refresh token from database
+      const result = await Token.deleteOne({ token: refreshToken });
+
+      if (result.deletedCount === 0) {
+        // Token not found - still return success for security
+        // (don't reveal if token existed or not)
+        console.log("Logout attempted with non-existent token");
+      }
+
+      return res.status(200).json({
+        error: false,
+        message: "Logged out successfully",
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+      return res.status(500).json({
+        error: true,
+        message: "Failed to logout",
+      });
+    }
+  }
+
+  /**
+   * Logout from all devices - invalidate all refresh tokens for user
+   */
+  async logoutAll(req, res) {
+    try {
+      const { userId } = req.body;
+
+      if (!userId && !req.user?.userId) {
+        return res.status(400).json({
+          error: true,
+          message: "User ID is required",
+        });
+      }
+
+      const targetUserId = userId || req.user.userId;
+
+      // Remove all refresh tokens for this user
+      const result = await Token.deleteMany({ userId: targetUserId });
+
+      return res.status(200).json({
+        error: false,
+        message: `Logged out from all devices (${result.deletedCount} sessions terminated)`,
+      });
+    } catch (err) {
+      console.error("Logout all error:", err);
+      return res.status(500).json({
+        error: true,
+        message: "Failed to logout from all devices",
+      });
+    }
   }
 }
 

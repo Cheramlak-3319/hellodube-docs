@@ -16,5 +16,6 @@ router.post("/register", registerValidation, AuthController.register);
 router.post("/login", loginValidation, AuthController.login);
 router.post("/refresh", AuthController.refresh);
 router.post("/logout", AuthController.logout);
+router.post("/logout-all", AuthController.logoutAll);
 
 module.exports = router;
