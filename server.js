@@ -10,8 +10,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
-const dubeRoutes = require("./routes/dubeRoutes");
-const wfpRoutes = require("./routes/wfpRoutes");
 
 const app = express();
 app.use(express.json());
@@ -98,8 +96,6 @@ setupSwaggerRoute("/api-docs/wfp/viewer", wfpReadOnly, ["wfp-viewer"]);
 
 // ---------- API ROUTES ----------
 app.use("/api/auth", authRoutes);
-app.use("/api/dube", verifyToken, dubeRoutes);
-app.use("/api/wfp", verifyToken, wfpRoutes);
 
 // ========== MONGODB CONNECTION (cached for serverless) ==========
 

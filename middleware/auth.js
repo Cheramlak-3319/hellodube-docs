@@ -72,5 +72,3 @@ const verifyToken = (req, res, next) => {
 
 // ... rest of your code (checkRole)
 module.exports = { verifyToken, checkRole, extractToken };
-
-module.exports = { verifyToken, checkRole, extractToken };
