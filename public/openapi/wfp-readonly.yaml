@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: HellOOpass Global & WFP Unified API
+  title: HellOOpass Unified API
   description: |
     Master OpenAPI specification.
   version: 1.0.0
