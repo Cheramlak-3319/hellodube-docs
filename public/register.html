@@ -297,8 +297,7 @@
 
           showSuccess("Account created successfully! Redirecting to login...");
           setTimeout(() => {
-            window.location.href =
-              "https://hellodube-docs.vercel.app/login.html"; // Redirect after success
+            window.location.href = "/login.html"; // Redirect after success
           }, 2000);
         } catch (err) {
           showError("Network error. Please try again.");
