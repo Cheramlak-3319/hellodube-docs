@@ -1,3 +1,15 @@
+// Add this at the top of server.js
+if (process.env.NODE_ENV === "production") {
+  // Fix for uuid ESM issue in Vercel
+  const originalRequire = require;
+  global.require = function (module) {
+    if (module === "uuid") {
+      return originalRequire("uuid");
+    }
+    return originalRequire(module);
+  };
+}
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");

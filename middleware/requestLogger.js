@@ -1,8 +1,24 @@
 // middleware/requestLogger.js
-const { v4: uuidv4 } = require("uuid");
 const winston = require("winston");
 const DailyRotateFile = require("winston-daily-rotate-file");
 const os = require("os");
+
+// Dynamic import for uuid (works in both CommonJS and ESM)
+let uuidv4;
+(async () => {
+  try {
+    const uuid = await import("uuid");
+    uuidv4 = uuid.v4;
+    console.log("✅ UUID loaded successfully");
+  } catch (error) {
+    console.warn("⚠️ Failed to import uuid, using fallback ID generator");
+  }
+})();
+
+// Fallback ID generator
+const generateFallbackId = () => {
+  return "req-" + Date.now() + "-" + Math.random().toString(36).substring(2, 9);
+};
 
 // ==================== Winston Logger Configuration ====================
 
@@ -279,8 +295,8 @@ if (process.env.NODE_ENV === "production") {
 // ==================== Request Logger Middleware ====================
 
 const requestLogger = (req, res, next) => {
-  // Generate unique request ID
-  req.id = uuidv4();
+  // Generate unique request ID using dynamic import or fallback
+  req.id = uuidv4 ? uuidv4() : generateFallbackId();
 
   // Add request ID to response headers
   res.setHeader("X-Request-ID", req.id);
