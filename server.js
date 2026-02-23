@@ -1,15 +1,3 @@
-// Add this at the top of server.js
-if (process.env.NODE_ENV === "production") {
-  // Fix for uuid ESM issue in Vercel
-  const originalRequire = require;
-  global.require = function (module) {
-    if (module === "uuid") {
-      return originalRequire("uuid");
-    }
-    return originalRequire(module);
-  };
-}
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -24,39 +12,9 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const dubeRoutes = require("./routes/dubeRoutes");
 const wfpRoutes = require("./routes/wfpRoutes");
-const {
-  errorHandler,
-  catchAsync,
-  logger,
-  errorDocumentation,
-  AppError,
-  ErrorTypes,
-  RateLimitError,
-} = require("./middleware/errorHandler");
-const {
-  requestLogger,
-  metricsEndpoint,
-} = require("./middleware/requestLogger");
-const { configureSecurity, rateLimiters } = require("./middleware/security");
-const {
-  apiLimiter,
-  authLimiter,
-  uploadLimiter,
-} = require("./middleware/rateLimiter");
-const {
-  validate,
-  authValidation,
-  cycleValidation,
-  paginationValidation,
-} = require("./middleware/validator");
 
 const app = express();
-
-// ==================== BASIC MIDDLEWARE ====================
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-
-// CORS configuration
+app.use(express.json());
 app.use(
   cors({
     origin: [
@@ -66,27 +24,14 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["X-Request-ID", "Retry-After"],
   }),
 );
 
-// Serve static files
+// Serve static login page
 app.use(express.static(path.join(__dirname, "public")));
 
-// ==================== SECURITY MIDDLEWARE ====================
-configureSecurity(app);
-
-// ==================== REQUEST LOGGING ====================
-app.use(requestLogger);
-
-// ==================== RATE LIMITING ====================
-// Apply rate limiters in correct order (specific before general)
-app.use("/api/auth/login", authLimiter);
-app.use("/api/auth/register", authLimiter);
-app.use("/api/upload", uploadLimiter);
-app.use("/api/", apiLimiter); // General API limiter last
-
-// ==================== LOAD OPENAPI FILES ====================
+// Load generated OpenAPI files - using __dirname for reliable paths
+// Load generated OpenAPI files from public folder
 const dubeFull = YAML.load(
   path.join(__dirname, "public", "openapi", "dube-full.yaml"),
 );
@@ -100,20 +45,9 @@ const wfpReadOnly = YAML.load(
   path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
 );
 
-// ==================== METRICS ENDPOINT ====================
-app.get(
-  "/api/metrics",
-  verifyToken,
-  catchAsync(async (req, res) => {
-    if (req.user.role !== "dube-admin" && req.user.role !== "wfp-admin") {
-      throw new AppError("Access denied", 403, ErrorTypes.AUTHORIZATION_ERROR);
-    }
-    metricsEndpoint(req, res);
-  }),
-);
-
-// ==================== LOGOUT BUTTON MIDDLEWARE ====================
+// ========== PROFESSIONAL LOGOUT BUTTON MIDDLEWARE ==========
 app.use((req, res, next) => {
+  // Only intercept Swagger UI HTML responses
   if (
     req.path.includes("/api-docs/") &&
     !req.path.match(/\.(css|js|png|ico|map)$/)
@@ -122,9 +56,13 @@ app.use((req, res, next) => {
 
     res.send = function (body) {
       if (typeof body === "string" && body.includes("</body>")) {
+        // Professional logout button HTML/CSS with modern design
         const logoutHtml = `
+          <!-- Font Awesome for icons (if not already loaded) -->
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+          
           <style>
+            /* Professional Logout Button Styles */
             .logout-container {
               position: fixed;
               top: 24px;
@@ -132,10 +70,18 @@ app.use((req, res, next) => {
               z-index: 10000;
               animation: slideIn 0.3s ease-out;
             }
+            
             @keyframes slideIn {
-              from { opacity: 0; transform: translateY(-10px); }
-              to { opacity: 1; transform: translateY(0); }
+              from {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
             }
+            
             .logout-btn {
               display: flex;
               align-items: center;
@@ -155,11 +101,19 @@ app.use((req, res, next) => {
               backdrop-filter: blur(8px);
               background: rgba(255, 255, 255, 0.95);
             }
+            
             .logout-btn:hover {
               transform: translateY(-2px);
               box-shadow: 0 8px 24px rgba(220, 38, 38, 0.2);
+              background: white;
               border-color: #dc2626;
             }
+            
+            .logout-btn:active {
+              transform: translateY(0);
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            
             .logout-icon {
               display: flex;
               align-items: center;
@@ -171,10 +125,58 @@ app.use((req, res, next) => {
               color: #dc2626;
               transition: all 0.2s ease;
             }
+            
             .logout-btn:hover .logout-icon {
               background: #dc2626;
               color: white;
             }
+            
+            .logout-text {
+              position: relative;
+              overflow: hidden;
+            }
+            
+            .logout-text span {
+              display: inline-block;
+              transition: transform 0.2s ease;
+            }
+            
+            .logout-btn:hover .logout-text span {
+              transform: translateX(-4px);
+            }
+            
+            .logout-text i {
+              position: absolute;
+              right: -20px;
+              top: 50%;
+              transform: translateY(-50%);
+              opacity: 0;
+              transition: all 0.2s ease;
+              font-size: 12px;
+              color: #dc2626;
+            }
+            
+            .logout-btn:hover .logout-text i {
+              right: -16px;
+              opacity: 1;
+            }
+            
+            /* Loading state */
+            .logout-btn.loading {
+              pointer-events: none;
+              opacity: 0.8;
+            }
+            
+            .logout-btn.loading .logout-icon {
+              animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            
+            /* User badge (optional - shows current user) */
             .user-badge {
               position: fixed;
               top: 24px;
@@ -193,6 +195,12 @@ app.use((req, res, next) => {
               border: 1px solid rgba(0, 0, 0, 0.05);
               animation: slideIn 0.3s ease-out;
             }
+            
+            .user-badge i {
+              color: #2a7f62;
+              font-size: 14px;
+            }
+            
             .user-role {
               background: #2a7f62;
               color: white;
@@ -203,53 +211,129 @@ app.use((req, res, next) => {
               text-transform: uppercase;
               margin-left: 4px;
             }
+            
+            /* Responsive adjustments */
             @media (max-width: 640px) {
-              .logout-container { top: 16px; right: 16px; }
-              .user-badge { top: 16px; left: 16px; font-size: 12px; padding: 6px 12px; }
-              .logout-btn { padding: 8px 16px; font-size: 13px; }
+              .logout-container {
+                top: 16px;
+                right: 16px;
+              }
+              
+              .user-badge {
+                top: 16px;
+                left: 16px;
+                font-size: 12px;
+                padding: 6px 12px;
+              }
+              
+              .logout-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+              }
             }
           </style>
+          
           <div class="user-badge" id="userBadge">
             <i class="fas fa-user-circle"></i>
             <span id="userName">Loading...</span>
             <span class="user-role" id="userRole"></span>
           </div>
+          
           <div class="logout-container">
             <button class="logout-btn" id="logoutBtn">
-              <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>
-              <span class="logout-text"><span>Sign Out</span><i class="fas fa-arrow-right"></i></span>
+              <span class="logout-icon">
+                <i class="fas fa-sign-out-alt"></i>
+              </span>
+              <span class="logout-text">
+                <span>Sign Out</span>
+                <i class="fas fa-arrow-right"></i>
+              </span>
             </button>
           </div>
+          
           <script>
             (function() {
+              'use strict';
+              
+              // Get user data from localStorage
               function getUserData() {
                 try {
                   const token = localStorage.getItem('jwt-token');
                   const userStr = localStorage.getItem('user');
-                  if (userStr) return JSON.parse(userStr);
-                  if (token) {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    return { name: payload.email || 'User', role: payload.role || 'user' };
+                  
+                  if (userStr) {
+                    return JSON.parse(userStr);
                   }
+                  
+                  // If no user object but token exists, decode it
+                  if (token) {
+                    const base64Url = token.split('.')[1];
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const payload = JSON.parse(atob(base64));
+                    return {
+                      name: payload.email || 'User',
+                      role: payload.role || 'user'
+                    };
+                  }
+                  
                   return null;
-                } catch (e) { return null; }
-              }
-              function updateUserInfo() {
-                const user = getUserData();
-                if (user) {
-                  document.getElementById('userName').textContent = (user.name || user.email || 'User').split('@')[0];
-                  if (user.role) document.getElementById('userRole').textContent = user.role.replace('-', ' ');
+                } catch (e) {
+                  console.warn('Failed to parse user data:', e);
+                  return null;
                 }
               }
+              
+              // Update UI with user data
+              function updateUserInfo() {
+                const user = getUserData();
+                const userNameEl = document.getElementById('userName');
+                const userRoleEl = document.getElementById('userRole');
+                
+                if (user) {
+                  if (userNameEl) {
+                    const displayName = user.name || user.email || 'User';
+                    userNameEl.textContent = displayName.split('@')[0];
+                  }
+                  if (userRoleEl && user.role) {
+                    userRoleEl.textContent = user.role.replace('-', ' ');
+                  }
+                }
+              }
+              
+              // Handle logout with animation
               function handleLogout() {
                 const btn = document.getElementById('logoutBtn');
+                if (!btn) return;
+                
                 btn.classList.add('loading');
-                localStorage.clear();
-                setTimeout(() => window.location.href = '/login.html', 800);
+                
+                // Clear all auth data
+                localStorage.removeItem('jwt-token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('refresh-token');
+                
+                // Update button text
+                const icon = btn.querySelector('.logout-icon i');
+                if (icon) {
+                  icon.className = 'fas fa-circle-notch';
+                }
+                
+                // Redirect after animation
+                setTimeout(() => {
+                  window.location.href = '/login.html';
+                }, 800);
               }
+              
+              // Initialize when DOM is ready
               function init() {
                 updateUserInfo();
-                document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+                
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                  logoutBtn.addEventListener('click', handleLogout);
+                }
+                
+                // Also add keyboard shortcut (Ctrl+Shift+L)
                 document.addEventListener('keydown', (e) => {
                   if (e.ctrlKey && e.shiftKey && e.key === 'L') {
                     e.preventDefault();
@@ -257,12 +341,16 @@ app.use((req, res, next) => {
                   }
                 });
               }
-              document.readyState === 'loading' 
-                ? document.addEventListener('DOMContentLoaded', init) 
-                : init();
+              
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+              } else {
+                init();
+              }
             })();
           </script>
         `;
+
         body = body.replace("</body>", logoutHtml + "</body>");
       }
       return originalSend.call(this, body);
@@ -271,110 +359,90 @@ app.use((req, res, next) => {
   next();
 });
 
-// ==================== SWAGGER UI STATIC ASSETS ====================
+// ========== SWAGGER UI ROUTES - FIXED ==========
+
+// Serve Swagger UI static assets from node_modules
 app.use(
   "/api-docs",
   express.static(path.join(__dirname, "node_modules/swagger-ui-dist")),
 );
 
-// ==================== SWAGGER UI ROUTES ====================
+// Helper to set up each Swagger route
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
+  // Serve the static assets using swagger-ui-express
   app.use(routePath, swaggerUi.serve);
 
-  app.get(
-    routePath,
-    catchAsync(async (req, res, next) => {
-      const token = extractToken(req);
-      if (!token) {
-        throw new AppError(
-          "No token provided",
-          401,
-          ErrorTypes.AUTHENTICATION_ERROR,
-        );
-      }
+  // Handle the main page with authentication
+  app.get(routePath, (req, res, next) => {
+    // Extract token from query or header
+    const token = extractToken(req);
 
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-      } catch (err) {
-        throw new AppError(
-          "Invalid or expired token",
-          401,
-          ErrorTypes.AUTHENTICATION_ERROR,
-        );
-      }
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: "No token provided." });
+    }
 
-      if (!allowedRoles.includes(req.user.role)) {
-        throw new AppError(
-          "Access denied",
-          403,
-          ErrorTypes.AUTHORIZATION_ERROR,
-        );
-      }
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+    } catch (err) {
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid or expired token." });
+    }
 
-      swaggerUi.setup(swaggerDoc, {
-        swaggerOptions: {
-          persistAuthorization: true,
-          authAction: {
-            bearerAuth: {
-              name: "bearerAuth",
-              schema: { type: "apiKey", in: "header", name: "Authorization" },
-              value: `Bearer ${token}`,
-            },
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: true, message: "Access denied." });
+    }
+
+    // Serve Swagger UI with token pre‑authorized
+    swaggerUi.setup(swaggerDoc, {
+      swaggerOptions: {
+        persistAuthorization: true,
+        authAction: {
+          bearerAuth: {
+            name: "bearerAuth",
+            schema: { type: "apiKey", in: "header", name: "Authorization" },
+            value: `Bearer ${token}`,
           },
         },
-      })(req, res, next);
-    }),
-  );
+      },
+    })(req, res, next);
+  });
 };
 
+// Set up all four routes
 setupSwaggerRoute("/api-docs/dube/admin", dubeFull, ["dube-admin"]);
 setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
 setupSwaggerRoute("/api-docs/wfp/admin", wfpFull, ["wfp-admin"]);
 setupSwaggerRoute("/api-docs/wfp/viewer", wfpReadOnly, ["wfp-viewer"]);
 
-// ==================== HEALTH ENDPOINT ====================
-app.get(
-  "/health",
-  catchAsync(async (req, res) => {
-    res.json({
-      status: "healthy",
-      mongodb:
-        mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-    });
-  }),
-);
+// ---------- HEALTH ----------
+app.get("/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    mongodb:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    uptime: process.uptime(),
+  });
+});
 
-// ==================== TEST ENDPOINTS ====================
+// ---------- TEST ENDPOINTS ----------
 app.get("/api/test/public", (req, res) => {
   res.json({ success: true, message: "Public endpoint" });
 });
+app.get("/api/test/auth", verifyToken, (req, res) => {
+  res.json({ success: true, user: req.user });
+});
 
-app.get(
-  "/api/test/auth",
-  verifyToken,
-  catchAsync(async (req, res) => {
-    res.json({ success: true, user: req.user });
-  }),
-);
-
-// ==================== API ROUTES ====================
+// ---------- API ROUTES ----------
 app.use("/api/auth", authRoutes);
 app.use("/api/dube", verifyToken, dubeRoutes);
 app.use("/api/wfp", verifyToken, wfpRoutes);
 
-// ==================== 404 HANDLER ====================
-app.all("*", (req, res) => {
-  throw new AppError(
-    `Can't find ${req.originalUrl} on this server`,
-    404,
-    ErrorTypes.NOT_FOUND_ERROR,
-  );
-});
+// ========== MONGODB CONNECTION (cached for serverless) ==========
 
-// ==================== MONGODB CONNECTION ====================
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
@@ -382,35 +450,30 @@ if (!cached) {
 
 async function connectDB() {
   if (cached.conn) {
-    logger.info("✅ Using existing MongoDB connection");
+    console.log("✅ Using existing MongoDB connection");
     return cached.conn;
   }
 
   if (!cached.promise) {
     const uri = process.env.MONGO_URI;
     if (!uri) {
-      throw new AppError(
-        "MONGO_URI not defined",
-        500,
-        ErrorTypes.INTERNAL_ERROR,
-      );
+      throw new Error("❌ MONGO_URI is not defined in environment variables");
     }
 
-    logger.info("🔄 Connecting to MongoDB...");
+    console.log("🔄 Connecting to MongoDB...");
+
+    // ✅ FIXED: Remove invalid options, use only valid ones
     cached.promise = mongoose
       .connect(uri, {
-        serverSelectionTimeoutMS: 5000,
-        maxPoolSize: 10,
-        minPoolSize: 2,
-        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 5000, // Keep this one – it's valid
       })
       .then((mongoose) => {
-        logger.info("✅ MongoDB connected successfully");
+        console.log("✅ MongoDB connected successfully");
         return mongoose;
       })
       .catch((err) => {
-        logger.error("❌ MongoDB connection error:", err.message);
-        cached.promise = null;
+        console.error("❌ MongoDB connection error:", err.message);
+        cached.promise = null; // Reset so future attempts can retry
         throw err;
       });
   }
@@ -425,83 +488,76 @@ async function connectDB() {
   return cached.conn;
 }
 
-// Database connection middleware
-app.use(
-  catchAsync(async (req, res, next) => {
-    const publicPaths = [
-      "/health",
-      "/api/test/public",
-      "/login.html",
-      "/api/auth/login",
-      "/api/auth/register",
-      "/api-docs",
-    ];
+// Middleware to ensure DB is connected before handling requests
+app.use(async (req, res, next) => {
+  // Skip database for public/test endpoints that don't need it
+  const publicPaths = [
+    "/health",
+    "/api/test/public",
+    "/login.html",
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api-docs",
+  ];
 
-    if (publicPaths.some((path) => req.path.startsWith(path))) {
-      return next();
-    }
+  if (publicPaths.some((path) => req.path.startsWith(path))) {
+    return next();
+  }
 
-    if (
-      req.path.includes("/api-docs/") &&
-      req.path.match(/\.(css|js|png|ico|map)$/)
-    ) {
-      return next();
-    }
+  // Also skip static assets for Swagger UI
+  if (
+    req.path.includes("/api-docs/") &&
+    req.path.match(/\.(css|js|png|ico|map)$/)
+  ) {
+    return next();
+  }
 
+  try {
     await connectDB();
     next();
-  }),
-);
+  } catch (err) {
+    console.error("❌ Database connection failed:", err.message);
+    res.status(503).json({
+      error: true,
+      message: "Service temporarily unavailable - database connection failed",
+    });
+  }
+});
 
-// ==================== ERROR HANDLING ====================
-// This must be the LAST middleware
-app.use(errorHandler);
-
-// ==================== VERCEL SERVERLESS EXPORT ====================
+// ---------- VERCEL SERVERLESS EXPORT ----------
 module.exports = app;
 
-// ==================== LOCAL DEVELOPMENT SERVER ====================
+// ---------- LOCAL DEVELOPMENT SERVER ----------
 if (require.main === module) {
   (async () => {
     try {
-      logger.info("🚀 Starting server...");
+      console.log("🚀 Starting server...");
       await connectDB();
 
       const PORT = process.env.PORT || 5555;
       const server = app.listen(PORT, () => {
-        logger.info(`🚀 Server running on port ${PORT}`);
-        logger.info(
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(
           `📘 Dube Admin Swagger: http://localhost:${PORT}/api-docs/dube/admin`,
         );
-        logger.info(
+        console.log(
           `📘 Dube Viewer Swagger: http://localhost:${PORT}/api-docs/dube/viewer`,
         );
-        logger.info(
+        console.log(
           `📘 WFP Admin Swagger: http://localhost:${PORT}/api-docs/wfp/admin`,
         );
-        logger.info(
+        console.log(
           `📘 WFP Viewer Swagger: http://localhost:${PORT}/api-docs/wfp/viewer`,
         );
-        logger.info(`🔐 Login page: http://localhost:${PORT}/login.html`);
+        console.log(`🔐 Login page: http://localhost:${PORT}/login.html`);
       });
 
       server.on("error", (err) => {
-        logger.error("❌ Server error:", err);
+        console.error("❌ Server error:", err);
         process.exit(1);
       });
-
-      // Graceful shutdown
-      process.on("SIGTERM", () => {
-        logger.info("🛑 SIGTERM received, shutting down gracefully");
-        server.close(() => {
-          mongoose.connection.close(false, () => {
-            logger.info("👋 Database connection closed");
-            process.exit(0);
-          });
-        });
-      });
     } catch (err) {
-      logger.error("❌ Failed to start server:", err);
+      console.error("❌ Failed to start server:", err);
       process.exit(1);
     }
   })();
