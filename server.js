@@ -23,6 +23,17 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/api/debug/env", (req, res) => {
+  res.json({
+    env: process.env.NODE_ENV,
+    mongoUri: process.env.MONGO_URI ? "✅ Set" : "❌ Missing",
+    jwtSecret: process.env.JWT_SECRET ? "✅ Set" : "❌ Missing",
+    emailUser: process.env.EMAIL_USER ? "✅ Set" : "❌ Missing",
+    emailPass: process.env.EMAIL_PASS ? "✅ Set" : "❌ Missing",
+    baseUrl: process.env.BASE_URL || "❌ Missing",
+  });
+});
+
 app.use(
   cors({
     origin: [
