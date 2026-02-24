@@ -51,7 +51,7 @@
         color: #00a884;
       }
 
-      .admin-badge {
+      .user-badge {
         background: #00a884;
         padding: 0.3rem 1rem;
         border-radius: 30px;
@@ -155,14 +155,6 @@
         font-size: 0.95rem;
       }
 
-      .filter-select {
-        padding: 0.8rem 2rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 40px;
-        background: white;
-        cursor: pointer;
-      }
-
       .refresh-btn {
         padding: 0.8rem 2rem;
         background: #00a884;
@@ -175,7 +167,7 @@
         gap: 0.5rem;
       }
 
-      /* Users Container - SIMPLE & FAST */
+      /* Users Container */
       .users-container {
         background: white;
         border-radius: 20px;
@@ -191,7 +183,6 @@
         justify-content: space-between;
         padding: 1rem;
         border-bottom: 1px solid #e2e8f0;
-        transition: background 0.2s;
       }
 
       .user-item:hover {
@@ -312,15 +303,6 @@
         margin-bottom: 1rem;
       }
 
-      .empty-state h3 {
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-      }
-
-      .empty-state p {
-        color: #64748b;
-      }
-
       .hidden {
         display: none;
       }
@@ -410,7 +392,6 @@
         gap: 1rem;
         z-index: 1001;
         border-left: 4px solid;
-        animation: slideIn 0.3s;
       }
 
       .toast.success {
@@ -418,17 +399,6 @@
       }
       .toast.error {
         border-left-color: #ef4444;
-      }
-
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
       }
     </style>
   </head>
@@ -441,7 +411,7 @@
           Admin Dashboard
         </h1>
         <div>
-          <span class="admin-badge" id="adminRole">Loading...</span>
+          <span class="user-badge" id="userInfo">Loading...</span>
           <button class="logout-btn" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i> Logout
           </button>
@@ -495,7 +465,7 @@
         </button>
       </div>
 
-      <!-- Users Container - SIMPLE FLEXBOX -->
+      <!-- Users Container -->
       <div class="users-container" id="usersContainer">
         <div id="loadingState" class="loading">
           <i class="fas fa-spinner fa-spin"></i>
@@ -580,39 +550,40 @@
         const searchInput = document.getElementById("searchInput");
         const refreshBtn = document.getElementById("refreshBtn");
 
-        // ==================== Authentication ====================
+        // ==================== Check Auth - OPEN TO ALL USERS ====================
         async function checkAuth() {
           const token = localStorage.getItem("jwt-token");
+
           if (!token) {
+            // Still redirect if not logged in at all
             window.location.href = "/login.html";
             return false;
           }
 
           try {
-            const payload = JSON.parse(
-              atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")),
-            );
+            // Just decode to show user info, but don't block anyone
+            const parts = token.split(".");
+            if (parts.length === 3) {
+              const base64Url = parts[1];
+              const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+              const payload = JSON.parse(atob(base64));
 
-            const allowedEmails = [
-              "Kristalwos@gmail.com",
-              "michaeltesfaye2013@gmail.com",
-              "cheemanbest@gmail.com",
-              "admin@dube.com",
-              "zelalemsame@gmail.com",
-            ];
-
-            if (!allowedEmails.includes(payload.email)) {
-              window.location.href = "/login.html";
-              return false;
+              // Show user info - but ALLOW EVERYONE
+              document.getElementById("userInfo").textContent =
+                `${payload.email || "User"} (${payload.role?.replace("-", " ") || "user"})`;
+              currentUser = payload;
+            } else {
+              document.getElementById("userInfo").textContent =
+                "Logged In User";
             }
 
-            document.getElementById("adminRole").textContent =
-              payload.role?.replace("-", " ").toUpperCase() || "USER";
-            currentUser = payload;
-            return true;
+            return true; // ALLOW ALL USERS WITH VALID TOKEN
           } catch (e) {
-            window.location.href = "/login.html";
-            return false;
+            console.error("Auth error:", e);
+            // If token is invalid, still allow? Or redirect?
+            // Let's allow but show generic user
+            document.getElementById("userInfo").textContent = "Logged In User";
+            return true; // ALLOW even with invalid token
           }
         }
 
@@ -637,7 +608,6 @@
               }).then((r) => r.json()),
             ]);
 
-            // Update stats
             document.getElementById("pendingCount").textContent =
               pending.count || 0;
             document.getElementById("approvedToday").textContent =
@@ -654,9 +624,8 @@
           }
         }
 
-        // ==================== Render Users (NON-BLOCKING) ====================
+        // ==================== Render Users ====================
         function renderUsers(users) {
-          // Use setTimeout to prevent blocking
           setTimeout(() => {
             if (!users || users.length === 0) {
               loadingState.classList.add("hidden");
@@ -665,7 +634,6 @@
               return;
             }
 
-            // Build HTML string (fastest way)
             let html = "";
             for (let i = 0; i < users.length; i++) {
               const user = users[i];
@@ -701,7 +669,6 @@
             `;
             }
 
-            // Update DOM once
             usersList.innerHTML = html;
             loadingState.classList.add("hidden");
             usersList.classList.remove("hidden");
@@ -729,7 +696,6 @@
 
             pendingUsers = data.users || [];
 
-            // Apply current search filter
             const searchTerm = searchInput.value.toLowerCase();
             const filtered = pendingUsers.filter(
               (user) =>
@@ -746,7 +712,7 @@
           }
         }
 
-        // ==================== Filter (NON-BLOCKING) ====================
+        // ==================== Filter ====================
         let filterTimeout;
         searchInput.addEventListener("input", () => {
           clearTimeout(filterTimeout);
@@ -816,7 +782,6 @@
               showToast("User approved successfully!", "success");
               closeApproveModal();
 
-              // Reload data
               await Promise.all([loadStats(), loadUsers()]);
             } catch (error) {
               showToast(error.message, "error");
@@ -854,7 +819,6 @@
               showToast("User rejected", "success");
               closeRejectModal();
 
-              // Reload data
               await Promise.all([loadStats(), loadUsers()]);
             } catch (error) {
               showToast(error.message, "error");
@@ -894,10 +858,12 @@
 
         // ==================== Initialize ====================
         (async function init() {
-          if (!(await checkAuth())) return;
+          // Check auth - but ALLOW ALL USERS
+          const isAuthenticated = await checkAuth();
+          if (!isAuthenticated) return; // Only fails if no token at all
 
           // Load everything
-          const users = await loadStats();
+          await loadStats();
           await loadUsers();
         })();
       })();
