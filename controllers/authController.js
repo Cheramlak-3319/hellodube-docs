@@ -5,8 +5,6 @@ const { validationResult } = require("express-validator");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const Verification = require("../models/Verification");
-const { AppError, ErrorTypes } = require("../middleware/errorHandler");
-const { logger } = require("../middleware/requestLogger");
 
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -47,11 +45,10 @@ class AuthController {
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
-        throw new AppError(
-          "Email already registered",
-          409,
-          ErrorTypes.DUPLICATE_ERROR,
-        );
+        return res.status(409).json({
+          error: true,
+          message: "Email already registered",
+        });
       }
 
       // Verify email
@@ -62,11 +59,10 @@ class AuthController {
       });
 
       if (!emailVerification) {
-        throw new AppError(
-          "Email not verified",
-          400,
-          ErrorTypes.VALIDATION_ERROR,
-        );
+        return res.status(400).json({
+          error: true,
+          message: "Email not verified",
+        });
       }
 
       // Create user (pending approval)
@@ -86,7 +82,7 @@ class AuthController {
       // Clean up verification record
       await Verification.deleteOne({ email, type: "email" });
 
-      logger.info(`New user registered (pending): ${email}`);
+      console.log(`New user registered (pending): ${email}`);
 
       res.status(201).json({
         error: false,
@@ -96,15 +92,6 @@ class AuthController {
       });
     } catch (err) {
       console.error("Registration error:", err);
-
-      if (err instanceof AppError) {
-        return res.status(err.statusCode).json({
-          error: true,
-          message: err.message,
-          errorCode: err.errorCode,
-        });
-      }
-
       return res.status(500).json({
         error: true,
         message: "Registration failed",
@@ -159,7 +146,7 @@ class AuthController {
       user.loginCount = (user.loginCount || 0) + 1;
       await user.save();
 
-      logger.info(`User logged in: ${email} (${user.role})`);
+      console.log(`User logged in: ${email} (${user.role})`);
 
       res.json({
         error: false,
