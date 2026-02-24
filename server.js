@@ -54,17 +54,10 @@ app.use(express.static(path.join(__dirname, "public")));
 ========================================================= */
 
 // Add this temporary test endpoint
-app.get("/api/test/email-debug", async (req, res) => {
+app.get("/api/test/email", async (req, res) => {
   try {
-    require("dotenv").config(); // Force reload env vars
-
-    console.log("🔍 Email User:", process.env.EMAIL_USER);
-    console.log("🔍 Email Pass length:", process.env.EMAIL_PASS?.length);
-
     const testTransporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -78,11 +71,6 @@ app.get("/api/test/email-debug", async (req, res) => {
       success: false,
       error: error.message,
       code: error.code,
-      command: error.command,
-      envVars: {
-        userSet: !!process.env.EMAIL_USER,
-        passLength: process.env.EMAIL_PASS?.length || 0,
-      },
     });
   }
 });
