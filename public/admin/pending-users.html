@@ -1,643 +1,751 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HellOOpass · Pending Approvals</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Inter", sans-serif;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HellOOpass · Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0a1929 0%, #1a3a4a 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      color: white;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header h1 i {
+      color: #00a884;
+    }
+
+    .admin-badge {
+      background: #00a884;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: slideUp 0.3s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.15s; }
+    .stat-card:nth-child(3) { animation-delay: 0.2s; }
+    .stat-card:nth-child(4) { animation-delay: 0.25s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #00a884, #0072ce);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon i {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .stat-info h3 {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-info p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    .stat-skeleton {
+      width: 100%;
+      height: 80px;
+      margin-bottom: 1rem;
+    }
+
+    .text-skeleton {
+      height: 20px;
+      width: 60%;
+      margin: 10px 0;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Filters */
+    .filters {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #00a884;
+      box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
+    }
+
+    .filter-select {
+      padding: 0.8rem 2rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 40px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #00a884;
+    }
+
+    .refresh-btn {
+      padding: 0.8rem 2rem;
+      background: #00a884;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #008f6b;
+      transform: translateY(-2px);
+    }
+
+    .refresh-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Users Table */
+    .users-table {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr {
+      transition: background 0.2s;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #00a884, #0072ce);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .user-email {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge.pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge.active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge.rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .approve-btn {
+      padding: 0.5rem 1rem;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+
+    .approve-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .reject-btn {
+      padding: 0.5rem 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.2s;
+    }
+
+    .reject-btn:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+    }
+
+    /* Loading States */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #64748b;
+    }
+
+    .loading i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #00a884;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: #00a884;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #64748b;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 30px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+      color: #1e293b;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+      transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+      color: #ef4444;
+    }
+
+    .role-select {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      margin: 1rem 0;
+      font-size: 1rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 1rem;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .confirm-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .cancel-btn {
+      flex: 1;
+      padding: 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .cancel-btn:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: white;
+      border-radius: 50px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 1001;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.success {
+      border-left: 4px solid #10b981;
+    }
+
+    .toast.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
       }
-
-      body {
-        background: linear-gradient(145deg, #0a1929 0%, #1a3a4a 100%);
-        min-height: 100vh;
-        padding: 2rem;
+      to {
+        transform: translateX(0);
+        opacity: 1;
       }
+    }
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-
-      /* Header */
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        color: white;
-      }
-
-      .header h1 {
-        font-size: 1.8rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      .header h1 i {
-        color: #00a884;
-      }
-
-      .admin-badge {
-        background: #00a884;
-        padding: 0.3rem 1rem;
-        border-radius: 30px;
-        font-size: 0.8rem;
-        font-weight: 600;
-      }
-
-      .logout-btn {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 0.5rem 1.5rem;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .logout-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      /* Stats Cards */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-      }
-
-      .stat-card {
-        background: white;
-        border-radius: 20px;
-        padding: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      }
-
-      .stat-icon {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #00a884, #0072ce);
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .stat-icon i {
-        font-size: 1.5rem;
-        color: white;
-      }
-
-      .stat-info h3 {
-        font-size: 0.8rem;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .stat-info p {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1e293b;
-      }
-
-      /* Filters */
-      .filters {
-        background: white;
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .search-box {
-        flex: 1;
-        min-width: 250px;
-        position: relative;
-      }
-
-      .search-box i {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #94a3b8;
-      }
-
-      .search-box input {
-        width: 100%;
-        padding: 0.8rem 1rem 0.8rem 2.8rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 40px;
-        font-size: 0.95rem;
-      }
-
-      .filter-select {
-        padding: 0.8rem 2rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 40px;
-        background: white;
-        cursor: pointer;
-      }
-
-      .refresh-btn {
-        padding: 0.8rem 2rem;
-        background: #00a884;
-        color: white;
-        border: none;
-        border-radius: 40px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      /* Users Table */
-      .users-table {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      th {
-        background: #f8fafc;
-        padding: 1rem;
-        text-align: left;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #475569;
-        text-transform: uppercase;
-      }
-
-      td {
-        padding: 1rem;
-        border-bottom: 1px solid #e2e8f0;
-      }
-
-      tr:hover {
-        background: #f8fafc;
-      }
-
-      .user-info {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-      }
-
-      .user-avatar {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #00a884, #0072ce);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-      }
-
-      .user-details {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .user-name {
-        font-weight: 600;
-        color: #1e293b;
-      }
-
-      .user-email {
-        font-size: 0.8rem;
-        color: #64748b;
-      }
-
-      .badge {
-        padding: 0.3rem 0.8rem;
-        border-radius: 30px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        display: inline-block;
-      }
-
-      .badge.pending {
-        background: #fef3c7;
-        color: #92400e;
-      }
-
-      .badge.verified {
-        background: #d1fae5;
-        color: #065f46;
-      }
-
-      .action-btns {
-        display: flex;
-        gap: 0.5rem;
-      }
-
-      .approve-btn {
-        padding: 0.5rem 1rem;
-        background: #10b981;
-        color: white;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-      }
-
-      .reject-btn {
-        padding: 0.5rem 1rem;
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-      }
-
-      .view-btn {
-        padding: 0.5rem;
-        background: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-      }
-
-      /* Modal */
-      .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-      }
-
-      .modal-content {
-        background: white;
-        border-radius: 30px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-      }
-
-      .modal-header h2 {
-        color: #1e293b;
-      }
-
-      .close-modal {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: #64748b;
-      }
-
-      .role-select {
-        width: 100%;
-        padding: 1rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 16px;
-        margin: 1rem 0;
-      }
-
-      .modal-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-      }
-
-      .confirm-btn {
-        flex: 1;
-        padding: 1rem;
-        background: #10b981;
-        color: white;
-        border: none;
-        border-radius: 40px;
-        cursor: pointer;
-      }
-
-      .cancel-btn {
-        flex: 1;
-        padding: 1rem;
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 40px;
-        cursor: pointer;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      /* Loading */
-      .loading {
-        text-align: center;
-        padding: 3rem;
-        color: #64748b;
-      }
-
-      .loading i {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        color: #00a884;
-      }
-
-      /* Empty State */
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-      }
-
-      .empty-state i {
-        font-size: 4rem;
-        color: #00a884;
-        margin-bottom: 1rem;
-      }
-
-      .empty-state h3 {
-        color: #1e293b;
-        margin-bottom: 0.5rem;
-      }
-
-      .empty-state p {
-        color: #64748b;
-      }
-
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: white;
-        border-radius: 50px;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        z-index: 1001;
-        animation: slideIn 0.3s;
-      }
-
-      .toast.success {
-        border-left: 4px solid #10b981;
-      }
-
-      .toast.error {
-        border-left: 4px solid #ef4444;
-      }
-
-      @keyframes slideIn {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <!-- Header -->
-      <div class="header">
-        <h1>
-          <i class="fas fa-cloud-sun"></i>
-          Admin Dashboard
-        </h1>
-        <div>
-          <span class="admin-badge" id="adminRole">Loading...</span>
-          <button class="logout-btn" id="logoutBtn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
-        </div>
-      </div>
-
-      <!-- Stats Cards -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div class="stat-info">
-            <h3>Pending Approvals</h3>
-            <p id="pendingCount">0</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="stat-info">
-            <h3>Approved Today</h3>
-            <p id="approvedToday">0</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-users"></i>
-          </div>
-          <div class="stat-info">
-            <h3>Total Users</h3>
-            <p id="totalUsers">0</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <div class="stat-info">
-            <h3>This Week</h3>
-            <p id="weeklyRegistrations">0</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filters -->
-      <div class="filters">
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search by name or email..."
-          />
-        </div>
-        <select class="filter-select" id="roleFilter">
-          <option value="all">All Roles</option>
-          <option value="dube-admin">Dube Admin</option>
-          <option value="dube-viewer">Dube Viewer</option>
-          <option value="wfp-admin">WFP Admin</option>
-          <option value="wfp-viewer">WFP Viewer</option>
-        </select>
-        <select class="filter-select" id="dateFilter">
-          <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-        </select>
-        <button class="refresh-btn" id="refreshBtn">
-          <i class="fas fa-sync-alt"></i> Refresh
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <i class="fas fa-cloud-sun"></i>
+        Admin Dashboard
+      </h1>
+      <div>
+        <span class="admin-badge" id="adminRole">Loading...</span>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
         </button>
       </div>
-
-      <!-- Users Table -->
-      <div class="users-table">
-        <div id="loadingState" class="loading">
-          <i class="fas fa-spinner fa-spin"></i>
-          <p>Loading pending users...</p>
-        </div>
-
-        <div id="emptyState" class="empty-state hidden">
-          <i class="fas fa-check-circle"></i>
-          <h3>All Caught Up!</h3>
-          <p>No pending approvals at the moment</p>
-        </div>
-
-        <div id="tableContainer" class="hidden">
-          <table>
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Registered</th>
-                <th>Status</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="usersTableBody">
-              <!-- Filled by JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
-    <!-- Approve Modal -->
-    <div id="approveModal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Approve User</h2>
-          <button class="close-modal" onclick="closeApproveModal()">
-            &times;
-          </button>
-        </div>
-        <p>Select role for <span id="approveUserName"></span></p>
-        <select class="role-select" id="approveRoleSelect">
-          <option value="dube-admin">Dube Administrator</option>
-          <option value="dube-viewer">Dube Viewer</option>
-          <option value="wfp-admin">WFP Administrator</option>
-          <option value="wfp-viewer">WFP Viewer</option>
-        </select>
-        <div class="modal-actions">
-          <button class="confirm-btn" id="confirmApproveBtn">
-            <i class="fas fa-check"></i> Confirm
-          </button>
-          <button class="cancel-btn" onclick="closeApproveModal()">
-            Cancel
-          </button>
-        </div>
-      </div>
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="statsGrid">
+      <!-- Skeleton loaders will be replaced by JS -->
     </div>
 
-    <!-- Reject Modal -->
-    <div id="rejectModal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Reject User</h2>
-          <button class="close-modal" onclick="closeRejectModal()">
-            &times;
-          </button>
-        </div>
-        <p>Reject <span id="rejectUserName"></span>?</p>
-        <textarea
-          id="rejectReason"
-          class="role-select"
-          placeholder="Reason for rejection (optional)"
-          rows="3"
-        ></textarea>
-        <div class="modal-actions">
-          <button class="confirm-btn" id="confirmRejectBtn">
-            <i class="fas fa-times"></i> Confirm Reject
-          </button>
-          <button class="cancel-btn" onclick="closeRejectModal()">
-            Cancel
-          </button>
-        </div>
+    <!-- Filters -->
+    <div class="filters">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by name or email..."
+        />
       </div>
+      <select class="filter-select" id="roleFilter">
+        <option value="all">All Roles</option>
+        <option value="dube-admin">Dube Admin</option>
+        <option value="dube-viewer">Dube Viewer</option>
+        <option value="wfp-admin">WFP Admin</option>
+        <option value="wfp-viewer">WFP Viewer</option>
+      </select>
+      <select class="filter-select" id="dateFilter">
+        <option value="all">All Time</option>
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+      </select>
+        <button class="refresh-btn" id="refreshBtn">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
     </div>
 
-    <script>
-            // ==================== State ====================
-            let currentUser = null;
-            let selectedUserId = null;
-            let pendingUsers = [];
-            let stats = {};
+    <!-- Users Table -->
+    <div class="users-table">
+      <div id="loadingState" class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading pending users...</p>
+      </div>
 
-            // ==================== Check Auth on Load ====================
-            (async function () {
-              const token = localStorage.getItem("jwt-token");
+      <div id="emptyState" class="empty-state hidden">
+        <i class="fas fa-check-circle"></i>
+        <h3>All Caught Up!</h3>
+        <p>No pending approvals at the moment</p>
+      </div>
 
-              if (!token) {
-                window.location.href = "/login.html";
-                return;
-              }
+      <div id="tableContainer" class="hidden">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Registered</th>
+              <th>Status</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Filled by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-            //
+  <!-- Approve Modal -->
+  <div id="approveModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Approve User</h2>
+        <button class="close-modal" onclick="closeApproveModal()">
+          &times;
+        </button>
+      </div>
+      <p>Select role for <span id="approveUserName"></span></p>
+      <select class="role-select" id="approveRoleSelect">
+        <option value="dube-admin">Dube Administrator</option>
+        <option value="dube-viewer">Dube Viewer</option>
+        <option value="wfp-admin">WFP Administrator</option>
+        <option value="wfp-viewer">WFP Viewer</option>
+      </select>
+      <div class="modal-actions">
+        <button class="confirm-btn" id="confirmApproveBtn">
+          <i class="fas fa-check"></i> Confirm
+        </button>
+        <button class="cancel-btn" onclick="closeApproveModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Reject Modal -->
+  <div id="rejectModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Reject User</h2>
+        <button class="close-modal" onclick="closeRejectModal()">
+          &times;
+        </button>
+      </div>
+      <p>Reject <span id="rejectUserName"></span>?</p>
+      <textarea
+        id="rejectReason"
+        class="role-select"
+        placeholder="Reason for rejection (optional)"
+        rows="3"
+      ></textarea>
+      <div class="modal-actions">
+        <button class="confirm-btn" id="confirmRejectBtn">
+          <i class="fas fa-times"></i> Confirm Reject
+        </button>
+        <button class="cancel-btn" onclick="closeRejectModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
 
-            try {
-        // Decode token to check role
+  <script>
+    // ==================== State ====================
+    let currentUser = null;
+    let selectedUserId = null;
+    let pendingUsers = [];
+    let stats = {};
+
+    // ==================== DOM Elements ====================
+    const statsGrid = document.getElementById("statsGrid");
+    const loadingState = document.getElementById("loadingState");
+    const emptyState = document.getElementById("emptyState");
+    const tableContainer = document.getElementById("tableContainer");
+    const usersTableBody = document.getElementById("usersTableBody");
+
+    // ==================== Skeleton Loaders ====================
+    function showStatsSkeleton() {
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-clock"></i></div>
+          <div class="stat-info">
+            <h3>Pending Approvals</h3>
+            <div class="skeleton" style="height: 40px; width: 80px;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-info">
+            <h3>Approved Today</h3>
+            <div class="skeleton" style="height: 40px; width: 80px;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-info">
+            <h3>Total Users</h3>
+            <div class="skeleton" style="height: 40px; width: 80px;"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="stat-info">
+            <h3>This Week</h3>
+            <div class="skeleton" style="height: 40px; width: 80px;"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==================== Check Auth on Load ====================
+    (async function init() {
+      const token = localStorage.getItem("jwt-token");
+
+      if (!token) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      // Show skeletons immediately
+      showStatsSkeleton();
+      loadingState.classList.remove("hidden");
+      tableContainer.classList.add("hidden");
+      emptyState.classList.add("hidden");
+
+      try {
+        // Decode token
         const base64Url = token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const payload = JSON.parse(atob(base64));
@@ -662,315 +770,346 @@
 
         currentUser = payload;
 
-        loadPendingUsers();
-        loadStats();
+        // Small delay to let UI update
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        // Load all data in parallel
+        await Promise.all([
+          loadStats(),
+          loadPendingUsers()
+        ]);
 
       } catch (error) {
         console.error("Auth error:", error);
         window.location.href = "/login.html";
       }
+    })();
 
-            // ==================== Load Stats ====================
-            async function loadStats() {
-              try {
-                const token = localStorage.getItem("jwt-token");
+    // ==================== Load Stats Optimized ====================
+    async function loadStats() {
+      try {
+        const token = localStorage.getItem("jwt-token");
+        
+        // 🚀 Run ALL API calls in parallel
+        const [pendingResponse, usersResponse, weeklyResponse, todayResponse] = await Promise.all([
+          fetch("/api/admin/pending-users", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/admin/users/count", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/admin/registrations/weekly", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/admin/approvals/today", { headers: { Authorization: `Bearer ${token}` } })
+        ]);
 
-                // Get total pending count
-                const pendingResponse = await fetch("/api/admin/pending-users", {
-                  headers: { Authorization: `Bearer ${token}` },
-                });
-                const pendingData = await pendingResponse.json();
+        // Process all responses
+        const [pendingData, usersData, weeklyData, todayData] = await Promise.all([
+          pendingResponse.json(),
+          usersResponse.json(),
+          weeklyResponse.json(),
+          todayResponse.json()
+        ]);
 
-                if (pendingData.success) {
-                  document.getElementById("pendingCount").textContent =
-                    pendingData.count || 0;
-                  pendingUsers = pendingData.users || [];
-                }
+        // Update UI with all data at once using requestAnimationFrame
+        requestAnimationFrame(() => {
+          if (pendingData.success) {
+            document.getElementById("pendingCount")?.remove();
+            updateStatCard(0, pendingData.count || 0);
+            pendingUsers = pendingData.users || [];
+          }
 
-                // Get total users count (you'll need to add this endpoint)
-                const usersResponse = await fetch("/api/admin/users/count", {
-                  headers: { Authorization: `Bearer ${token}` },
-                });
-                const usersData = await usersResponse.json();
+          if (usersData.success) {
+            document.getElementById("totalUsers")?.remove();
+            updateStatCard(2, usersData.count || 0);
+          }
 
-                if (usersData.success) {
-                  document.getElementById("totalUsers").textContent =
-                    usersData.count || 0;
-                }
+          if (weeklyData.success) {
+            document.getElementById("weeklyRegistrations")?.remove();
+            updateStatCard(3, weeklyData.count || 0);
+          }
 
-                // Get weekly registrations
-                const weeklyResponse = await fetch(
-                  "/api/admin/registrations/weekly",
-                  {
-                    headers: { Authorization: `Bearer ${token}` },
-                  },
-                );
-                const weeklyData = await weeklyResponse.json();
+          if (todayData.success) {
+            document.getElementById("approvedToday")?.remove();
+            updateStatCard(1, todayData.count || 0);
+          }
+        });
 
-                if (weeklyData.success) {
-                  document.getElementById("weeklyRegistrations").textContent =
-                    weeklyData.count || 0;
-                }
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    }
 
-                // Get approved today
-                const todayResponse = await fetch("/api/admin/approvals/today", {
-                  headers: { Authorization: `Bearer ${token}` },
-                });
-                const todayData = await todayResponse.json();
+    // Helper to update stat cards
+    function updateStatCard(index, value) {
+      const cards = document.querySelectorAll('.stat-card');
+      if (cards[index]) {
+        const statInfo = cards[index].querySelector('.stat-info');
+        const oldP = statInfo.querySelector('p');
+        if (oldP) oldP.remove();
+        
+        const newP = document.createElement('p');
+        newP.textContent = value;
+        newP.style.animation = 'fadeIn 0.3s';
+        statInfo.appendChild(newP);
+      }
+    }
 
-                if (todayData.success) {
-                  document.getElementById("approvedToday").textContent =
-                    todayData.count || 0;
-                }
-              } catch (error) {
-                console.error("Error loading stats:", error);
-              }
-            }
+    // ==================== Load Pending Users Optimized ====================
+    async function loadPendingUsers() {
+      try {
+        const token = localStorage.getItem("jwt-token");
+        
+        const response = await fetch("/api/admin/pending-users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-            // ==================== Load Pending Users ====================
-            async function loadPendingUsers() {
-              try {
-                document.getElementById("loadingState").classList.remove("hidden");
-                document.getElementById("emptyState").classList.add("hidden");
-                document.getElementById("tableContainer").classList.add("hidden");
+        const data = await response.json();
 
-                const token = localStorage.getItem("jwt-token");
-                const response = await fetch("/api/admin/pending-users", {
-                  headers: { Authorization: `Bearer ${token}` },
-                });
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to load users");
+        }
 
-                const data = await response.json();
+        pendingUsers = data.users || [];
 
-                if (!response.ok) {
-                  throw new Error(data.message || "Failed to load users");
-                }
+        // Use requestAnimationFrame for smooth UI updates
+        requestAnimationFrame(() => {
+          loadingState.classList.add("hidden");
 
-                pendingUsers = data.users || [];
+          if (pendingUsers.length === 0) {
+            emptyState.classList.remove("hidden");
+            tableContainer.classList.add("hidden");
+          } else {
+            tableContainer.classList.remove("hidden");
+            emptyState.classList.add("hidden");
+            renderUsersTable(pendingUsers);
+          }
+        });
+      } catch (error) {
+        console.error("Error loading users:", error);
+        showToast(error.message, "error");
+        requestAnimationFrame(() => {
+          loadingState.classList.add("hidden");
+        });
+      }
+    }
 
-                document.getElementById("loadingState").classList.add("hidden");
+    // ==================== Render Users Table Optimized ====================
+    function renderUsersTable(users) {
+      // Clear efficiently
+      while (usersTableBody.firstChild) {
+        usersTableBody.removeChild(usersTableBody.firstChild);
+      }
 
-                if (pendingUsers.length === 0) {
-                  document.getElementById("emptyState").classList.remove("hidden");
-                } else {
-                  document
-                    .getElementById("tableContainer")
-                    .classList.remove("hidden");
-                  renderUsersTable(pendingUsers);
-                }
-              } catch (error) {
-                console.error("Error loading users:", error);
-                showToast(error.message, "error");
-                document.getElementById("loadingState").classList.add("hidden");
-              }
-            }
+      // Use DocumentFragment for batch updates
+      const fragment = document.createDocumentFragment();
+      
+      users.forEach((user) => {
+        const row = document.createElement("tr");
 
-            // ==================== Render Users Table ====================
-            function renderUsersTable(users) {
-              const tbody = document.getElementById("usersTableBody");
-              tbody.innerHTML = "";
+        const registeredDate = new Date(user.createdAt).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        );
 
-              users.forEach((user) => {
-                const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>
+            <div class="user-info">
+              <div class="user-avatar">${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}</div>
+              <div class="user-details">
+                <span class="user-name">${user.firstName || ''} ${user.lastName || ''}</span>
+                <span class="user-email">${user.email || ''}</span>
+              </div>
+            </div>
+          </td>
+          <td>${registeredDate}</td>
+          <td><span class="badge pending">Pending</span></td>
+          <td>—</td>
+          <td>
+            <div class="action-btns">
+              <button class="approve-btn" onclick="openApproveModal('${user._id}', '${user.firstName || ''} ${user.lastName || ''}')">
+                <i class="fas fa-check"></i> Approve
+              </button>
+              <button class="reject-btn" onclick="openRejectModal('${user._id}', '${user.firstName || ''} ${user.lastName || ''}')">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            </div>
+          </td>
+        `;
 
-                const registeredDate = new Date(user.createdAt).toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  },
-                );
+        fragment.appendChild(row);
+      });
 
-                row.innerHTML = `
-                <td>
-                  <div class="user-info">
-                    <div class="user-avatar">${user.firstName[0]}${user.lastName[0]}</div>
-                    <div class="user-details">
-                      <span class="user-name">${user.firstName} ${user.lastName}</span>
-                      <span class="user-email">${user.email}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>${registeredDate}</td>
-                <td><span class="badge pending">Pending</span></td>
-                <td>—</td>
-                <td>
-                  <div class="action-btns">
-                    <button class="approve-btn" onclick="openApproveModal('${user._id}', '${user.firstName} ${user.lastName}')">
-                      <i class="fas fa-check"></i> Approve
-                    </button>
-                    <button class="reject-btn" onclick="openRejectModal('${user._id}', '${user.firstName} ${user.lastName}')">
-                      <i class="fas fa-times"></i> Reject
-                    </button>
-                  </div>
-                </td>
-              `;
+      // Append all rows at once
+      usersTableBody.appendChild(fragment);
+    }
 
-                tbody.appendChild(row);
-              });
-            }
+    // ==================== Filter and Search ====================
+    document.getElementById("searchInput").addEventListener("input", debounce(filterUsers, 300));
+    document.getElementById("roleFilter").addEventListener("change", filterUsers);
+    document.getElementById("dateFilter").addEventListener("change", filterUsers);
 
-            // ==================== Filter and Search ====================
-            document
-              .getElementById("searchInput")
-              .addEventListener("input", filterUsers);
-            document
-              .getElementById("roleFilter")
-              .addEventListener("change", filterUsers);
-            document
-              .getElementById("dateFilter")
-              .addEventListener("change", filterUsers);
+    // Debounce function to prevent too many renders
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
 
-            function filterUsers() {
-              const searchTerm = document
-                .getElementById("searchInput")
-                .value.toLowerCase();
-              const roleFilter = document.getElementById("roleFilter").value;
-              const dateFilter = document.getElementById("dateFilter").value;
+    function filterUsers() {
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+      const roleFilter = document.getElementById("roleFilter").value;
+      const dateFilter = document.getElementById("dateFilter").value;
 
-              let filtered = pendingUsers.filter((user) => {
-                // Search filter
-                const matchesSearch =
-                  user.firstName.toLowerCase().includes(searchTerm) ||
-                  user.lastName.toLowerCase().includes(searchTerm) ||
-                  user.email.toLowerCase().includes(searchTerm);
+      let filtered = pendingUsers.filter((user) => {
+        const matchesSearch = 
+          (user.firstName?.toLowerCase().includes(searchTerm) || false) ||
+          (user.lastName?.toLowerCase().includes(searchTerm) || false) ||
+          (user.email?.toLowerCase().includes(searchTerm) || false);
 
-                // Role filter (pending users don't have roles yet)
-                // This will be used when viewing all users, not just pending
+        return matchesSearch;
+      });
 
-                return matchesSearch;
-              });
+      requestAnimationFrame(() => {
+        renderUsersTable(filtered);
+      });
+    }
 
-              renderUsersTable(filtered);
-            }
+    // ==================== Refresh ====================
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("refreshBtn");
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+      
+      await Promise.all([
+        loadStats(),
+        loadPendingUsers()
+      ]);
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+    });
 
-            // ==================== Refresh ====================
-            document.getElementById("refreshBtn").addEventListener("click", () => {
-              loadPendingUsers();
-              loadStats();
-            });
+    // ==================== Approve Modal ====================
+    window.openApproveModal = function(userId, userName) {
+      selectedUserId = userId;
+      document.getElementById("approveUserName").textContent = userName;
+      document.getElementById("approveModal").classList.remove("hidden");
+    };
 
-            // ==================== Approve Modal ====================
-            function openApproveModal(userId, userName) {
-              selectedUserId = userId;
-              document.getElementById("approveUserName").textContent = userName;
-              document.getElementById("approveModal").classList.remove("hidden");
-            }
+    window.closeApproveModal = function() {
+      document.getElementById("approveModal").classList.add("hidden");
+      selectedUserId = null;
+    };
 
-            function closeApproveModal() {
-              document.getElementById("approveModal").classList.add("hidden");
-              selectedUserId = null;
-            }
+    document.getElementById("confirmApproveBtn").addEventListener("click", async () => {
+      if (!selectedUserId) return;
 
-            document
-              .getElementById("confirmApproveBtn")
-              .addEventListener("click", async () => {
-                if (!selectedUserId) return;
+      const role = document.getElementById("approveRoleSelect").value;
+      const token = localStorage.getItem("jwt-token");
 
-                const role = document.getElementById("approveRoleSelect").value;
-                const token = localStorage.getItem("jwt-token");
+      try {
+        const response = await fetch(`/api/admin/approve-user/${selectedUserId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ role }),
+        });
 
-                try {
-                  const response = await fetch(
-                    `/api/admin/approve-user/${selectedUserId}`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                      },
-                      body: JSON.stringify({ role }),
-                    },
-                  );
+        const data = await response.json();
 
-                  const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Approval failed");
+        }
 
-                  if (!response.ok) {
-                    throw new Error(data.message || "Approval failed");
-                  }
+        showToast("User approved successfully!", "success");
+        closeApproveModal();
+        await Promise.all([loadStats(), loadPendingUsers()]);
+      } catch (error) {
+        showToast(error.message, "error");
+      }
+    });
 
-                  showToast("User approved successfully!", "success");
-                  closeApproveModal();
-                  loadPendingUsers();
-                  loadStats();
-                } catch (error) {
-                  showToast(error.message, "error");
-                }
-              });
+    // ==================== Reject Modal ====================
+    window.openRejectModal = function(userId, userName) {
+      selectedUserId = userId;
+      document.getElementById("rejectUserName").textContent = userName;
+      document.getElementById("rejectModal").classList.remove("hidden");
+    };
 
-            // ==================== Reject Modal ====================
-            function openRejectModal(userId, userName) {
-              selectedUserId = userId;
-              document.getElementById("rejectUserName").textContent = userName;
-              document.getElementById("rejectModal").classList.remove("hidden");
-            }
+    window.closeRejectModal = function() {
+      document.getElementById("rejectModal").classList.add("hidden");
+      document.getElementById("rejectReason").value = "";
+      selectedUserId = null;
+    };
 
-            function closeRejectModal() {
-              document.getElementById("rejectModal").classList.add("hidden");
-              document.getElementById("rejectReason").value = "";
-              selectedUserId = null;
-            }
+    document.getElementById("confirmRejectBtn").addEventListener("click", async () => {
+      if (!selectedUserId) return;
 
-            document
-              .getElementById("confirmRejectBtn")
-              .addEventListener("click", async () => {
-                if (!selectedUserId) return;
+      const reason = document.getElementById("rejectReason").value;
+      const token = localStorage.getItem("jwt-token");
 
-                const reason = document.getElementById("rejectReason").value;
-                const token = localStorage.getItem("jwt-token");
+      try {
+        const response = await fetch(`/api/admin/reject-user/${selectedUserId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ reason: reason || "No reason provided" }),
+        });
 
-                try {
-                  const response = await fetch(
-                    `/api/admin/reject-user/${selectedUserId}`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                      },
-                      body: JSON.stringify({
-                        reason: reason || "No reason provided",
-                      }),
-                    },
-                  );
+        const data = await response.json();
 
-                  const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Rejection failed");
+        }
 
-                  if (!response.ok) {
-                    throw new Error(data.message || "Rejection failed");
-                  }
+        showToast("User rejected", "success");
+        closeRejectModal();
+        await Promise.all([loadStats(), loadPendingUsers()]);
+      } catch (error) {
+        showToast(error.message, "error");
+      }
+    });
 
-                  showToast("User rejected", "success");
-                  closeRejectModal();
-                  loadPendingUsers();
-                  loadStats();
-                } catch (error) {
-                  showToast(error.message, "error");
-                }
-              });
+    // ==================== Toast ====================
+    function showToast(message, type) {
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas ${type === "success" ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
+        <span>${message}</span>
+      `;
+      document.body.appendChild(toast);
 
-            // ==================== Toast ====================
-            function showToast(message, type) {
-              const toast = document.createElement("div");
-              toast.className = `toast ${type}`;
-              toast.innerHTML = `
-              <i class="fas ${type === "success" ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
-              <span>${message}</span>
-            `;
-              document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
 
-              setTimeout(() => {
-                toast.remove();
-              }, 3000);
-            }
+    // ==================== Logout ====================
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("jwt-token");
+      localStorage.removeItem("user");
+      window.location.href = "/login.html";
+    });
 
-            // ==================== Logout ====================
-            document.getElementById("logoutBtn").addEventListener("click", () => {
-              localStorage.removeItem("jwt-token");
-              localStorage.removeItem("user");
-              window.location.href = "/login.html";
-            });
-    </script>
-  </body>
+    // Close modals when clicking outside
+    window.addEventListener("click", (e) => {
+      if (e.target.classList.contains("modal")) {
+        closeApproveModal();
+        closeRejectModal();
+      }
+    });
+  </script>
+</body>
 </html>
