@@ -12,7 +12,8 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const dubeRoutes = require("./routes/dubeRoutes");
 const wfpRoutes = require("./routes/wfpRoutes");
-
+const verificationRoutes = require("./routes/verificationRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 app.use(express.json());
 app.use(
@@ -359,7 +360,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/api/verification", verificationRoutes);
 // ========== SWAGGER UI ROUTES - FIXED ==========
+
+app.use("/api/admin", verifyToken, adminRoutes);
 
 // Serve Swagger UI static assets from node_modules
 app.use(

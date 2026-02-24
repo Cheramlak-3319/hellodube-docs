@@ -1,3 +1,4 @@
+// models/User.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -7,12 +8,35 @@ const userSchema = new mongoose.Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true, select: false },
+
+    // Verification fields
+    emailVerified: { type: Boolean, default: false },
+    emailVerifiedAt: Date,
+
+    // Status & Role
+    status: {
+      type: String,
+      enum: ["pending", "active", "rejected", "suspended"],
+      default: "pending",
+    },
     role: {
       type: String,
-      enum: ["dube-admin", "dube-viewer", "wfp-admin", "wfp-viewer"],
-      required: true,
+      enum: ["dube-admin", "dube-viewer", "wfp-admin", "wfp-viewer", "pending"],
+      default: "pending",
     },
-    lastLogin: { type: Date },
+
+    // Admin approval tracking
+    approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    approvedAt: Date,
+    rejectionReason: String,
+
+    // Activity tracking
+    lastLogin: Date,
+    loginCount: { type: Number, default: 0 },
+
+    // Terms acceptance
+    acceptedTerms: [String],
+    termsAcceptedAt: Date,
   },
   { timestamps: true },
 );
@@ -37,6 +61,8 @@ userSchema.virtual("profile").get(function () {
     lastName: this.lastName,
     email: this.email,
     role: this.role,
+    status: this.status,
+    emailVerified: this.emailVerified,
   };
 });
 
