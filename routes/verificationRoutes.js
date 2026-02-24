@@ -35,21 +35,21 @@ const verifyValidation = [
 // Routes
 router.post(
   "/send-email-code",
-  verificationLimiter,
+  //   verificationLimiter,
   validate(emailValidation),
   verificationController.sendEmailCode,
 );
 
 router.post(
   "/verify-email-code",
-  verificationLimiter,
+  //   verificationLimiter,
   validate(verifyValidation),
   verificationController.verifyEmailCode,
 );
 
 router.post(
   "/resend-email-code",
-  verificationLimiter,
+  //   verificationLimiter,
   validate(emailValidation),
   verificationController.resendEmailCode,
 );
