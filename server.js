@@ -1,4 +1,5 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -56,7 +57,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/api/test/email", async (req, res) => {
   try {
     // ✅ IMPORT nodemailer HERE
-    const nodemailer = require("nodemailer");
 
     const testTransporter = nodemailer.createTransport({
       service: "gmail",
