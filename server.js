@@ -52,6 +52,28 @@ app.use(express.static(path.join(__dirname, "public")));
    LOAD OPENAPI FILES
 ========================================================= */
 
+// Add temporarily for testing
+app.get("/api/test/email", async (req, res) => {
+  try {
+    const testTransporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await testTransporter.verify();
+    res.json({ success: true, message: "SMTP connection successful" });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.message,
+      code: error.code,
+    });
+  }
+});
+
 const dubeFull = YAML.load(
   path.join(__dirname, "public", "openapi", "dube-full.yaml"),
 );
