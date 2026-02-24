@@ -52,9 +52,12 @@ app.use(express.static(path.join(__dirname, "public")));
    LOAD OPENAPI FILES
 ========================================================= */
 
-// Add temporarily for testing
+// Add this temporary test endpoint
 app.get("/api/test/email", async (req, res) => {
   try {
+    // ✅ IMPORT nodemailer HERE
+    const nodemailer = require("nodemailer");
+
     const testTransporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
