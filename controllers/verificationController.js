@@ -5,19 +5,17 @@ const nodemailer = require("nodemailer");
 
 // Email configuration with better error handling
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587, // Try 587 instead of 465
+  secure: false, // false for 587, true for 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  pool: true,
-  maxConnections: 5,
-  maxMessages: 100,
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
+  tls: {
+    rejectUnauthorized: false, // Sometimes needed for Vercel
+  },
 });
-
 class VerificationController {
   constructor() {
     this.sendEmailCode = this.sendEmailCode.bind(this);
