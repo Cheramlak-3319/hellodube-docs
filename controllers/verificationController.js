@@ -1,9 +1,7 @@
 // controllers/verificationController.js
 const Verification = require("../models/Verification");
 const User = require("../models/User");
-const { AppError } = require("../middleware/errorHandler");
 const nodemailer = require("nodemailer");
-const { logger } = require("../middleware/requestLogger");
 
 // Email configuration with better error handling
 const transporter = nodemailer.createTransport({
@@ -15,8 +13,7 @@ const transporter = nodemailer.createTransport({
   pool: true,
   maxConnections: 5,
   maxMessages: 100,
-  // Add timeout
-  connectionTimeout: 10000, // 10 seconds
+  connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
 });
@@ -39,13 +36,19 @@ class VerificationController {
       const { email } = req.body;
 
       if (!email) {
-        throw new AppError("Email is required", 400);
+        return res.status(400).json({
+          error: true,
+          message: "Email is required",
+        });
       }
 
       // Check if email already exists and is verified
       const existingUser = await User.findOne({ email, emailVerified: true });
       if (existingUser) {
-        throw new AppError("Email already registered and verified", 409);
+        return res.status(409).json({
+          error: true,
+          message: "Email already registered and verified",
+        });
       }
 
       // Generate code
@@ -95,29 +98,22 @@ class VerificationController {
           `,
         });
 
-        logger.info(`✅ Verification email sent to ${email}`);
+        console.log(`✅ Verification email sent to ${email}`);
 
-        res.status(200).json({
+        return res.status(200).json({
           success: true,
           message: "Verification code sent to your email",
           expiresIn: 600, // 10 minutes in seconds
         });
       } catch (emailError) {
-        logger.error("❌ Failed to send email:", emailError);
-        throw new AppError(
-          "Failed to send verification email. Please try again.",
-          500,
-        );
-      }
-    } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.statusCode).json({
+        console.error("❌ Failed to send email:", emailError);
+        return res.status(500).json({
           error: true,
-          message: error.message,
+          message: "Failed to send verification email. Please try again.",
         });
       }
-
-      logger.error("Send code error:", error);
+    } catch (error) {
+      console.error("Send code error:", error);
       return res.status(500).json({
         error: true,
         message: "Failed to send verification code",
@@ -131,7 +127,10 @@ class VerificationController {
       const { email, code } = req.body;
 
       if (!email || !code) {
-        throw new AppError("Email and verification code are required", 400);
+        return res.status(400).json({
+          error: true,
+          message: "Email and verification code are required",
+        });
       }
 
       // Find verification record
@@ -143,15 +142,18 @@ class VerificationController {
       });
 
       if (!verification) {
-        throw new AppError("Invalid or expired verification code", 400);
+        return res.status(400).json({
+          error: true,
+          message: "Invalid or expired verification code",
+        });
       }
 
       // Check attempts
       if (verification.attempts >= 3) {
-        throw new AppError(
-          "Too many failed attempts. Please request a new code.",
-          429,
-        );
+        return res.status(429).json({
+          error: true,
+          message: "Too many failed attempts. Please request a new code.",
+        });
       }
 
       // Verify code
@@ -160,32 +162,25 @@ class VerificationController {
         await verification.save();
 
         const attemptsLeft = 3 - verification.attempts;
-        throw new AppError(
-          `Invalid code. ${attemptsLeft} attempt${attemptsLeft !== 1 ? "s" : ""} left.`,
-          400,
-        );
+        return res.status(400).json({
+          error: true,
+          message: `Invalid code. ${attemptsLeft} attempt${attemptsLeft !== 1 ? "s" : ""} left.`,
+        });
       }
 
       // Mark as verified
       verification.verified = true;
       await verification.save();
 
-      logger.info(`✅ Email verified successfully: ${email}`);
+      console.log(`✅ Email verified successfully: ${email}`);
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Email verified successfully",
         verified: true,
       });
     } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.statusCode).json({
-          error: true,
-          message: error.message,
-        });
-      }
-
-      logger.error("Verify code error:", error);
+      console.error("Verify code error:", error);
       return res.status(500).json({
         error: true,
         message: "Failed to verify code",
@@ -199,7 +194,10 @@ class VerificationController {
       const { email } = req.body;
 
       if (!email) {
-        throw new AppError("Email is required", 400);
+        return res.status(400).json({
+          error: true,
+          message: "Email is required",
+        });
       }
 
       // Delete old verification
@@ -208,14 +206,7 @@ class VerificationController {
       // Send new code
       return this.sendEmailCode(req, res);
     } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.statusCode).json({
-          error: true,
-          message: error.message,
-        });
-      }
-
-      logger.error("Resend code error:", error);
+      console.error("Resend code error:", error);
       return res.status(500).json({
         error: true,
         message: "Failed to resend code",
