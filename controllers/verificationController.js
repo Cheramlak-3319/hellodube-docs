@@ -148,13 +148,13 @@ class VerificationController {
         });
       }
 
-      // Check attempts
-      if (verification.attempts >= 3) {
-        return res.status(429).json({
-          error: true,
-          message: "Too many failed attempts. Please request a new code.",
-        });
-      }
+      //   // Check attempts
+      //   if (verification.attempts >= 3) {
+      //     return res.status(429).json({
+      //       error: true,
+      //       message: "Too many failed attempts. Please request a new code.",
+      //     });
+      //   }
 
       // Verify code
       if (verification.code !== code) {
