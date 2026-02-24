@@ -106,6 +106,23 @@ app.get("/api/test/email", async (req, res) => {
   }
 });
 
+app.get("/api/debug/env-all", (req, res) => {
+  const envVars = {};
+  const relevantKeys = ["EMAIL_USER", "EMAIL_PASS", "JWT_SECRET", "MONGO_URI"];
+
+  relevantKeys.forEach((key) => {
+    envVars[key] = !!process.env[key];
+  });
+
+  res.json({
+    message: "Environment variables check",
+    vars: envVars,
+    nodeEnv: process.env.NODE_ENV,
+    allKeys: Object.keys(process.env).filter(
+      (k) => k.includes("EMAIL") || k.includes("JWT") || k.includes("MONGO"),
+    ),
+  });
+});
 const dubeFull = YAML.load(
   path.join(__dirname, "public", "openapi", "dube-full.yaml"),
 );
