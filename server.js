@@ -54,8 +54,32 @@ app.use(express.static(path.join(__dirname, "public")));
 ========================================================= */
 
 // Add this temporary test endpoint
+// ==================== TEST EMAIL ENDPOINT ====================
 app.get("/api/test/email", async (req, res) => {
   try {
+    // Check if nodemailer is available
+    let nodemailer;
+    try {
+    } catch (e) {
+      return res.status(500).json({
+        success: false,
+        error: "nodemailer package not installed",
+        details: e.message,
+      });
+    }
+
+    // Check environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      return res.status(500).json({
+        success: false,
+        error: "Email credentials not configured",
+        envVars: {
+          emailUser: !!process.env.EMAIL_USER,
+          emailPass: !!process.env.EMAIL_PASS,
+        },
+      });
+    }
+
     const testTransporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -65,12 +89,19 @@ app.get("/api/test/email", async (req, res) => {
     });
 
     await testTransporter.verify();
-    res.json({ success: true, message: "SMTP connection successful" });
-  } catch (error) {
+
     res.json({
+      success: true,
+      message: "SMTP connection successful",
+      emailUser: process.env.EMAIL_USER,
+    });
+  } catch (error) {
+    console.error("Email test error:", error);
+    res.status(500).json({
       success: false,
       error: error.message,
       code: error.code,
+      command: error.command,
     });
   }
 });
