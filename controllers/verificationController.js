@@ -5,13 +5,20 @@ const { AppError } = require("../middleware/errorHandler");
 const nodemailer = require("nodemailer");
 const { logger } = require("../middleware/requestLogger");
 
-// Email configuration
+// Email configuration with better error handling
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  pool: true,
+  maxConnections: 5,
+  maxMessages: 100,
+  // Add timeout
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 
 class VerificationController {

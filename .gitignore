@@ -4,3 +4,5 @@ README.md
 .gitignore
 .env
 *.log
+.vercel
+.env*.local

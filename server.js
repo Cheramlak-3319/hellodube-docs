@@ -46,6 +46,16 @@ const wfpReadOnly = YAML.load(
   path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
 );
 
+app.get("/api/debug/env", (req, res) => {
+  res.json({
+    env: process.env.NODE_ENV,
+    mongoUri: process.env.MONGO_URI ? "✅ Set" : "❌ Missing",
+    jwtSecret: process.env.JWT_SECRET ? "✅ Set" : "❌ Missing",
+    emailUser: process.env.EMAIL_USER ? "✅ Set" : "❌ Missing",
+    emailPass: process.env.EMAIL_PASS ? "✅ Set" : "❌ Missing",
+    baseUrl: process.env.BASE_URL || "❌ Missing",
+  });
+});
 // ========== PROFESSIONAL LOGOUT BUTTON MIDDLEWARE ==========
 app.use((req, res, next) => {
   // Only intercept Swagger UI HTML responses
@@ -494,7 +504,6 @@ async function connectDB() {
 
 // Middleware to ensure DB is connected before handling requests
 app.use(async (req, res, next) => {
-  // Skip database for public/test endpoints that don't need it
   const publicPaths = [
     "/health",
     "/api/test/public",
@@ -508,7 +517,6 @@ app.use(async (req, res, next) => {
     return next();
   }
 
-  // Also skip static assets for Swagger UI
   if (
     req.path.includes("/api-docs/") &&
     req.path.match(/\.(css|js|png|ico|map)$/)
@@ -527,6 +535,13 @@ app.use(async (req, res, next) => {
     });
   }
 });
+
+// ========== ALL ROUTES AFTER DATABASE MIDDLEWARE ==========
+app.use("/api/auth", authRoutes);
+app.use("/api/dube", verifyToken, dubeRoutes);
+app.use("/api/wfp", verifyToken, wfpRoutes);
+app.use("/api/verification", verificationRoutes);
+app.use("/api/admin", verifyToken, adminRoutes);
 
 // ---------- VERCEL SERVERLESS EXPORT ----------
 module.exports = app;
