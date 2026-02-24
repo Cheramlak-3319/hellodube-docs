@@ -3,8 +3,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const { verifyToken, checkRole } = require("../middleware/auth");
-const { AppError } = require("../middleware/errorHandler");
-const { logger } = require("../middleware/requestLogger");
 
 // Get pending users
 router.get(
@@ -25,7 +23,7 @@ router.get(
         users: pendingUsers,
       });
     } catch (error) {
-      logger.error("Error fetching pending users:", error);
+      console.error("Error fetching pending users:", error);
       res.status(500).json({
         error: true,
         message: "Failed to fetch pending users",
@@ -46,7 +44,10 @@ router.post(
 
       const user = await User.findById(userId);
       if (!user) {
-        throw new AppError("User not found", 404);
+        return res.status(404).json({
+          error: true,
+          message: "User not found",
+        });
       }
 
       user.status = "active";
@@ -55,7 +56,7 @@ router.post(
       user.approvedAt = new Date();
       await user.save();
 
-      logger.info(`User ${user.email} approved by ${req.user.email}`);
+      console.log(`User ${user.email} approved by ${req.user.email}`);
 
       res.json({
         success: true,
@@ -63,8 +64,8 @@ router.post(
         user: user.profile,
       });
     } catch (error) {
-      logger.error("Error approving user:", error);
-      res.status(error.statusCode || 500).json({
+      console.error("Error approving user:", error);
+      res.status(500).json({
         error: true,
         message: error.message || "Failed to approve user",
       });
@@ -84,22 +85,25 @@ router.post(
 
       const user = await User.findById(userId);
       if (!user) {
-        throw new AppError("User not found", 404);
+        return res.status(404).json({
+          error: true,
+          message: "User not found",
+        });
       }
 
       user.status = "rejected";
       user.rejectionReason = reason || "No reason provided";
       await user.save();
 
-      logger.info(`User ${user.email} rejected by ${req.user.email}`);
+      console.log(`User ${user.email} rejected by ${req.user.email}`);
 
       res.json({
         success: true,
         message: "User rejected",
       });
     } catch (error) {
-      logger.error("Error rejecting user:", error);
-      res.status(error.statusCode || 500).json({
+      console.error("Error rejecting user:", error);
+      res.status(500).json({
         error: true,
         message: error.message || "Failed to reject user",
       });
