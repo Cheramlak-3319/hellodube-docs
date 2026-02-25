@@ -24,17 +24,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api/debug/env", (req, res) => {
-  res.json({
-    env: process.env.NODE_ENV,
-    mongoUri: process.env.MONGO_URI ? "✅ Set" : "❌ Missing",
-    jwtSecret: process.env.JWT_SECRET ? "✅ Set" : "❌ Missing",
-    emailUser: process.env.EMAIL_USER ? "✅ Set" : "❌ Missing",
-    emailPass: process.env.EMAIL_PASS ? "✅ Set" : "❌ Missing",
-    baseUrl: process.env.BASE_URL || "❌ Missing",
-  });
-});
-
 app.use(
   cors({
     origin: [
@@ -53,139 +42,62 @@ app.use(express.static(path.join(__dirname, "public")));
    LOAD OPENAPI FILES
 ========================================================= */
 
-// Add this temporary test endpoint
-// ==================== TEST EMAIL ENDPOINT ====================
-app.get("/api/test/email", async (req, res) => {
-  try {
-    // Check if nodemailer is available
-    let nodemailer;
-    try {
-    } catch (e) {
-      return res.status(500).json({
-        success: false,
-        error: "nodemailer package not installed",
-        details: e.message,
-      });
-    }
-
-    // Check environment variables
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      return res.status(500).json({
-        success: false,
-        error: "Email credentials not configured",
-        envVars: {
-          emailUser: !!process.env.EMAIL_USER,
-          emailPass: !!process.env.EMAIL_PASS,
-        },
-      });
-    }
-
-    const testTransporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await testTransporter.verify();
-
-    res.json({
-      success: true,
-      message: "SMTP connection successful",
-      emailUser: process.env.EMAIL_USER,
-    });
-  } catch (error) {
-    console.error("Email test error:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      code: error.code,
-      command: error.command,
-    });
-  }
-});
-
-app.get("/api/debug/env-all", (req, res) => {
-  const envVars = {};
-  const relevantKeys = ["EMAIL_USER", "EMAIL_PASS", "JWT_SECRET", "MONGO_URI"];
-
-  relevantKeys.forEach((key) => {
-    envVars[key] = !!process.env[key];
-  });
-
-  res.json({
-    message: "Environment variables check",
-    vars: envVars,
-    nodeEnv: process.env.NODE_ENV,
-    allKeys: Object.keys(process.env).filter(
-      (k) => k.includes("EMAIL") || k.includes("JWT") || k.includes("MONGO"),
-    ),
-  });
-});
-const dubeFull = YAML.load(
-  path.join(__dirname, "public", "openapi", "dube-full.yaml"),
-);
-const dubeReadOnly = YAML.load(
-  path.join(__dirname, "public", "openapi", "dube-readonly.yaml"),
-);
-const wfpFull = YAML.load(
-  path.join(__dirname, "public", "openapi", "wfp-full.yaml"),
-);
-const wfpReadOnly = YAML.load(
-  path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
-);
-
 /* =========================================================
    SWAGGER UI ROUTES
 ========================================================= */
 
+// ==================== FIXED SWAGGER UI ROUTES ====================
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
+  // First, serve static assets WITHOUT authentication
   app.use(routePath, swaggerUi.serve);
 
+  // Then handle the main page WITH authentication
   app.get(routePath, (req, res, next) => {
     const token = extractToken(req);
 
     if (!token) {
-      return res.status(401).json({
-        error: true,
-        message: "No token provided.",
-      });
+      return res
+        .status(401)
+        .json({ error: true, message: "No token provided." });
     }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
     } catch (err) {
-      return res.status(401).json({
-        error: true,
-        message: "Invalid or expired token.",
-      });
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid or expired token." });
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({
-        error: true,
-        message: "Access denied.",
-      });
+      return res.status(403).json({ error: true, message: "Access denied." });
     }
 
-    swaggerUi.setup(swaggerDoc, {
+    // CRITICAL FIX: Set proper options for Swagger UI
+    const swaggerOptions = {
       swaggerOptions: {
         persistAuthorization: true,
+        displayRequestDuration: true,
+        docExpansion: "list",
+        filter: true,
+        showExtensions: true,
+        showCommonExtensions: true,
+        tryItOutEnabled: true,
         authAction: {
           bearerAuth: {
             name: "bearerAuth",
-            schema: {
-              type: "apiKey",
-              in: "header",
-              name: "Authorization",
-            },
+            schema: { type: "apiKey", in: "header", name: "Authorization" },
             value: `Bearer ${token}`,
           },
         },
       },
-    })(req, res, next);
+      customSiteTitle: `Dube API - ${req.user.role}`,
+      customCss: ".swagger-ui .topbar { display: none; }",
+    };
+
+    // Serve Swagger UI with the fixed options
+    swaggerUi.setup(swaggerDoc, swaggerOptions)(req, res, next);
   });
 };
 
