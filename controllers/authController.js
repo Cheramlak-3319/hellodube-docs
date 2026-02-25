@@ -117,8 +117,18 @@ class AuthController {
           .json({ error: true, message: "Invalid credentials" });
       }
 
-      // Check if account is approved
-      if (user.status !== "active") {
+      // 🟢 FIXED: Allow admins to login even if pending
+      // Admin emails that should always be able to login
+      const adminEmails = [
+        "admin@dube.com",
+        "kristalwos@gmail.com",
+        "michaeltesfaye2013@gmail.com",
+        "cheemanbest@gmail.com",
+        "zelalemsame@gmail.com",
+      ];
+
+      // If user is not active AND not in admin list, block them
+      if (user.status !== "active" && !adminEmails.includes(user.email)) {
         return res.status(403).json({
           error: true,
           message:
