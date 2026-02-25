@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
+    <title>HellOOpass · Pending Approvals</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,12 +13,13 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: Arial, sans-serif;
+        font-family: "Inter", sans-serif;
       }
 
       body {
-        background: #f0f2f5;
-        padding: 20px;
+        background: linear-gradient(145deg, #0a1929 0%, #1a3a4a 100%);
+        min-height: 100vh;
+        padding: 2rem;
       }
 
       .container {
@@ -28,68 +29,150 @@
 
       /* Header */
       .header {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        color: white;
       }
 
       .header h1 {
-        color: #333;
-      }
-
-      .user-info {
+        font-size: 1.8rem;
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 1rem;
+      }
+
+      .header h1 i {
+        color: #00a884;
+      }
+
+      .user-badge {
+        background: #00a884;
+        padding: 0.3rem 1rem;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: 600;
       }
 
       .logout-btn {
-        background: #dc3545;
+        background: rgba(255, 255, 255, 0.2);
         color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
         cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
 
       /* Stats Cards */
-      .stats {
+      .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin-bottom: 20px;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
       }
 
       .stat-card {
         background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       }
 
-      .stat-card h3 {
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 10px;
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #00a884, #0072ce);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
-      .stat-card p {
-        color: #333;
-        font-size: 24px;
-        font-weight: bold;
+      .stat-icon i {
+        font-size: 1.5rem;
+        color: white;
       }
 
-      /* Table */
+      .stat-info h3 {
+        font-size: 0.8rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-info p {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      /* Filters */
+      .filters {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.8rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 40px;
+        font-size: 0.95rem;
+      }
+
+      .refresh-btn {
+        padding: 0.8rem 2rem;
+        background: #00a884;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Users Table */
       .users-table {
         background: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       }
 
       table {
@@ -98,86 +181,252 @@
       }
 
       th {
-        background: #f8f9fa;
-        padding: 12px;
+        background: #f8fafc;
+        padding: 1rem;
         text-align: left;
-        color: #666;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
       }
 
       td {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
       }
 
-      .pending-badge {
-        background: #ffc107;
-        color: #000;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
+      tr:hover {
+        background: #f8fafc;
       }
 
-      .action-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-right: 5px;
-        font-size: 13px;
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #00a884, #0072ce);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+
+      .user-details {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .user-name {
+        font-weight: 600;
+        color: #1e293b;
+      }
+
+      .user-email {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+
+      .badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+      }
+
+      .badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .action-btns {
+        display: flex;
+        gap: 0.5rem;
       }
 
       .approve-btn {
-        background: #28a745;
+        padding: 0.5rem 1rem;
+        background: #10b981;
         color: white;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
       }
 
       .reject-btn {
-        background: #dc3545;
+        padding: 0.5rem 1rem;
+        background: #ef4444;
         color: white;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
       }
 
-      .approve-btn:hover {
-        background: #218838;
+      /* Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
       }
 
-      .reject-btn:hover {
-        background: #c82333;
+      .modal-content {
+        background: white;
+        border-radius: 30px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
       }
 
-      /* Loading */
-      .loading {
-        text-align: center;
-        padding: 40px;
-        color: #666;
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
       }
 
-      .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #666;
+      .modal-header h2 {
+        color: #1e293b;
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #64748b;
+      }
+
+      .role-select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        margin: 1rem 0;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .confirm-btn {
+        flex: 1;
+        padding: 1rem;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .cancel-btn {
+        flex: 1;
+        padding: 1rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
       }
 
       .hidden {
         display: none;
       }
 
+      /* Loading */
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: #64748b;
+      }
+
+      .loading i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #00a884;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+      }
+
+      .empty-state i {
+        font-size: 4rem;
+        color: #00a884;
+        margin-bottom: 1rem;
+      }
+
+      .empty-state h3 {
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+      }
+
+      .empty-state p {
+        color: #64748b;
+      }
+
       /* Toast */
       .toast {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 2rem;
+        right: 2rem;
         background: white;
-        padding: 12px 24px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 50px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        z-index: 1001;
+        animation: slideIn 0.3s;
         border-left: 4px solid;
       }
 
       .toast.success {
-        border-left-color: #28a745;
+        border-left-color: #10b981;
       }
+
       .toast.error {
-        border-left-color: #dc3545;
+        border-left-color: #ef4444;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
       }
     </style>
   </head>
@@ -185,299 +434,493 @@
     <div class="container">
       <!-- Header -->
       <div class="header">
-        <h1>Admin Dashboard</h1>
-        <div class="user-info">
-          <span id="userEmail"></span>
-          <button class="logout-btn" id="logoutBtn">Logout</button>
+        <h1>
+          <i class="fas fa-cloud-sun"></i>
+          Pending Approvals
+        </h1>
+        <div>
+          <span class="user-badge" id="userInfo">Loading...</span>
+          <button class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
         </div>
       </div>
 
-      <!-- Stats -->
-      <div class="stats">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
         <div class="stat-card">
-          <h3>PENDING APPROVALS</h3>
-          <p id="pendingCount">0</p>
+          <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3>Pending Approvals</h3>
+            <p id="pendingCount">0</p>
+          </div>
         </div>
         <div class="stat-card">
-          <h3>APPROVED TODAY</h3>
-          <p id="approvedToday">0</p>
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3>Approved Today</h3>
+            <p id="approvedToday">0</p>
+          </div>
         </div>
         <div class="stat-card">
-          <h3>TOTAL USERS</h3>
-          <p id="totalUsers">0</p>
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3>Total Users</h3>
+            <p id="totalUsers">0</p>
+          </div>
         </div>
         <div class="stat-card">
-          <h3>THIS WEEK</h3>
-          <p id="weeklyCount">0</p>
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <h3>This Week</h3>
+            <p id="weeklyRegistrations">0</p>
+          </div>
         </div>
       </div>
 
-      <!-- Search -->
-      <div style="margin-bottom: 20px">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search by name or email..."
-          style="
-            width: 300px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          "
-        />
-        <button
-          id="refreshBtn"
-          style="
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-left: 10px;
-          "
-        >
-          Refresh
+      <!-- Filters -->
+      <div class="filters">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by name or email..."
+          />
+        </div>
+        <button class="refresh-btn" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i> Refresh
         </button>
       </div>
 
       <!-- Users Table -->
       <div class="users-table">
         <div id="loadingState" class="loading">
-          <i class="fas fa-spinner fa-spin"></i> Loading...
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading pending users...</p>
         </div>
 
         <div id="emptyState" class="empty-state hidden">
-          No pending users found
+          <i class="fas fa-check-circle"></i>
+          <h3>All Caught Up!</h3>
+          <p>No pending approvals at the moment</p>
         </div>
 
         <div id="tableContainer" class="hidden">
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
+                <th>User</th>
                 <th>Registered</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="usersTableBody"></tbody>
+            <tbody id="usersTableBody">
+              <!-- Filled by JavaScript -->
+            </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <script>
-      // ==================== STATE ====================
-      let pendingUsers = [];
-      let currentUser = null;
+    <!-- Approve Modal with Role Selection -->
+    <div id="approveModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Approve User</h2>
+          <button class="close-modal" id="closeApproveModal">&times;</button>
+        </div>
+        <p>Select role for <span id="approveUserName"></span></p>
+        <select class="role-select" id="approveRoleSelect">
+          <option value="dube-viewer">👤 Dube Viewer (Read-only)</option>
+          <option value="dube-admin">👑 Dube Admin (Full access)</option>
+          <option value="wfp-viewer">🌍 WFP Viewer (Read-only)</option>
+          <option value="wfp-admin">🌟 WFP Admin (Full access)</option>
+        </select>
+        <div class="modal-actions">
+          <button class="confirm-btn" id="confirmApproveBtn">
+            <i class="fas fa-check"></i> Confirm
+          </button>
+          <button class="cancel-btn" id="cancelApproveBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
 
-      // ==================== CHECK AUTH ====================
-      async function checkAuth() {
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Reject User</h2>
+          <button class="close-modal" id="closeRejectModal">&times;</button>
+        </div>
+        <p>Reject <span id="rejectUserName"></span>?</p>
+        <textarea
+          id="rejectReason"
+          class="role-select"
+          placeholder="Reason for rejection (optional)"
+          rows="3"
+        ></textarea>
+        <div class="modal-actions">
+          <button class="confirm-btn" id="confirmRejectBtn">
+            <i class="fas fa-times"></i> Confirm Reject
+          </button>
+          <button class="cancel-btn" id="cancelRejectBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==================== State ====================
+      let currentUser = null;
+      let selectedUserId = null;
+      let pendingUsers = [];
+
+      // DOM Elements
+      const usersTableBody = document.getElementById("usersTableBody");
+      const loadingState = document.getElementById("loadingState");
+      const emptyState = document.getElementById("emptyState");
+      const tableContainer = document.getElementById("tableContainer");
+      const searchInput = document.getElementById("searchInput");
+      const refreshBtn = document.getElementById("refreshBtn");
+
+      // ==================== Check Auth - OPEN TO ALL USERS ====================
+      (async function () {
         const token = localStorage.getItem("jwt-token");
 
         if (!token) {
           window.location.href = "/login.html";
-          return false;
+          return;
         }
 
         try {
-          const payload = JSON.parse(atob(token.split(".")[1]));
-          document.getElementById("userEmail").textContent =
-            payload.email || "User";
+          // Decode token to show user info
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const payload = JSON.parse(atob(base64));
+
+          document.getElementById("userInfo").textContent =
+            `${payload.email || "User"} (${payload.role || "user"})`;
           currentUser = payload;
-          return true;
-        } catch (e) {
-          window.location.href = "/login.html";
-          return false;
-        }
-      }
 
-      // ==================== LOAD STATS ====================
-      async function loadStats() {
-        const token = localStorage.getItem("jwt-token");
-
-        try {
-          const [pending, users, weekly, today] = await Promise.all([
-            fetch("/api/admin/pending-users", {
-              headers: { Authorization: `Bearer ${token}` },
-            }).then((r) => r.json()),
-            fetch("/api/admin/users/count", {
-              headers: { Authorization: `Bearer ${token}` },
-            }).then((r) => r.json()),
-            fetch("/api/admin/registrations/weekly", {
-              headers: { Authorization: `Bearer ${token}` },
-            }).then((r) => r.json()),
-            fetch("/api/admin/approvals/today", {
-              headers: { Authorization: `Bearer ${token}` },
-            }).then((r) => r.json()),
-          ]);
-
-          document.getElementById("pendingCount").textContent =
-            pending.count || 0;
-          document.getElementById("approvedToday").textContent =
-            today.count || 0;
-          document.getElementById("totalUsers").textContent = users.count || 0;
-          document.getElementById("weeklyCount").textContent =
-            weekly.count || 0;
-
-          return pending.users || [];
+          // Load data
+          loadPendingUsers();
+          loadStats();
         } catch (error) {
-          console.error("Stats error:", error);
-          return [];
+          console.error("Auth error:", error);
+          window.location.href = "/login.html";
+        }
+      })();
+
+      // ==================== Load Stats ====================
+      async function loadStats() {
+        try {
+          const token = localStorage.getItem("jwt-token");
+
+          // Get pending count
+          const pendingResponse = await fetch("/api/admin/pending-users", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const pendingData = await pendingResponse.json();
+
+          if (pendingData.success) {
+            document.getElementById("pendingCount").textContent =
+              pendingData.count || 0;
+            pendingUsers = pendingData.users || [];
+          }
+
+          // Get total users count
+          const usersResponse = await fetch("/api/admin/users/count", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const usersData = await usersResponse.json();
+
+          if (usersData.success) {
+            document.getElementById("totalUsers").textContent =
+              usersData.count || 0;
+          }
+
+          // Get weekly registrations
+          const weeklyResponse = await fetch(
+            "/api/admin/registrations/weekly",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          const weeklyData = await weeklyResponse.json();
+
+          if (weeklyData.success) {
+            document.getElementById("weeklyRegistrations").textContent =
+              weeklyData.count || 0;
+          }
+
+          // Get approved today
+          const todayResponse = await fetch("/api/admin/approvals/today", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const todayData = await todayResponse.json();
+
+          if (todayData.success) {
+            document.getElementById("approvedToday").textContent =
+              todayData.count || 0;
+          }
+        } catch (error) {
+          console.error("Error loading stats:", error);
         }
       }
 
-      // ==================== LOAD USERS ====================
-      async function loadUsers() {
-        const token = localStorage.getItem("jwt-token");
-
-        document.getElementById("loadingState").classList.remove("hidden");
-        document.getElementById("tableContainer").classList.add("hidden");
-        document.getElementById("emptyState").classList.add("hidden");
-
+      // ==================== Load Pending Users ====================
+      async function loadPendingUsers() {
         try {
+          loadingState.classList.remove("hidden");
+          emptyState.classList.add("hidden");
+          tableContainer.classList.add("hidden");
+
+          const token = localStorage.getItem("jwt-token");
           const response = await fetch("/api/admin/pending-users", {
             headers: { Authorization: `Bearer ${token}` },
           });
 
           const data = await response.json();
-          pendingUsers = data.users || [];
 
-          document.getElementById("loadingState").classList.add("hidden");
+          if (!response.ok) {
+            throw new Error(data.message || "Failed to load users");
+          }
+
+          pendingUsers = data.users || [];
+          console.log("Pending users:", pendingUsers);
+
+          loadingState.classList.add("hidden");
 
           if (pendingUsers.length === 0) {
-            document.getElementById("emptyState").classList.remove("hidden");
+            emptyState.classList.remove("hidden");
           } else {
-            document
-              .getElementById("tableContainer")
-              .classList.remove("hidden");
-            renderUsers(pendingUsers);
+            tableContainer.classList.remove("hidden");
+            renderUsersTable(pendingUsers);
           }
         } catch (error) {
-          alert("Error loading users: " + error.message);
-          document.getElementById("loadingState").classList.add("hidden");
+          console.error("Error loading users:", error);
+          showToast(error.message, "error");
+          loadingState.classList.add("hidden");
         }
       }
 
-      // ==================== RENDER USERS ====================
-      function renderUsers(users) {
-        const tbody = document.getElementById("usersTableBody");
-        tbody.innerHTML = "";
+      // ==================== Render Users Table ====================
+      function renderUsersTable(users) {
+        usersTableBody.innerHTML = "";
 
         users.forEach((user) => {
-          const date = new Date(user.createdAt).toLocaleDateString();
+          const row = document.createElement("tr");
 
-          const row = tbody.insertRow();
+          const registeredDate = new Date(user.createdAt).toLocaleDateString(
+            "en-US",
+            {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            },
+          );
+
           row.innerHTML = `
-          <td>${user.firstName || ""} ${user.lastName || ""}</td>
-          <td>${user.email || ""}</td>
-          <td>${date}</td>
-          <td><span class="pending-badge">Pending</span></td>
           <td>
-            <button class="action-btn approve-btn" onclick="approveUser('${user._id}')">
-              <i class="fas fa-check"></i> Approve
-            </button>
-            <button class="action-btn reject-btn" onclick="rejectUser('${user._id}')">
-              <i class="fas fa-times"></i> Reject
-            </button>
+            <div class="user-info">
+              <div class="user-avatar">${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}</div>
+              <div class="user-details">
+                <span class="user-name">${user.firstName || ""} ${user.lastName || ""}</span>
+                <span class="user-email">${user.email || ""}</span>
+              </div>
+            </div>
+          </td>
+          <td>${registeredDate}</td>
+          <td><span class="badge pending">Pending</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="approve-btn" onclick="openApproveModal('${user._id}', '${user.firstName || ""} ${user.lastName || ""}')">
+                <i class="fas fa-check"></i> Approve
+              </button>
+              <button class="reject-btn" onclick="openRejectModal('${user._id}', '${user.firstName || ""} ${user.lastName || ""}')">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            </div>
           </td>
         `;
+
+          usersTableBody.appendChild(row);
         });
       }
 
-      // ==================== APPROVE USER ====================
-      window.approveUser = async function (userId) {
-        if (!confirm("Are you sure you want to approve this user?")) return;
+      // ==================== Filter Users ====================
+      searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value.toLowerCase();
 
-        const token = localStorage.getItem("jwt-token");
-        const role = "dube-viewer"; // Default role
+        const filtered = pendingUsers.filter(
+          (user) =>
+            user.firstName?.toLowerCase().includes(searchTerm) ||
+            user.lastName?.toLowerCase().includes(searchTerm) ||
+            user.email?.toLowerCase().includes(searchTerm),
+        );
 
-        try {
-          const response = await fetch(`/api/admin/approve-user/${userId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ role }),
-          });
+        renderUsersTable(filtered);
+      });
 
-          if (!response.ok) throw new Error("Approval failed");
+      // ==================== Refresh ====================
+      refreshBtn.addEventListener("click", () => {
+        loadPendingUsers();
+        loadStats();
+      });
 
-          showToast("User approved!", "success");
-          loadStats();
-          loadUsers();
-        } catch (error) {
-          showToast(error.message, "error");
+      // ==================== Modal Functions ====================
+      function openApproveModal(userId, userName) {
+        selectedUserId = userId;
+        document.getElementById("approveUserName").textContent = userName;
+        document.getElementById("approveModal").classList.remove("hidden");
+      }
+
+      function closeApproveModal() {
+        document.getElementById("approveModal").classList.add("hidden");
+        selectedUserId = null;
+      }
+
+      function openRejectModal(userId, userName) {
+        selectedUserId = userId;
+        document.getElementById("rejectUserName").textContent = userName;
+        document.getElementById("rejectModal").classList.remove("hidden");
+      }
+
+      function closeRejectModal() {
+        document.getElementById("rejectModal").classList.add("hidden");
+        document.getElementById("rejectReason").value = "";
+        selectedUserId = null;
+      }
+
+      // Modal button listeners
+      document
+        .getElementById("closeApproveModal")
+        .addEventListener("click", closeApproveModal);
+      document
+        .getElementById("cancelApproveBtn")
+        .addEventListener("click", closeApproveModal);
+      document
+        .getElementById("closeRejectModal")
+        .addEventListener("click", closeRejectModal);
+      document
+        .getElementById("cancelRejectBtn")
+        .addEventListener("click", closeRejectModal);
+
+      // Close modals when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target.classList.contains("modal")) {
+          closeApproveModal();
+          closeRejectModal();
         }
-      };
+      });
 
-      // ==================== REJECT USER ====================
-      window.rejectUser = async function (userId) {
-        if (!confirm("Are you sure you want to reject this user?")) return;
+      // ==================== Approve User with Role Selection ====================
+      document
+        .getElementById("confirmApproveBtn")
+        .addEventListener("click", async () => {
+          if (!selectedUserId) return;
 
-        const token = localStorage.getItem("jwt-token");
+          const role = document.getElementById("approveRoleSelect").value;
+          const token = localStorage.getItem("jwt-token");
 
-        try {
-          const response = await fetch(`/api/admin/reject-user/${userId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ reason: "Rejected by admin" }),
-          });
+          try {
+            const response = await fetch(
+              `/api/admin/approve-user/${selectedUserId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ role }),
+              },
+            );
 
-          if (!response.ok) throw new Error("Rejection failed");
+            const data = await response.json();
 
-          showToast("User rejected!", "success");
-          loadStats();
-          loadUsers();
-        } catch (error) {
-          showToast(error.message, "error");
-        }
-      };
+            if (!response.ok) {
+              throw new Error(data.message || "Approval failed");
+            }
 
-      // ==================== TOAST ====================
+            showToast(`User approved as ${role}!`, "success");
+            closeApproveModal();
+            loadPendingUsers();
+            loadStats();
+          } catch (error) {
+            showToast(error.message, "error");
+          }
+        });
+
+      // ==================== Reject User ====================
+      document
+        .getElementById("confirmRejectBtn")
+        .addEventListener("click", async () => {
+          if (!selectedUserId) return;
+
+          const reason = document.getElementById("rejectReason").value;
+          const token = localStorage.getItem("jwt-token");
+
+          try {
+            const response = await fetch(
+              `/api/admin/reject-user/${selectedUserId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  reason: reason || "No reason provided",
+                }),
+              },
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.message || "Rejection failed");
+            }
+
+            showToast("User rejected", "success");
+            closeRejectModal();
+            loadPendingUsers();
+            loadStats();
+          } catch (error) {
+            showToast(error.message, "error");
+          }
+        });
+
+      // ==================== Toast ====================
       function showToast(message, type) {
         const toast = document.createElement("div");
         toast.className = `toast ${type}`;
-        toast.textContent = message;
+        toast.innerHTML = `
+        <i class="fas ${type === "success" ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
+        <span>${message}</span>
+      `;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
       }
 
-      // ==================== SEARCH ====================
-      document.getElementById("searchInput").addEventListener("input", (e) => {
-        const search = e.target.value.toLowerCase();
-        const filtered = pendingUsers.filter(
-          (user) =>
-            user.firstName?.toLowerCase().includes(search) ||
-            user.lastName?.toLowerCase().includes(search) ||
-            user.email?.toLowerCase().includes(search),
-        );
-        renderUsers(filtered);
-      });
-
-      // ==================== REFRESH ====================
-      document.getElementById("refreshBtn").addEventListener("click", () => {
-        loadStats();
-        loadUsers();
-      });
-
-      // ==================== LOGOUT ====================
+      // ==================== Logout ====================
       document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.clear();
+        localStorage.removeItem("jwt-token");
+        localStorage.removeItem("user");
         window.location.href = "/login.html";
       });
-
-      // ==================== INIT ====================
-      (async function () {
-        if (!(await checkAuth())) return;
-        const users = await loadStats();
-        await loadUsers();
-      })();
     </script>
   </body>
 </html>
