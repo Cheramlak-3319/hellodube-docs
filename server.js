@@ -41,7 +41,19 @@ app.use(express.static(path.join(__dirname, "public")));
 /* =========================================================
    LOAD OPENAPI FILES
 ========================================================= */
-
+// Load generated OpenAPI files from public folder
+const dubeFull = YAML.load(
+  path.join(__dirname, "public", "openapi", "dube-full.yaml"),
+);
+const dubeReadOnly = YAML.load(
+  path.join(__dirname, "public", "openapi", "dube-readonly.yaml"),
+);
+const wfpFull = YAML.load(
+  path.join(__dirname, "public", "openapi", "wfp-full.yaml"),
+);
+const wfpReadOnly = YAML.load(
+  path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
+);
 /* =========================================================
    SWAGGER UI ROUTES
 ========================================================= */
