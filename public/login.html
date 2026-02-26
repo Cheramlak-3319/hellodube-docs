@@ -341,6 +341,35 @@
     </div>
 
     <script>
+      (function checkExistingToken() {
+        const token = localStorage.getItem("jwt-token");
+        const userStr = localStorage.getItem("user");
+
+        if (token && userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            console.log("✅ Already logged in as:", user.email);
+            console.log("🔄 Auto-redirecting to dashboard...");
+
+            // Determine redirect based on role
+            let redirectPath = "/api-docs/dube/viewer";
+            if (user.role === "dube-admin")
+              redirectPath = "/api-docs/dube/admin";
+            else if (user.role === "dube-viewer")
+              redirectPath = "/api-docs/dube/viewer";
+            else if (user.role === "wfp-admin")
+              redirectPath = "/api-docs/wfp/admin";
+            else if (user.role === "wfp-viewer")
+              redirectPath = "/api-docs/wfp/viewer";
+
+            // Redirect immediately
+            window.location.href =
+              redirectPath + "?token=" + encodeURIComponent(token);
+          } catch (e) {
+            console.error("Error parsing user data:", e);
+          }
+        }
+      })();
       // ==================== CRITICAL FIX ====================
       // Your backend is on the SAME domain - use relative URLs!
       const API_BASE_URL = ""; // Empty = use same origin
