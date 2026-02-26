@@ -343,17 +343,35 @@
     </div>
 
     <script>
+      // ==================== CONFIGURATION ====================
+      // Determine the correct API base URL based on the environment
+      const API_BASE_URL = (() => {
+        // If we're running on localhost, use the local backend
+        if (
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1"
+        ) {
+          return "http://localhost:5555";
+        }
+        // Otherwise, we're on Vercel - use the production backend
+        // 🔴 IMPORTANT: Replace this URL with your actual deployed backend API URL
+        return "https://hellodube-docs.vercel.app"; // 👈 CHANGE THIS TO YOUR BACKEND URL
+      })();
+
+      console.log("🌍 Environment:", window.location.hostname);
+      console.log("📡 API Base URL:", API_BASE_URL);
+
+      // ==================== DOM Elements ====================
       const loginForm = document.getElementById("loginForm");
       const loginBtn = document.getElementById("loginBtn");
       const errorDiv = document.getElementById("error");
       const successDiv = document.getElementById("success");
 
+      // ==================== Helper Functions ====================
       function showError(message) {
         errorDiv.textContent = message;
         errorDiv.style.display = "block";
         successDiv.style.display = "none";
-
-        // Auto-hide after 5 seconds
         setTimeout(() => {
           errorDiv.style.display = "none";
         }, 5000);
@@ -363,8 +381,6 @@
         successDiv.textContent = message;
         successDiv.style.display = "block";
         errorDiv.style.display = "none";
-
-        // Auto-hide after 3 seconds
         setTimeout(() => {
           successDiv.style.display = "none";
         }, 3000);
@@ -382,6 +398,7 @@
         }
       }
 
+      // ==================== Event Listeners ====================
       // Pre-fill with demo credentials on focus
       document.getElementById("email").addEventListener("focus", function () {
         if (!this.value) {
@@ -390,6 +407,7 @@
         }
       });
 
+      // Handle form submission
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -403,19 +421,26 @@
 
         setLoading(true);
 
+        const loginUrl = `${API_BASE_URL}/api/auth/login`;
+        console.log("📡 Sending request to:", loginUrl);
+
         try {
-          const res = await fetch("/api/auth/login", {
+          const res = await fetch(loginUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
           });
 
+          console.log("📥 Response status:", res.status);
           const data = await res.json();
+          console.log("📦 Response data:", data);
 
           if (!res.ok) {
             setLoading(false);
             if (res.status === 401) {
               showError("Invalid email or password");
+            } else if (res.status === 403) {
+              showError(data.message || "Account pending approval");
             } else {
               showError(data.message || "Login failed");
             }
@@ -426,7 +451,6 @@
           localStorage.setItem("jwt-token", data.tokens.accessToken);
           localStorage.setItem("user", JSON.stringify(data.user));
 
-          // Store refresh token if provided
           if (data.tokens.refreshToken) {
             localStorage.setItem("refresh-token", data.tokens.refreshToken);
           }
@@ -451,19 +475,21 @@
               encodeURIComponent(data.tokens.accessToken);
           }, 1500);
         } catch (err) {
+          console.error("❌ Login error:", err);
           setLoading(false);
           showError(
             "Network error. Please check your connection and try again.",
           );
-          console.error("Login error:", err);
         }
       });
 
       // Check if already logged in (optional)
       const token = localStorage.getItem("jwt-token");
       if (token) {
-        // Optionally show a message or auto-redirect
         console.log("Already logged in");
+        // Optionally redirect to dashboard
+        // const user = JSON.parse(localStorage.getItem("user") || "{}");
+        // if (user.role) window.location.href = `/api-docs/${user.role}`;
       }
     </script>
   </body>
