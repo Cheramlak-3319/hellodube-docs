@@ -400,6 +400,7 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
     swaggerUi.setup(swaggerDoc, swaggerOptions)(req, res, next);
   });
 };
+
 // Set up all four routes
 setupSwaggerRoute("/api-docs/dube/admin", dubeFull, ["dube-admin"]);
 setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
