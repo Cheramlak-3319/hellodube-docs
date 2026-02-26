@@ -328,65 +328,9 @@
       input {
         touch-action: manipulation;
       }
-
-      /* =================== Auto-logout Warning =================== */
-      .session-warning {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        left: 20px;
-        margin: 0 auto;
-        max-width: 400px;
-        background: white;
-        border-radius: 50px;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        z-index: 10000;
-        animation: slideDown 0.3s ease-out;
-        border-left: 4px solid #ffc107;
-      }
-
-      @keyframes slideDown {
-        from {
-          transform: translateY(-100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      .session-warning button {
-        background: var(--primary-green);
-        color: white;
-        border: none;
-        border-radius: 30px;
-        padding: 0.5rem 1.2rem;
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-
-      .hidden {
-        display: none !important;
-      }
     </style>
   </head>
   <body>
-    <!-- Session Warning -->
-    <div id="sessionWarning" class="session-warning hidden">
-      <span
-        ><i class="fas fa-clock"></i> Session expires in
-        <span id="sessionTimer">60</span>s</span
-      >
-      <button onclick="extendSession()">Stay Logged In</button>
-    </div>
-
     <!-- Login Container -->
     <div id="loginContainer" class="login-wrapper">
       <h2><i class="fas fa-cloud-sun"></i> HellOOpass</h2>
@@ -458,158 +402,13 @@
     </div>
 
     <script>
-      // ==================== Configuration ====================
-      const SESSION_TIMEOUT = 60; // 60 seconds (1 minute)
-      const WARNING_TIME = 10; // Show warning 10 seconds before logout
-
-      // ==================== State Management ====================
-      let logoutTimer = null;
-      let warningTimer = null;
-      let lastActivity = Date.now();
-
       // ==================== DOM Elements ====================
-      const loginContainer = document.getElementById("loginContainer");
-      const sessionWarning = document.getElementById("sessionWarning");
-      const sessionTimer = document.getElementById("sessionTimer");
       const loginForm = document.getElementById("loginForm");
       const loginBtn = document.getElementById("loginBtn");
       const errorDiv = document.getElementById("error");
       const successDiv = document.getElementById("success");
       const emailInput = document.getElementById("email");
       const passwordInput = document.getElementById("password");
-
-      // ==================== Activity Tracking ====================
-      function updateActivity() {
-        lastActivity = Date.now();
-      }
-
-      // Track user activity
-      ["click", "mousemove", "keypress", "scroll", "touchstart"].forEach(
-        (event) => {
-          document.addEventListener(event, updateActivity);
-        },
-      );
-
-      // ==================== Session Management ====================
-      function startSessionTimer() {
-        if (logoutTimer) clearTimeout(logoutTimer);
-        if (warningTimer) clearTimeout(warningTimer);
-
-        // Set warning timer (show warning 10 seconds before logout)
-        warningTimer = setTimeout(
-          () => {
-            showSessionWarning();
-          },
-          (SESSION_TIMEOUT - WARNING_TIME) * 1000,
-        );
-
-        // Set logout timer
-        logoutTimer = setTimeout(() => {
-          autoLogout();
-        }, SESSION_TIMEOUT * 1000);
-      }
-
-      function showSessionWarning() {
-        sessionWarning.classList.remove("hidden");
-        let timeLeft = WARNING_TIME;
-
-        const timer = setInterval(() => {
-          timeLeft--;
-          sessionTimer.textContent = timeLeft;
-
-          if (timeLeft <= 0) {
-            clearInterval(timer);
-          }
-        }, 1000);
-
-        // Auto-hide warning if user interacts
-        const hideWarning = () => {
-          sessionWarning.classList.add("hidden");
-          clearInterval(timer);
-          document.removeEventListener("mousemove", hideWarning);
-          document.removeEventListener("keypress", hideWarning);
-          document.removeEventListener("touchstart", hideWarning);
-        };
-
-        document.addEventListener("mousemove", hideWarning, { once: true });
-        document.addEventListener("keypress", hideWarning, { once: true });
-        document.addEventListener("touchstart", hideWarning, { once: true });
-      }
-
-      window.extendSession = function () {
-        sessionWarning.classList.add("hidden");
-        startSessionTimer(); // Reset timers
-      };
-
-      function autoLogout() {
-        // Clear all auth data
-        localStorage.removeItem("jwt-token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("refresh-token");
-
-        // Hide warning
-        sessionWarning.classList.add("hidden");
-
-        // Show login form
-        loginContainer.style.display = "block";
-
-        // Show message
-        showError("Session expired. Please login again.");
-      }
-
-      // ==================== Token Validation ====================
-      function isTokenExpired(token) {
-        try {
-          const payload = JSON.parse(atob(token.split(".")[1]));
-          return payload.exp * 1000 < Date.now();
-        } catch (e) {
-          return true;
-        }
-      }
-
-      // ==================== Check Login Status ====================
-      (function checkLoginStatus() {
-        const token = localStorage.getItem("jwt-token");
-        const userStr = localStorage.getItem("user");
-
-        if (token && userStr) {
-          try {
-            // Check if token is expired
-            if (isTokenExpired(token)) {
-              // Clear expired token
-              localStorage.removeItem("jwt-token");
-              localStorage.removeItem("user");
-              localStorage.removeItem("refresh-token");
-              return;
-            }
-
-            const user = JSON.parse(userStr);
-            console.log("✅ Already logged in as:", user.email);
-
-            // Start session timer
-            startSessionTimer();
-
-            // Redirect to Swagger UI
-            let redirectPath = "/api-docs/dube/viewer";
-            if (user.role === "dube-admin")
-              redirectPath = "/api-docs/dube/admin";
-            else if (user.role === "dube-viewer")
-              redirectPath = "/api-docs/dube/viewer";
-            else if (user.role === "wfp-admin")
-              redirectPath = "/api-docs/wfp/admin";
-            else if (user.role === "wfp-viewer")
-              redirectPath = "/api-docs/wfp/viewer";
-
-            window.location.href =
-              redirectPath + "?token=" + encodeURIComponent(token);
-          } catch (e) {
-            console.error("Error parsing user data:", e);
-            localStorage.removeItem("jwt-token");
-            localStorage.removeItem("user");
-            localStorage.removeItem("refresh-token");
-          }
-        }
-      })();
 
       // ==================== Helper Functions ====================
       function showError(message) {
@@ -687,7 +486,7 @@
 
           showSuccess("Login successful! Redirecting...");
 
-          // Determine redirect path
+          // Determine redirect path based on role
           const role = data.user.role;
           let redirectPath = "/api-docs/dube/viewer";
           if (role === "dube-admin") redirectPath = "/api-docs/dube/admin";
