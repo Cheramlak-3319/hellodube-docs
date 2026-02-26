@@ -954,50 +954,36 @@
         try {
           const token = localStorage.getItem("jwt-token");
 
-          // Get pending count from the users list (most reliable)
-          const pendingRes = await fetch("/api/admin/pending-users", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const [pendingRes, usersRes, weeklyRes, todayRes] = await Promise.all(
+            [
+              fetch("/api/admin/pending-users", {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+              fetch("/api/admin/users/count", {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+              fetch("/api/admin/registrations/weekly", {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+              fetch("/api/admin/approvals/today", {
+                headers: { Authorization: `Bearer ${token}` },
+              }),
+            ],
+          );
+
           const pendingData = await pendingRes.json();
+          const usersData = await usersRes.json();
+          const weeklyData = await weeklyRes.json();
+          const todayData = await todayRes.json();
 
-          if (pendingData.success) {
-            document.getElementById("pendingCount").textContent =
-              pendingData.count || 0;
-          }
-
-          // Get other stats (with error handling)
-          const [usersRes, weeklyRes, todayRes] = await Promise.allSettled([
-            fetch("/api/admin/users/count", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch("/api/admin/registrations/weekly", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch("/api/admin/approvals/today", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ]);
-
-          // Handle users count
-          if (usersRes.status === "fulfilled") {
-            const usersData = await usersRes.value.json();
-            document.getElementById("totalUsers").textContent =
-              usersData.count || 0;
-          }
-
-          // Handle weekly registrations
-          if (weeklyRes.status === "fulfilled") {
-            const weeklyData = await weeklyRes.value.json();
-            document.getElementById("weeklyRegistrations").textContent =
-              weeklyData.count || 0;
-          }
-
-          // Handle today's approvals
-          if (todayRes.status === "fulfilled") {
-            const todayData = await todayRes.value.json();
-            document.getElementById("approvedToday").textContent =
-              todayData.count || 0;
-          }
+          document.getElementById("pendingCount").textContent =
+            pendingData.count || 0;
+          document.getElementById("totalUsers").textContent =
+            usersData.count || 0;
+          document.getElementById("weeklyRegistrations").textContent =
+            weeklyData.count || 0;
+          document.getElementById("approvedToday").textContent =
+            todayData.count || 0;
         } catch (error) {
           console.error("Error loading stats:", error);
         }

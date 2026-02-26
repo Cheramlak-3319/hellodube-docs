@@ -84,52 +84,6 @@
         margin-bottom: 1.5rem;
       }
 
-      /* =================== Demo Credentials Card =================== */
-      .demo-card {
-        background: #f8f9fa;
-        border-left: 4px solid var(--primary-green);
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .demo-card h4 {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        color: #555;
-        margin-bottom: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-      }
-
-      .demo-card h4 i {
-        color: var(--primary-green);
-      }
-
-      .demo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.5rem;
-      }
-
-      .demo-item {
-        font-size: 0.75rem;
-        background: white;
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid #eee;
-        word-break: break-word;
-      }
-
-      .demo-item strong {
-        color: var(--primary-green);
-        display: block;
-        font-size: 0.7rem;
-        margin-bottom: 0.2rem;
-      }
-
       /* =================== Form =================== */
       form {
         display: flex;
@@ -257,6 +211,67 @@
         }
       }
 
+      /* 🔥 FIXED: Password field with toggle button - INSIDE the input */
+      .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .password-wrapper input {
+        width: 100%;
+        padding-right: 3.5rem !important; /* Make room for the button */
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #999;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s;
+        z-index: 5;
+        -webkit-tap-highlight-color: transparent;
+        line-height: 1;
+      }
+
+      .password-toggle:hover {
+        color: var(--primary-green);
+      }
+
+      .password-toggle:active {
+        transform: translateY(-50%) scale(0.95);
+      }
+
+      /* Mobile optimization */
+      @media (max-width: 480px) {
+        .password-toggle {
+          font-size: 1.1rem;
+          right: 0.8rem;
+          padding: 0.4rem;
+        }
+
+        .password-wrapper input {
+          padding-right: 3.2rem !important;
+        }
+      }
+
+      /* Prevent zoom on iOS */
+      @supports (-webkit-touch-callout: none) {
+        .password-toggle {
+          font-size: 16px !important;
+        }
+      }
+
       /* =================== Footer =================== */
       .footer-links {
         margin-top: 1.5rem;
@@ -313,7 +328,7 @@
         }
 
         input {
-          font-size: 16px; /* Prevents zoom on iOS */
+          font-size: 16px;
           padding: 0.8rem 1rem 0.8rem 2.5rem;
         }
 
@@ -332,32 +347,9 @@
   </head>
   <body>
     <!-- Login Container -->
-    <div id="loginContainer" class="login-wrapper">
+    <div class="login-wrapper">
       <h2><i class="fas fa-cloud-sun"></i> HellOOpass</h2>
       <div class="subtitle">Secure API Platform</div>
-
-      <!-- Demo Credentials Card -->
-      <div class="demo-card">
-        <h4><i class="fas fa-flask"></i> Demo Accounts</h4>
-        <div class="demo-grid">
-          <div class="demo-item">
-            <strong>admin@dube.com</strong>
-            password123 <span style="color: #666">(Dube Admin)</span>
-          </div>
-          <div class="demo-item">
-            <strong>viewer@dube.com</strong>
-            password123 <span style="color: #666">(Dube Viewer)</span>
-          </div>
-          <div class="demo-item">
-            <strong>wfpadmin@example.com</strong>
-            password123 <span style="color: #666">(WFP Admin)</span>
-          </div>
-          <div class="demo-item">
-            <strong>wfpviewer@example.com</strong>
-            password123 <span style="color: #666">(WFP Viewer)</span>
-          </div>
-        </div>
-      </div>
 
       <form id="loginForm">
         <div class="form-group">
@@ -375,14 +367,20 @@
 
         <div class="form-group">
           <label>Password</label>
-          <div class="input-icon">
-            <i class="fas fa-lock"></i>
+          <div class="password-wrapper">
+            <i
+              class="fas fa-lock"
+              style="position: absolute; left: 1rem; color: #999; z-index: 1"
+            ></i>
             <input
               type="password"
               id="password"
               placeholder="••••••••"
               required
             />
+            <button type="button" class="password-toggle" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
 
@@ -402,121 +400,149 @@
     </div>
 
     <script>
-      // ==================== DOM Elements ====================
-      const loginForm = document.getElementById("loginForm");
-      const loginBtn = document.getElementById("loginBtn");
-      const errorDiv = document.getElementById("error");
-      const successDiv = document.getElementById("success");
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
+      // ==================== Wait for DOM to load ====================
+      document.addEventListener("DOMContentLoaded", function () {
+        // ==================== DOM Elements ====================
+        const loginForm = document.getElementById("loginForm");
+        const loginBtn = document.getElementById("loginBtn");
+        const errorDiv = document.getElementById("error");
+        const successDiv = document.getElementById("success");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
 
-      // ==================== Helper Functions ====================
-      function showError(message) {
-        errorDiv.textContent = message;
-        errorDiv.style.display = "block";
-        successDiv.style.display = "none";
-        setTimeout(() => (errorDiv.style.display = "none"), 5000);
-      }
+        // ==================== Password Toggle ====================
+        if (togglePassword && passwordInput) {
+          togglePassword.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent any form submission
 
-      function showSuccess(message) {
-        successDiv.textContent = message;
-        successDiv.style.display = "block";
-        errorDiv.style.display = "none";
-        setTimeout(() => (successDiv.style.display = "none"), 3000);
-      }
+            // Toggle the type attribute
+            const type =
+              passwordInput.getAttribute("type") === "password"
+                ? "text"
+                : "password";
+            passwordInput.setAttribute("type", type);
 
-      function setLoading(isLoading) {
-        if (isLoading) {
-          loginBtn.disabled = true;
-          loginBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Signing in...';
-        } else {
-          loginBtn.disabled = false;
-          loginBtn.innerHTML =
-            '<span>Sign In</span> <i class="fas fa-arrow-right-to-bracket"></i>';
-        }
-      }
+            // Toggle the eye / eye-slash icon
+            this.innerHTML =
+              type === "password"
+                ? '<i class="fas fa-eye"></i>'
+                : '<i class="fas fa-eye-slash"></i>';
 
-      // ==================== Pre-fill Demo Credentials ====================
-      emailInput.addEventListener("focus", function () {
-        if (!this.value) {
-          this.value = "admin@dube.com";
-          passwordInput.value = "password123";
-        }
-      });
-
-      // ==================== Login Form Submit ====================
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-
-        if (!email || !password) {
-          showError("Please enter both email and password");
-          return;
-        }
-
-        setLoading(true);
-
-        try {
-          const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            // Keep focus on input for better UX
+            passwordInput.focus();
           });
+        }
 
-          const data = await res.json();
+        // ==================== Helper Functions ====================
+        function showError(message) {
+          errorDiv.textContent = message;
+          errorDiv.style.display = "block";
+          successDiv.style.display = "none";
+          setTimeout(() => (errorDiv.style.display = "none"), 5000);
+        }
 
-          if (!res.ok) {
-            setLoading(false);
-            if (res.status === 401) showError("Invalid email or password");
-            else if (res.status === 403)
-              showError(data.message || "Account pending approval");
-            else showError(data.message || `Login failed (${res.status})`);
+        function showSuccess(message) {
+          successDiv.textContent = message;
+          successDiv.style.display = "block";
+          errorDiv.style.display = "none";
+          setTimeout(() => (successDiv.style.display = "none"), 3000);
+        }
+
+        function setLoading(isLoading) {
+          if (isLoading) {
+            loginBtn.disabled = true;
+            loginBtn.innerHTML =
+              '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+          } else {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML =
+              '<span>Sign In</span> <i class="fas fa-arrow-right-to-bracket"></i>';
+          }
+        }
+
+        // ==================== Pre-fill Demo Credentials ====================
+        emailInput.addEventListener("focus", function () {
+          if (!this.value) {
+            this.value = "admin@dube.com";
+            passwordInput.value = "password123";
+          }
+        });
+
+        // ==================== Login Form Submit ====================
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = emailInput.value.trim();
+          const password = passwordInput.value;
+
+          if (!email || !password) {
+            showError("Please enter both email and password");
             return;
           }
 
-          // Store tokens
-          localStorage.setItem("jwt-token", data.tokens.accessToken);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          if (data.tokens.refreshToken) {
-            localStorage.setItem("refresh-token", data.tokens.refreshToken);
+          setLoading(true);
+
+          try {
+            const res = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              setLoading(false);
+              if (res.status === 401) showError("Invalid email or password");
+              else if (res.status === 403)
+                showError(data.message || "Account pending approval");
+              else showError(data.message || `Login failed (${res.status})`);
+              return;
+            }
+
+            // Store tokens
+            localStorage.setItem("jwt-token", data.tokens.accessToken);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            if (data.tokens.refreshToken) {
+              localStorage.setItem("refresh-token", data.tokens.refreshToken);
+            }
+
+            showSuccess("Login successful! Redirecting...");
+
+            // Determine redirect path based on role
+            const role = data.user.role;
+            let redirectPath = "/api-docs/dube/viewer";
+            if (role === "dube-admin") redirectPath = "/api-docs/dube/admin";
+            else if (role === "dube-viewer")
+              redirectPath = "/api-docs/dube/viewer";
+            else if (role === "wfp-admin") redirectPath = "/api-docs/wfp/admin";
+            else if (role === "wfp-viewer")
+              redirectPath = "/api-docs/wfp/viewer";
+
+            setTimeout(() => {
+              window.location.href =
+                redirectPath +
+                "?token=" +
+                encodeURIComponent(data.tokens.accessToken);
+            }, 1500);
+          } catch (err) {
+            console.error("Login error:", err);
+            setLoading(false);
+            showError("Network error. Please try again.");
           }
+        });
 
-          showSuccess("Login successful! Redirecting...");
-
-          // Determine redirect path based on role
-          const role = data.user.role;
-          let redirectPath = "/api-docs/dube/viewer";
-          if (role === "dube-admin") redirectPath = "/api-docs/dube/admin";
-          else if (role === "dube-viewer")
-            redirectPath = "/api-docs/dube/viewer";
-          else if (role === "wfp-admin") redirectPath = "/api-docs/wfp/admin";
-          else if (role === "wfp-viewer") redirectPath = "/api-docs/wfp/viewer";
-
-          setTimeout(() => {
-            window.location.href =
-              redirectPath +
-              "?token=" +
-              encodeURIComponent(data.tokens.accessToken);
-          }, 1500);
-        } catch (err) {
-          console.error("Login error:", err);
-          setLoading(false);
-          showError("Network error. Please try again.");
+        // ==================== Mobile Optimization ====================
+        // Prevent zoom on input focus for iOS
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          document.querySelectorAll("input").forEach((input) => {
+            input.addEventListener("focus", function () {
+              this.style.fontSize = "16px";
+            });
+          });
         }
       });
-
-      // ==================== Mobile Optimization ====================
-      // Prevent zoom on input focus for iOS
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        document.querySelectorAll("input").forEach((input) => {
-          input.addEventListener("focus", function () {
-            this.style.fontSize = "16px";
-          });
-        });
-      }
     </script>
   </body>
 </html>
