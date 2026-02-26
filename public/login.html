@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
     <title>HellOOpass Login</title>
     <link
       rel="stylesheet"
@@ -18,6 +21,8 @@
         --text-dark: #1f1f1f;
         --input-bg: #fff;
         --input-border: #d1d1d1;
+        --error-red: #dc3545;
+        --success-green: #28a745;
       }
 
       /* =================== Global =================== */
@@ -25,28 +30,32 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Inter", sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+          sans-serif;
       }
+
       body {
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         background: var(--bg-dark);
         color: var(--text-light);
-        overflow: hidden;
+        padding: 1rem;
       }
 
-      /* =================== Container =================== */
+      /* =================== Login Container =================== */
       .login-wrapper {
         width: 100%;
         max-width: 420px;
         background: #fff;
-        border-radius: 20px;
-        padding: 2.5rem 2rem;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        border-radius: 24px;
+        padding: 2rem 1.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         color: var(--text-dark);
         animation: fadeIn 0.5s ease-out;
+        margin: 1rem;
       }
 
       @keyframes fadeIn {
@@ -61,17 +70,18 @@
       }
 
       .login-wrapper h2 {
-        font-size: 2rem;
+        font-size: clamp(1.8rem, 6vw, 2rem);
         font-weight: 700;
         margin-bottom: 0.25rem;
         text-align: center;
         color: #111;
       }
+
       .subtitle {
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 4vw, 0.9rem);
         color: #666;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
       }
 
       /* =================== Demo Credentials Card =================== */
@@ -80,8 +90,9 @@
         border-left: 4px solid var(--primary-green);
         border-radius: 12px;
         padding: 1rem;
-        margin-bottom: 1.8rem;
+        margin-bottom: 1.5rem;
       }
+
       .demo-card h4 {
         font-size: 0.8rem;
         text-transform: uppercase;
@@ -90,39 +101,47 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        flex-wrap: wrap;
       }
+
       .demo-card h4 i {
         color: var(--primary-green);
       }
+
       .demo-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 0.5rem;
       }
+
       .demo-item {
         font-size: 0.75rem;
         background: white;
         padding: 0.5rem;
         border-radius: 8px;
         border: 1px solid #eee;
+        word-break: break-word;
       }
+
       .demo-item strong {
         color: var(--primary-green);
         display: block;
         font-size: 0.7rem;
+        margin-bottom: 0.2rem;
       }
 
       /* =================== Form =================== */
       form {
         display: flex;
         flex-direction: column;
-        gap: 1.2rem;
+        gap: 1rem;
       }
 
       .form-group {
         display: flex;
         flex-direction: column;
       }
+
       label {
         font-size: 0.8rem;
         font-weight: 600;
@@ -130,49 +149,51 @@
         margin-bottom: 0.3rem;
         text-transform: uppercase;
       }
+
       .input-icon {
         position: relative;
+        display: flex;
+        align-items: center;
       }
+
       .input-icon i {
         position: absolute;
-        top: 50%;
         left: 1rem;
-        transform: translateY(-50%);
         color: #999;
-        font-size: 0.9rem;
-        transition: color 0.3s;
+        font-size: 1rem;
+        z-index: 1;
       }
+
       input {
         width: 100%;
         padding: 0.9rem 1rem 0.9rem 2.7rem;
         border-radius: 14px;
-        border: 1px solid var(--input-border);
-        font-size: 0.95rem;
+        border: 1.5px solid var(--input-border);
+        font-size: 1rem;
         transition: all 0.3s;
         background: var(--input-bg);
         color: var(--text-dark);
+        -webkit-appearance: none;
       }
+
       input:focus {
         outline: none;
         border-color: var(--primary-green);
-        box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.2);
-      }
-      input:focus + i {
-        color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
       }
 
-      /* =================== Button =================== */
-      button {
-        padding: 0.9rem;
+      /* =================== Login Button =================== */
+      .login-btn {
+        padding: 1rem;
         border: none;
-        border-radius: 30px;
+        border-radius: 40px;
         background: linear-gradient(
           90deg,
           var(--primary-green),
           var(--primary-blue)
         );
         color: #fff;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 1rem;
         cursor: pointer;
         transition: all 0.3s;
@@ -181,12 +202,20 @@
         justify-content: center;
         gap: 0.5rem;
         margin-top: 0.5rem;
+        width: 100%;
+        -webkit-tap-highlight-color: transparent;
       }
-      button:hover {
+
+      .login-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 168, 132, 0.35);
       }
-      button:disabled {
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      .login-btn:disabled {
         opacity: 0.7;
         cursor: not-allowed;
         transform: none;
@@ -197,17 +226,20 @@
       .success {
         padding: 0.9rem;
         border-radius: 16px;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         margin-top: 1rem;
         text-align: center;
         display: none;
         animation: slideIn 0.3s ease-out;
+        word-break: break-word;
       }
+
       .error {
         background: #ffe6e8;
         color: #b33441;
         border-left: 4px solid #b33441;
       }
+
       .success {
         background: #d4edda;
         color: #155724;
@@ -225,22 +257,27 @@
         }
       }
 
-      /* =================== Footer Links =================== */
+      /* =================== Footer =================== */
       .footer-links {
         margin-top: 1.5rem;
         text-align: center;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
       }
+
       .footer-links a {
         color: var(--primary-green);
         text-decoration: none;
         font-weight: 600;
+        padding: 0.5rem;
+        display: inline-block;
       }
+
       .footer-links a:hover {
         text-decoration: underline;
       }
+
       .footer-note {
-        margin-top: 1.2rem;
+        margin-top: 1rem;
         font-size: 0.7rem;
         text-align: center;
         color: #888;
@@ -250,6 +287,7 @@
       .fa-spinner {
         animation: spin 1s linear infinite;
       }
+
       @keyframes spin {
         from {
           transform: rotate(0deg);
@@ -259,19 +297,98 @@
         }
       }
 
-      /* =================== Responsive =================== */
+      /* =================== Mobile Optimizations =================== */
       @media (max-width: 480px) {
         .login-wrapper {
-          padding: 1.8rem 1.2rem;
+          padding: 1.5rem 1rem;
+          border-radius: 20px;
         }
+
         .demo-grid {
           grid-template-columns: 1fr;
         }
+
+        .demo-item {
+          font-size: 0.8rem;
+        }
+
+        input {
+          font-size: 16px; /* Prevents zoom on iOS */
+          padding: 0.8rem 1rem 0.8rem 2.5rem;
+        }
+
+        .login-btn {
+          padding: 0.9rem;
+        }
+      }
+
+      /* =================== Touch-friendly targets =================== */
+      button,
+      a,
+      input {
+        touch-action: manipulation;
+      }
+
+      /* =================== Auto-logout Warning =================== */
+      .session-warning {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        left: 20px;
+        margin: 0 auto;
+        max-width: 400px;
+        background: white;
+        border-radius: 50px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        z-index: 10000;
+        animation: slideDown 0.3s ease-out;
+        border-left: 4px solid #ffc107;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .session-warning button {
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .hidden {
+        display: none !important;
       }
     </style>
   </head>
   <body>
-    <div class="login-wrapper">
+    <!-- Session Warning -->
+    <div id="sessionWarning" class="session-warning hidden">
+      <span
+        ><i class="fas fa-clock"></i> Session expires in
+        <span id="sessionTimer">60</span>s</span
+      >
+      <button onclick="extendSession()">Stay Logged In</button>
+    </div>
+
+    <!-- Login Container -->
+    <div id="loginContainer" class="login-wrapper">
       <h2><i class="fas fa-cloud-sun"></i> HellOOpass</h2>
       <div class="subtitle">Secure API Platform</div>
 
@@ -325,7 +442,7 @@
           </div>
         </div>
 
-        <button type="submit" id="loginBtn">
+        <button type="submit" class="login-btn" id="loginBtn">
           <span>Sign In</span>
           <i class="fas fa-arrow-right-to-bracket"></i>
         </button>
@@ -341,17 +458,138 @@
     </div>
 
     <script>
-      (function checkExistingToken() {
+      // ==================== Configuration ====================
+      const SESSION_TIMEOUT = 60; // 60 seconds (1 minute)
+      const WARNING_TIME = 10; // Show warning 10 seconds before logout
+
+      // ==================== State Management ====================
+      let logoutTimer = null;
+      let warningTimer = null;
+      let lastActivity = Date.now();
+
+      // ==================== DOM Elements ====================
+      const loginContainer = document.getElementById("loginContainer");
+      const sessionWarning = document.getElementById("sessionWarning");
+      const sessionTimer = document.getElementById("sessionTimer");
+      const loginForm = document.getElementById("loginForm");
+      const loginBtn = document.getElementById("loginBtn");
+      const errorDiv = document.getElementById("error");
+      const successDiv = document.getElementById("success");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      // ==================== Activity Tracking ====================
+      function updateActivity() {
+        lastActivity = Date.now();
+      }
+
+      // Track user activity
+      ["click", "mousemove", "keypress", "scroll", "touchstart"].forEach(
+        (event) => {
+          document.addEventListener(event, updateActivity);
+        },
+      );
+
+      // ==================== Session Management ====================
+      function startSessionTimer() {
+        if (logoutTimer) clearTimeout(logoutTimer);
+        if (warningTimer) clearTimeout(warningTimer);
+
+        // Set warning timer (show warning 10 seconds before logout)
+        warningTimer = setTimeout(
+          () => {
+            showSessionWarning();
+          },
+          (SESSION_TIMEOUT - WARNING_TIME) * 1000,
+        );
+
+        // Set logout timer
+        logoutTimer = setTimeout(() => {
+          autoLogout();
+        }, SESSION_TIMEOUT * 1000);
+      }
+
+      function showSessionWarning() {
+        sessionWarning.classList.remove("hidden");
+        let timeLeft = WARNING_TIME;
+
+        const timer = setInterval(() => {
+          timeLeft--;
+          sessionTimer.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+          }
+        }, 1000);
+
+        // Auto-hide warning if user interacts
+        const hideWarning = () => {
+          sessionWarning.classList.add("hidden");
+          clearInterval(timer);
+          document.removeEventListener("mousemove", hideWarning);
+          document.removeEventListener("keypress", hideWarning);
+          document.removeEventListener("touchstart", hideWarning);
+        };
+
+        document.addEventListener("mousemove", hideWarning, { once: true });
+        document.addEventListener("keypress", hideWarning, { once: true });
+        document.addEventListener("touchstart", hideWarning, { once: true });
+      }
+
+      window.extendSession = function () {
+        sessionWarning.classList.add("hidden");
+        startSessionTimer(); // Reset timers
+      };
+
+      function autoLogout() {
+        // Clear all auth data
+        localStorage.removeItem("jwt-token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("refresh-token");
+
+        // Hide warning
+        sessionWarning.classList.add("hidden");
+
+        // Show login form
+        loginContainer.style.display = "block";
+
+        // Show message
+        showError("Session expired. Please login again.");
+      }
+
+      // ==================== Token Validation ====================
+      function isTokenExpired(token) {
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          return payload.exp * 1000 < Date.now();
+        } catch (e) {
+          return true;
+        }
+      }
+
+      // ==================== Check Login Status ====================
+      (function checkLoginStatus() {
         const token = localStorage.getItem("jwt-token");
         const userStr = localStorage.getItem("user");
 
         if (token && userStr) {
           try {
+            // Check if token is expired
+            if (isTokenExpired(token)) {
+              // Clear expired token
+              localStorage.removeItem("jwt-token");
+              localStorage.removeItem("user");
+              localStorage.removeItem("refresh-token");
+              return;
+            }
+
             const user = JSON.parse(userStr);
             console.log("✅ Already logged in as:", user.email);
-            console.log("🔄 Auto-redirecting to dashboard...");
 
-            // Determine redirect based on role
+            // Start session timer
+            startSessionTimer();
+
+            // Redirect to Swagger UI
             let redirectPath = "/api-docs/dube/viewer";
             if (user.role === "dube-admin")
               redirectPath = "/api-docs/dube/admin";
@@ -362,26 +600,18 @@
             else if (user.role === "wfp-viewer")
               redirectPath = "/api-docs/wfp/viewer";
 
-            // Redirect immediately
             window.location.href =
               redirectPath + "?token=" + encodeURIComponent(token);
           } catch (e) {
             console.error("Error parsing user data:", e);
+            localStorage.removeItem("jwt-token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("refresh-token");
           }
         }
       })();
-      // ==================== CRITICAL FIX ====================
-      // Your backend is on the SAME domain - use relative URLs!
-      const API_BASE_URL = ""; // Empty = use same origin
 
-      console.log("🌍 Environment:", window.location.hostname);
-      console.log("📡 Using relative URLs - API is on same domain");
-
-      const loginForm = document.getElementById("loginForm");
-      const loginBtn = document.getElementById("loginBtn");
-      const errorDiv = document.getElementById("error");
-      const successDiv = document.getElementById("success");
-
+      // ==================== Helper Functions ====================
       function showError(message) {
         errorDiv.textContent = message;
         errorDiv.style.display = "block";
@@ -408,19 +638,20 @@
         }
       }
 
-      // Pre-fill demo credentials
-      document.getElementById("email").addEventListener("focus", function () {
+      // ==================== Pre-fill Demo Credentials ====================
+      emailInput.addEventListener("focus", function () {
         if (!this.value) {
           this.value = "admin@dube.com";
-          document.getElementById("password").value = "password123";
+          passwordInput.value = "password123";
         }
       });
 
+      // ==================== Login Form Submit ====================
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
 
         if (!email || !password) {
           showError("Please enter both email and password");
@@ -430,45 +661,35 @@
         setLoading(true);
 
         try {
-          // Use RELATIVE URL - no need for full URL!
-          const loginUrl = "/api/auth/login";
-          console.log("📡 Sending request to:", loginUrl);
-
-          const res = await fetch(loginUrl, {
+          const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
           });
 
-          console.log("📥 Response status:", res.status);
           const data = await res.json();
-          console.log("📦 Response data:", data);
 
           if (!res.ok) {
             setLoading(false);
-
-            // Better error messages
-            if (res.status === 401) {
-              showError("Invalid email or password");
-            } else if (res.status === 403) {
-              showError(data.message || "Your account is pending approval");
-            } else if (res.status === 404) {
-              showError("Login endpoint not found");
-            } else {
-              showError(data.message || `Login failed (${res.status})`);
-            }
+            if (res.status === 401) showError("Invalid email or password");
+            else if (res.status === 403)
+              showError(data.message || "Account pending approval");
+            else showError(data.message || `Login failed (${res.status})`);
             return;
           }
 
-          // SUCCESS!
+          // Store tokens
           localStorage.setItem("jwt-token", data.tokens.accessToken);
           localStorage.setItem("user", JSON.stringify(data.user));
+          if (data.tokens.refreshToken) {
+            localStorage.setItem("refresh-token", data.tokens.refreshToken);
+          }
 
           showSuccess("Login successful! Redirecting...");
 
+          // Determine redirect path
           const role = data.user.role;
           let redirectPath = "/api-docs/dube/viewer";
-
           if (role === "dube-admin") redirectPath = "/api-docs/dube/admin";
           else if (role === "dube-viewer")
             redirectPath = "/api-docs/dube/viewer";
@@ -482,11 +703,21 @@
               encodeURIComponent(data.tokens.accessToken);
           }, 1500);
         } catch (err) {
-          console.error("❌ Network error:", err);
+          console.error("Login error:", err);
           setLoading(false);
-          showError("Network error. Check console (F12)");
+          showError("Network error. Please try again.");
         }
       });
+
+      // ==================== Mobile Optimization ====================
+      // Prevent zoom on input focus for iOS
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        document.querySelectorAll("input").forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.style.fontSize = "16px";
+          });
+        });
+      }
     </script>
   </body>
 </html>
