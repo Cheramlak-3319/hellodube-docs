@@ -36,7 +36,18 @@ app.use(
   }),
 );
 
+/* =========================================================
+   SERVE STATIC FILES - THIS IS CRITICAL FOR login.html
+========================================================= */
 app.use(express.static(path.join(__dirname, "public")));
+
+/* =========================================================
+   SERVE SWAGGER STATIC ASSETS
+========================================================= */
+app.use(
+  "/api-docs",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist")),
+);
 
 /* =========================================================
    LOAD OPENAPI FILES
@@ -54,13 +65,14 @@ const wfpFull = YAML.load(
 const wfpReadOnly = YAML.load(
   path.join(__dirname, "public", "openapi", "wfp-readonly.yaml"),
 );
+
 /* =========================================================
-   SWAGGER UI ROUTES
+   SWAGGER UI ROUTES (THESE COME AFTER STATIC ASSETS)
 ========================================================= */
 
-// ==================== FIXED SWAGGER UI ROUTES ====================
+// Helper to set up each Swagger route
 const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
-  // First, serve static assets WITHOUT authentication
+  // First, serve the Swagger UI interface (this handles the HTML page)
   app.use(routePath, swaggerUi.serve);
 
   // Then handle the main page WITH authentication
@@ -86,7 +98,7 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
       return res.status(403).json({ error: true, message: "Access denied." });
     }
 
-    // CRITICAL FIX: Set proper options for Swagger UI
+    // Swagger UI options
     const swaggerOptions = {
       swaggerOptions: {
         persistAuthorization: true,
@@ -108,11 +120,12 @@ const setupSwaggerRoute = (routePath, swaggerDoc, allowedRoles) => {
       customCss: ".swagger-ui .topbar { display: none; }",
     };
 
-    // Serve Swagger UI with the fixed options
+    // Serve Swagger UI with the options
     swaggerUi.setup(swaggerDoc, swaggerOptions)(req, res, next);
   });
 };
 
+// Set up all four routes
 setupSwaggerRoute("/api-docs/dube/admin", dubeFull, ["dube-admin"]);
 setupSwaggerRoute("/api-docs/dube/viewer", dubeReadOnly, ["dube-viewer"]);
 setupSwaggerRoute("/api-docs/wfp/admin", wfpFull, ["wfp-admin"]);
@@ -205,7 +218,7 @@ app.use(async (req, res, next) => {
 });
 
 /* =========================================================
-   API ROUTES (REGISTERED ONLY ONCE)
+   API ROUTES
 ========================================================= */
 
 app.use("/api/auth", authRoutes);
