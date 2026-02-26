@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
     <title>HellOOpass · Create Account</title>
     <link
       rel="stylesheet"
@@ -27,12 +30,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1.5rem;
+        padding: 1rem;
         position: relative;
         overflow-x: hidden;
       }
 
-      /* Animated background particles */
+      /* Animated background - optimized for mobile */
       body::before {
         content: "";
         position: fixed;
@@ -51,6 +54,7 @@
           );
         animation: rotate 60s linear infinite;
         pointer-events: none;
+        will-change: transform;
       }
 
       @keyframes rotate {
@@ -62,39 +66,46 @@
         }
       }
 
-      /* Floating orbs */
+      /* Floating orbs - hidden on small screens for performance */
       .orb {
-        position: fixed;
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle at 30% 30%,
-          rgba(0, 168, 132, 0.15),
-          transparent 70%
-        );
-        filter: blur(40px);
-        z-index: 0;
+        display: none;
       }
 
-      .orb-1 {
-        top: -100px;
-        right: -100px;
-        background: radial-gradient(
-          circle at 30% 30%,
-          rgba(0, 114, 206, 0.2),
-          transparent 70%
-        );
-      }
+      @media (min-width: 768px) {
+        .orb {
+          display: block;
+          position: fixed;
+          width: 300px;
+          height: 300px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle at 30% 30%,
+            rgba(0, 168, 132, 0.15),
+            transparent 70%
+          );
+          filter: blur(40px);
+          z-index: 0;
+        }
 
-      .orb-2 {
-        bottom: -100px;
-        left: -100px;
-        background: radial-gradient(
-          circle at 70% 70%,
-          rgba(0, 168, 132, 0.2),
-          transparent 70%
-        );
+        .orb-1 {
+          top: -100px;
+          right: -100px;
+          background: radial-gradient(
+            circle at 30% 30%,
+            rgba(0, 114, 206, 0.2),
+            transparent 70%
+          );
+        }
+
+        .orb-2 {
+          bottom: -100px;
+          left: -100px;
+          background: radial-gradient(
+            circle at 70% 70%,
+            rgba(0, 168, 132, 0.2),
+            transparent 70%
+          );
+        }
       }
 
       /* ==================== MAIN CARD ==================== */
@@ -103,14 +114,20 @@
         max-width: 520px;
         background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(10px);
-        border-radius: 40px;
-        padding: 2.5rem;
-        box-shadow:
-          0 30px 60px -15px rgba(0, 0, 0, 0.3),
-          0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        border-radius: 32px;
+        padding: 1.8rem 1.5rem;
+        box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.3);
         position: relative;
         z-index: 10;
         animation: cardFloat 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        margin: 0.5rem;
+      }
+
+      @media (min-width: 480px) {
+        .register-card {
+          padding: 2.5rem 2rem;
+          border-radius: 40px;
+        }
       }
 
       @keyframes cardFloat {
@@ -127,65 +144,90 @@
       /* Header */
       .card-header {
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      @media (min-width: 480px) {
+        .card-header {
+          margin-bottom: 2rem;
+        }
       }
 
       .logo-wrapper {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         background: linear-gradient(135deg, #00a884, #0072ce);
-        border-radius: 20px;
-        margin-bottom: 1.2rem;
+        border-radius: 18px;
+        margin-bottom: 1rem;
         box-shadow: 0 10px 20px -5px rgba(0, 168, 132, 0.3);
         transform: rotate(-5deg);
         transition: transform 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .logo-wrapper:hover {
-        transform: rotate(0deg) scale(1.05);
+      @media (min-width: 480px) {
+        .logo-wrapper {
+          width: 70px;
+          height: 70px;
+          border-radius: 20px;
+        }
+      }
+
+      .logo-wrapper:active {
+        transform: rotate(0deg) scale(0.95);
       }
 
       .logo-wrapper i {
-        font-size: 2.5rem;
+        font-size: 2rem;
         color: white;
       }
 
+      @media (min-width: 480px) {
+        .logo-wrapper i {
+          font-size: 2.5rem;
+        }
+      }
+
       .card-header h1 {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
         font-weight: 800;
         background: linear-gradient(135deg, #1e293b, #0f2b3a);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.25rem;
         letter-spacing: -0.02em;
+      }
+
+      @media (min-width: 480px) {
+        .card-header h1 {
+          font-size: 2.2rem;
+        }
       }
 
       .card-header p {
         color: #64748b;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .card-header p a {
         color: #00a884;
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.2s;
+        padding: 0.3rem;
+        display: inline-block;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .card-header p a:hover {
-        color: #0072ce;
-        text-decoration: underline;
-      }
-
-      /* Progress Steps */
+      /* Progress Steps - Mobile Optimized */
       .progress-steps {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
         position: relative;
+        padding: 0 0.5rem;
       }
 
       .progress-steps::before {
@@ -204,23 +246,31 @@
         position: relative;
         z-index: 2;
         background: white;
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
+        font-size: 0.9rem;
         color: #94a3b8;
         border: 2px solid #e2e8f0;
         transition: all 0.3s ease;
+      }
+
+      @media (min-width: 480px) {
+        .step {
+          width: 40px;
+          height: 40px;
+        }
       }
 
       .step.active {
         background: #00a884;
         border-color: #00a884;
         color: white;
-        transform: scale(1.1);
+        transform: scale(1.05);
         box-shadow: 0 5px 15px rgba(0, 168, 132, 0.3);
       }
 
@@ -236,52 +286,29 @@
         left: 50%;
         transform: translateX(-50%);
         margin-top: 0.5rem;
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         font-weight: 600;
         color: #64748b;
         white-space: nowrap;
       }
 
+      @media (min-width: 480px) {
+        .step-label {
+          font-size: 0.7rem;
+        }
+      }
+
       /* ==================== FORM STYLES ==================== */
       .form-group {
-        margin-bottom: 1.8rem;
-        animation: fadeSlideUp 0.5s ease-out;
-        animation-fill-mode: both;
-      }
-
-      .form-group:nth-child(1) {
-        animation-delay: 0.1s;
-      }
-      .form-group:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      .form-group:nth-child(3) {
-        animation-delay: 0.3s;
-      }
-      .form-group:nth-child(4) {
-        animation-delay: 0.4s;
-      }
-      .form-group:nth-child(5) {
-        animation-delay: 0.5s;
-      }
-
-      @keyframes fadeSlideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        margin-bottom: 1.5rem;
       }
 
       .form-label {
         display: block;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 600;
         color: #334155;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -294,29 +321,30 @@
 
       .input-icon {
         position: absolute;
-        left: 1.2rem;
+        left: 1rem;
         color: #94a3b8;
-        font-size: 1rem;
+        font-size: 0.9rem;
         transition: all 0.2s;
         z-index: 1;
       }
 
       .input-field {
         width: 100%;
-        padding: 1rem 1rem 1rem 3rem;
+        padding: 0.9rem 1rem 0.9rem 2.8rem;
         border: 2px solid #e2e8f0;
-        border-radius: 20px;
-        font-size: 0.95rem;
+        border-radius: 18px;
+        font-size: 16px; /* Prevents zoom on iOS */
         font-weight: 500;
         color: #1e293b;
         background: white;
         transition: all 0.2s;
+        -webkit-appearance: none;
       }
 
       .input-field:focus {
         outline: none;
         border-color: #00a884;
-        box-shadow: 0 0 0 4px rgba(0, 168, 132, 0.1);
+        box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
       }
 
       .input-field:focus + .input-icon {
@@ -329,7 +357,7 @@
         color: #64748b;
       }
 
-      /* Verify Button */
+      /* Verify Button - Mobile Optimized */
       .verify-btn {
         position: absolute;
         right: 0.5rem;
@@ -338,55 +366,56 @@
         background: linear-gradient(135deg, #00a884, #0072ce);
         color: white;
         border: none;
-        border-radius: 40px;
-        padding: 0.6rem 1.3rem;
-        font-size: 0.85rem;
+        border-radius: 30px;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.3rem;
         box-shadow: 0 4px 10px rgba(0, 168, 132, 0.2);
         z-index: 2;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .verify-btn:hover {
-        transform: translateY(-50%) scale(1.05);
-        box-shadow: 0 6px 15px rgba(0, 168, 132, 0.3);
+      @media (min-width: 480px) {
+        .verify-btn {
+          padding: 0.6rem 1.3rem;
+          font-size: 0.85rem;
+        }
+      }
+
+      .verify-btn:active {
+        transform: translateY(-50%) scale(0.95);
       }
 
       .verify-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
-        transform: translateY(-50%) scale(1);
       }
 
-      /* Email Sent Card */
+      /* Email Sent Card - Mobile Optimized */
       .email-sent-card {
         background: linear-gradient(135deg, #f0fdf4, #f0f9ff);
         border: 1px solid rgba(0, 168, 132, 0.2);
-        border-radius: 24px;
-        padding: 1.8rem;
+        border-radius: 20px;
+        padding: 1.5rem 1rem;
         margin-top: 1rem;
         text-align: center;
         animation: slideDownScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
 
-      @keyframes slideDownScale {
-        0% {
-          opacity: 0;
-          transform: translateY(-20px) scale(0.95);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
+      @media (min-width: 480px) {
+        .email-sent-card {
+          padding: 1.8rem;
         }
       }
 
       .sent-icon {
-        width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         background: linear-gradient(135deg, #00a884, #0072ce);
         border-radius: 50%;
         display: flex;
@@ -394,6 +423,24 @@
         justify-content: center;
         margin: 0 auto 1rem;
         animation: pulse 2s infinite;
+      }
+
+      @media (min-width: 480px) {
+        .sent-icon {
+          width: 70px;
+          height: 70px;
+        }
+      }
+
+      .sent-icon i {
+        font-size: 1.8rem;
+        color: white;
+      }
+
+      @media (min-width: 480px) {
+        .sent-icon i {
+          font-size: 2rem;
+        }
       }
 
       @keyframes pulse {
@@ -408,80 +455,79 @@
         }
       }
 
-      .sent-icon i {
-        font-size: 2rem;
-        color: white;
-      }
-
       .email-sent-card h3 {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         color: #1e293b;
         margin-bottom: 0.5rem;
         font-weight: 700;
       }
 
+      @media (min-width: 480px) {
+        .email-sent-card h3 {
+          font-size: 1.4rem;
+        }
+      }
+
       .email-highlight {
         background: white;
-        padding: 0.3rem 1rem;
-        border-radius: 40px;
+        padding: 0.3rem 0.8rem;
+        border-radius: 30px;
         display: inline-block;
         color: #00a884;
         font-weight: 600;
-        font-size: 0.9rem;
-        margin-bottom: 1.2rem;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
         border: 1px solid rgba(0, 168, 132, 0.2);
+        word-break: break-all;
+        max-width: 100%;
       }
 
+      /* Provider Grid - Mobile Optimized */
       .provider-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-        margin: 1.5rem 0;
+        gap: 0.6rem;
+        margin: 1rem 0;
+      }
+
+      @media (min-width: 480px) {
+        .provider-grid {
+          gap: 0.8rem;
+        }
       }
 
       .provider-btn {
-        padding: 0.8rem;
+        padding: 0.6rem 0.3rem;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
+        border-radius: 14px;
         background: white;
         cursor: pointer;
         transition: all 0.2s;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.3rem;
         font-weight: 500;
+        font-size: 0.8rem;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .provider-btn.gmail:hover {
-        background: #ea4335;
-        color: white;
-        border-color: #ea4335;
+      @media (min-width: 480px) {
+        .provider-btn {
+          padding: 0.8rem;
+          font-size: 0.9rem;
+        }
       }
 
-      .provider-btn.outlook:hover {
-        background: #0078d4;
-        color: white;
-        border-color: #0078d4;
-      }
-
-      .provider-btn.yahoo:hover {
-        background: #6001d2;
-        color: white;
-        border-color: #6001d2;
-      }
-
-      .provider-btn.proton:hover {
-        background: #6d4aff;
-        color: white;
-        border-color: #6d4aff;
+      .provider-btn:active {
+        transform: scale(0.95);
       }
 
       /* Verification Input */
       .verification-box {
         background: #f8fafc;
-        border-radius: 20px;
-        padding: 1.2rem;
+        border-radius: 18px;
+        padding: 1rem;
         margin-top: 1rem;
         border: 1px solid #e2e8f0;
       }
@@ -490,16 +536,24 @@
         display: flex;
         gap: 0.5rem;
         margin-bottom: 0.8rem;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 380px) {
+        .code-input-group {
+          flex-direction: column;
+        }
       }
 
       .code-input {
         flex: 1;
-        padding: 0.9rem;
+        min-width: 120px;
+        padding: 0.8rem;
         border: 2px solid #e2e8f0;
         border-radius: 14px;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-align: center;
-        letter-spacing: 4px;
+        letter-spacing: 3px;
         font-weight: 700;
         transition: all 0.2s;
       }
@@ -514,29 +568,37 @@
         color: white;
         border: none;
         border-radius: 14px;
-        padding: 0 1.8rem;
+        padding: 0 1.5rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s;
+        min-height: 44px; /* Touch-friendly */
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .verify-code-btn:hover {
-        background: #059669;
-        transform: translateY(-2px);
+      @media (max-width: 380px) {
+        .verify-code-btn {
+          padding: 0.8rem;
+          width: 100%;
+        }
+      }
+
+      .verify-code-btn:active {
+        transform: scale(0.95);
       }
 
       .resend-link {
         color: #00a884;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s;
         display: inline-block;
+        padding: 0.5rem 0;
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .resend-link:hover {
-        color: #0072ce;
-        text-decoration: underline;
+      .resend-link:active {
+        opacity: 0.7;
       }
 
       .resend-link.disabled {
@@ -549,25 +611,14 @@
         display: inline-flex;
         align-items: center;
         gap: 0.3rem;
-        padding: 0.4rem 1rem;
+        padding: 0.4rem 0.8rem;
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
-        border-radius: 40px;
-        font-size: 0.8rem;
+        border-radius: 30px;
+        font-size: 0.75rem;
         font-weight: 600;
         margin-top: 0.5rem;
         animation: popIn 0.3s;
-      }
-
-      @keyframes popIn {
-        0% {
-          transform: scale(0.8);
-          opacity: 0;
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
       }
 
       /* Password Strength */
@@ -601,13 +652,13 @@
       }
 
       .strength-text {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         margin-top: 0.3rem;
         text-align: right;
       }
 
       .password-match {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         margin-top: 0.3rem;
         display: flex;
         align-items: center;
@@ -626,7 +677,7 @@
         display: flex;
         align-items: center;
         gap: 0.8rem;
-        margin: 1.8rem 0;
+        margin: 1.5rem 0;
         padding: 0.5rem;
       }
 
@@ -635,12 +686,14 @@
         height: 1.2rem;
         accent-color: #00a884;
         cursor: pointer;
+        flex-shrink: 0;
       }
 
       .terms-group label {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #475569;
         cursor: pointer;
+        line-height: 1.4;
       }
 
       .terms-group a {
@@ -649,14 +702,10 @@
         text-decoration: none;
       }
 
-      .terms-group a:hover {
-        text-decoration: underline;
-      }
-
       /* Register Button */
       .register-btn {
         width: 100%;
-        padding: 1.1rem;
+        padding: 1rem;
         background: linear-gradient(135deg, #1e293b, #0f2b3a);
         color: white;
         border: none;
@@ -668,35 +717,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.8rem;
+        gap: 0.5rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        position: relative;
-        overflow: hidden;
+        min-height: 52px; /* Touch-friendly */
+        -webkit-tap-highlight-color: transparent;
       }
 
-      .register-btn::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.2),
-          transparent
-        );
-        transition: left 0.5s;
-      }
-
-      .register-btn:hover::before {
-        left: 100%;
-      }
-
-      .register-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      .register-btn:active {
+        transform: scale(0.98);
       }
 
       .register-btn:disabled {
@@ -707,11 +735,11 @@
 
       /* Messages */
       .message {
-        padding: 1rem 1.2rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
+        padding: 0.8rem 1rem;
+        border-radius: 18px;
+        font-size: 0.85rem;
         font-weight: 500;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.2rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -730,51 +758,24 @@
         border-left: 4px solid #22c55e;
       }
 
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: white;
-        border-radius: 50px;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        z-index: 1000;
-        animation: slideInRight 0.3s;
-        border-left: 4px solid #00a884;
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-
-      .toast button {
-        background: #00a884;
-        color: white;
-        border: none;
-        border-radius: 30px;
-        padding: 0.4rem 1rem;
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .toast button:hover {
-        background: #0072ce;
-      }
-
       .hidden {
-        display: none;
+        display: none !important;
+      }
+
+      /* Touch-friendly adjustments */
+      button,
+      a,
+      input[type="checkbox"] {
+        touch-action: manipulation;
+      }
+
+      /* Prevent zoom on input focus for iOS */
+      @supports (-webkit-touch-callout: none) {
+        input,
+        select,
+        textarea {
+          font-size: 16px !important;
+        }
       }
     </style>
   </head>
@@ -826,7 +827,7 @@
                 required
               />
               <button type="button" class="verify-btn" id="verifyEmailBtn">
-                <i class="fas fa-paper-plane"></i> Send Code
+                <i class="fas fa-paper-plane"></i> Send
               </button>
             </div>
           </div>
@@ -843,16 +844,32 @@
             </p>
 
             <div class="provider-grid">
-              <button onclick="openGmail()" class="provider-btn gmail">
+              <button
+                type="button"
+                onclick="openGmail()"
+                class="provider-btn gmail"
+              >
                 <i class="fab fa-google"></i> Gmail
               </button>
-              <button onclick="openOutlook()" class="provider-btn outlook">
+              <button
+                type="button"
+                onclick="openOutlook()"
+                class="provider-btn outlook"
+              >
                 <i class="fab fa-microsoft"></i> Outlook
               </button>
-              <button onclick="openYahoo()" class="provider-btn yahoo">
+              <button
+                type="button"
+                onclick="openYahoo()"
+                class="provider-btn yahoo"
+              >
                 <i class="fab fa-yahoo"></i> Yahoo
               </button>
-              <button onclick="openProton()" class="provider-btn proton">
+              <button
+                type="button"
+                onclick="openProton()"
+                class="provider-btn proton"
+              >
                 <i class="fas fa-shield"></i> Proton
               </button>
             </div>
@@ -867,13 +884,15 @@
                 class="code-input"
                 placeholder="000000"
                 maxlength="6"
+                inputmode="numeric"
+                pattern="[0-9]*"
               />
               <button
                 type="button"
                 class="verify-code-btn"
                 id="verifyEmailCode"
               >
-                <i class="fas fa-check"></i> Verify
+                Verify
               </button>
             </div>
             <div class="resend-link" id="resendEmailCode">Resend code</div>
@@ -884,7 +903,7 @@
           </div>
         </div>
 
-        <!-- Step 2: Personal Details (Hidden initially) -->
+        <!-- Step 2: Personal Details -->
         <div id="step2-content" class="hidden">
           <div class="form-group">
             <label class="form-label">
@@ -942,25 +961,24 @@
           <div class="terms-group">
             <input type="checkbox" id="terms" />
             <label for="terms">
-              I agree to the <a href="#">Terms of Service</a> and
-              <a href="#">Privacy Policy</a>
+              I agree to the <a href="#">Terms</a> and <a href="#">Privacy</a>
             </label>
           </div>
         </div>
 
-        <!-- Step 3: Success (Hidden initially) -->
+        <!-- Step 3: Success -->
         <div id="step3-content" class="hidden">
-          <div style="text-align: center; padding: 2rem">
+          <div style="text-align: center; padding: 1.5rem">
             <div class="sent-icon" style="margin: 0 auto 1.5rem">
               <i class="fas fa-check"></i>
             </div>
             <h3 style="color: #1e293b; margin-bottom: 0.5rem">
               Registration Complete!
             </h3>
-            <p style="color: #64748b; margin-bottom: 1.5rem">
+            <p style="color: #64748b; margin-bottom: 1rem">
               Your account has been created successfully
             </p>
-            <p style="color: #475569">Redirecting to login page...</p>
+            <p style="color: #475569">Redirecting to login...</p>
           </div>
         </div>
 
@@ -1009,10 +1027,7 @@
         messageDiv.textContent = text;
         messageDiv.className = `message ${type}`;
         messageDiv.classList.remove("hidden");
-
-        setTimeout(() => {
-          messageDiv.classList.add("hidden");
-        }, 5000);
+        setTimeout(() => messageDiv.classList.add("hidden"), 5000);
       }
 
       function showError(text) {
@@ -1023,33 +1038,21 @@
       }
 
       // ==================== Email Provider Functions ====================
-      window.openGmail = function () {
-        window.open(
-          "https://mail.google.com/mail/u/0/#search/from%3Anoreply%40helloopass.com",
-          "_blank",
-        );
-      };
-      window.openOutlook = function () {
-        window.open("https://outlook.live.com/mail/", "_blank");
-      };
-      window.openYahoo = function () {
-        window.open("https://mail.yahoo.com", "_blank");
-      };
-      window.openProton = function () {
-        window.open("https://mail.proton.me", "_blank");
-      };
+      window.openGmail = () => window.open("https://mail.google.com", "_blank");
+      window.openOutlook = () =>
+        window.open("https://outlook.live.com", "_blank");
+      window.openYahoo = () => window.open("https://mail.yahoo.com", "_blank");
+      window.openProton = () => window.open("https://mail.proton.me", "_blank");
 
       // ==================== Password Strength ====================
       function checkPasswordStrength(password) {
         if (!password) return { score: 0, text: "", class: "" };
-
         let score = 0;
         if (password.length >= 8) score++;
         if (password.match(/[a-z]/)) score++;
         if (password.match(/[A-Z]/)) score++;
         if (password.match(/[0-9]/)) score++;
         if (password.match(/[^a-zA-Z0-9]/)) score++;
-
         if (score <= 2) return { score, text: "Weak", class: "strength-weak" };
         if (score === 3) return { score, text: "Fair", class: "strength-fair" };
         if (score === 4) return { score, text: "Good", class: "strength-good" };
@@ -1057,25 +1060,19 @@
       }
 
       passwordInput.addEventListener("input", () => {
-        const password = passwordInput.value;
-        const strength = checkPasswordStrength(password);
-
+        const strength = checkPasswordStrength(passwordInput.value);
         strengthBar.style.width = `${(strength.score / 5) * 100}%`;
         strengthBar.className = `strength-bar ${strength.class}`;
-        strengthText.textContent = password ? strength.text : "";
+        strengthText.textContent = passwordInput.value ? strength.text : "";
       });
 
       // ==================== Password Match ====================
       function checkPasswordMatch() {
-        const password = passwordInput.value;
-        const confirm = confirmInput.value;
-
-        if (!confirm) {
+        if (!confirmInput.value) {
           passwordMatch.innerHTML = "";
           return;
         }
-
-        if (password === confirm) {
+        if (passwordInput.value === confirmInput.value) {
           passwordMatch.innerHTML =
             '<i class="fas fa-check-circle match-success"></i> <span class="match-success">Passwords match</span>';
         } else {
@@ -1092,11 +1089,9 @@
         timeLeft = 60;
         resendEmailCode.classList.add("disabled");
         resendEmailCode.textContent = `Resend (${timeLeft}s)`;
-
         verificationTimer = setInterval(() => {
           timeLeft--;
           resendEmailCode.textContent = `Resend (${timeLeft}s)`;
-
           if (timeLeft <= 0) {
             clearInterval(verificationTimer);
             resendEmailCode.classList.remove("disabled");
@@ -1108,12 +1103,11 @@
       // ==================== Auto Code Detection ====================
       function startCodeDetection() {
         if (detectionInterval) clearInterval(detectionInterval);
-
         detectionInterval = setInterval(() => {
           if (emailCode.value.length === 6 && !isEmailVerified) {
             setTimeout(() => {
               if (emailCode.value.length === 6) verifyEmailCode.click();
-            }, 1000);
+            }, 500);
           }
         }, 500);
       }
@@ -1121,16 +1115,9 @@
       // ==================== Send Verification Code ====================
       verifyEmailBtn.addEventListener("click", async () => {
         const email = emailInput.value.trim();
-
-        if (!email) {
-          showError("Please enter your email first");
-          return;
-        }
-
-        if (!email.includes("@") || !email.includes(".")) {
-          showError("Please enter a valid email address");
-          return;
-        }
+        if (!email) return showError("Please enter your email first");
+        if (!email.includes("@") || !email.includes("."))
+          return showError("Enter a valid email");
 
         verifyEmailBtn.disabled = true;
         verifyEmailBtn.innerHTML =
@@ -1142,12 +1129,8 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
           });
-
           const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.message || "Failed to send code");
-          }
+          if (!response.ok) throw new Error(data.message || "Failed to send");
 
           sentEmail.textContent = email;
           emailSentCard.classList.remove("hidden");
@@ -1159,8 +1142,7 @@
           showError(error.message);
         } finally {
           verifyEmailBtn.disabled = false;
-          verifyEmailBtn.innerHTML =
-            '<i class="fas fa-paper-plane"></i> Send Code';
+          verifyEmailBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
         }
       });
 
@@ -1168,11 +1150,7 @@
       verifyEmailCode.addEventListener("click", async () => {
         const code = emailCode.value.trim();
         const email = emailInput.value.trim();
-
-        if (!code || code.length !== 6) {
-          showError("Please enter a valid 6-digit code");
-          return;
-        }
+        if (!code || code.length !== 6) return showError("Enter 6-digit code");
 
         verifyEmailCode.disabled = true;
         verifyEmailCode.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -1183,12 +1161,8 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, code }),
           });
-
           const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.message || "Invalid code");
-          }
+          if (!response.ok) throw new Error(data.message || "Invalid code");
 
           isEmailVerified = true;
           emailVerified.classList.remove("hidden");
@@ -1200,7 +1174,6 @@
           clearInterval(verificationTimer);
           clearInterval(detectionInterval);
 
-          // Move to step 2
           step1.classList.remove("active");
           step1.classList.add("completed");
           step2.classList.add("active");
@@ -1208,24 +1181,20 @@
           step2Content.classList.remove("hidden");
           registerBtn.innerHTML =
             '<span>Create Account</span><i class="fas fa-user-plus"></i>';
-
-          showSuccess(
-            "Email verified successfully! Please complete your details.",
-          );
+          showSuccess("Email verified! Complete your details.");
         } catch (error) {
           showError(error.message);
           emailCode.value = "";
         } finally {
           verifyEmailCode.disabled = false;
-          verifyEmailCode.innerHTML = '<i class="fas fa-check"></i>';
+          verifyEmailCode.innerHTML = "Verify";
         }
       });
 
       // ==================== Resend Code ====================
       resendEmailCode.addEventListener("click", () => {
-        if (!resendEmailCode.classList.contains("disabled")) {
+        if (!resendEmailCode.classList.contains("disabled"))
           verifyEmailBtn.click();
-        }
       });
 
       // ==================== Form Submission ====================
@@ -1233,74 +1202,46 @@
         .getElementById("registerForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-
-          // If on step 1, do nothing (verification handles it)
           if (!step2Content.classList.contains("hidden")) {
-            // Step 2 submission
             const fullname = fullnameInput.value.trim();
-            const password = passwordInput.value;
-            const confirm = confirmInput.value;
-            const terms = termsCheck.checked;
+            if (!fullname || !passwordInput.value || !confirmInput.value)
+              return showError("All fields required");
+            if (passwordInput.value !== confirmInput.value)
+              return showError("Passwords don't match");
+            if (!termsCheck.checked) return showError("You must accept terms");
 
-            if (!fullname || !password || !confirm) {
-              showError("All fields are required");
-              return;
-            }
-
-            if (password !== confirm) {
-              showError("Passwords do not match");
-              return;
-            }
-
-            const strength = checkPasswordStrength(password);
-            if (strength.score <= 2) {
-              showError("Please choose a stronger password");
-              return;
-            }
-
-            if (!terms) {
-              showError("You must accept the Terms & Conditions");
-              return;
-            }
+            const strength = checkPasswordStrength(passwordInput.value);
+            if (strength.score <= 2)
+              return showError("Choose a stronger password");
 
             registerBtn.disabled = true;
             registerBtn.innerHTML =
-              '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+              '<i class="fas fa-spinner fa-spin"></i> Creating...';
 
             try {
               const nameParts = fullname.split(" ");
-              const firstName = nameParts[0];
-              const lastName = nameParts.slice(1).join(" ") || "User";
-
               const response = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  firstName,
-                  lastName,
+                  firstName: nameParts[0],
+                  lastName: nameParts.slice(1).join(" ") || "User",
                   email: emailInput.value.trim(),
-                  password,
-                  terms: terms ? ["terms1"] : [],
+                  password: passwordInput.value,
+                  terms: termsCheck.checked ? ["terms1"] : [],
                 }),
               });
-
               const data = await response.json();
-
-              if (!response.ok) {
+              if (!response.ok)
                 throw new Error(data.message || "Registration failed");
-              }
 
-              // Move to step 3
               step2.classList.remove("active");
               step2.classList.add("completed");
               step3.classList.add("active");
               step2Content.classList.add("hidden");
               step3Content.classList.remove("hidden");
               registerBtn.classList.add("hidden");
-
-              setTimeout(() => {
-                window.location.href = "/login.html";
-              }, 3000);
+              setTimeout(() => (window.location.href = "/login.html"), 3000);
             } catch (error) {
               showError(error.message);
               registerBtn.disabled = false;
