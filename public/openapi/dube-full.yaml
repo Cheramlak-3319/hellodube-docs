@@ -2072,3 +2072,83 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
+  /dube/international/gettransferhistory.php:
+  post:
+    tags:
+      - Dube International
+    summary: Get international transfer history
+    description: Retrieve incoming or outgoing transfer history with pagination and date filtering.
+    x-roles:
+      - dube-admin
+      - dube-viewer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - direction
+            properties:
+              direction:
+                type: string
+                enum: [incoming, outgoing]
+                description: Direction of transfers (incoming or outgoing)
+                example: incoming
+              limit:
+                type: integer
+                description: Number of records to return
+                example: 20
+              offset:
+                type: integer
+                description: Pagination offset
+                example: 0
+              start:
+                type: string
+                format: date-time
+                description: Start date for filtering transfers
+                example: 2024-01-01T00:00:00Z
+              end:
+                type: string
+                format: date-time
+                description: End date for filtering transfers
+                example: 2024-12-31T23:59:59Z
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: boolean
+                  example: false
+                message:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      transactionId:
+                        type: string
+                        example: TRX123456
+                      amount:
+                        type: number
+                        example: 150.75
+                      currency:
+                        type: string
+                        example: USD
+                      direction:
+                        type: string
+                        example: incoming
+                      createdAt:
+                        type: string
+                        format: date-time
+      "400":
+        $ref: "#/components/responses/BadRequest"
+      "401":
+        $ref: "#/components/responses/Unauthorized"
+      "403":
+        $ref: "#/components/responses/Forbidden"
+      "500":
+        $ref: "#/components/responses/ServerError"
