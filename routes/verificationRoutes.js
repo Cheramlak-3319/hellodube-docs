@@ -32,26 +32,65 @@ const verifyValidation = [
     .withMessage("Code must contain only numbers"),
 ];
 
-// Routes
+// ==================== EXISTING ROUTES (for registration) ====================
+
 router.post(
   "/send-email-code",
-  //   verificationLimiter,
+  verificationLimiter,
   validate(emailValidation),
   verificationController.sendEmailCode,
 );
 
 router.post(
   "/verify-email-code",
-  //   verificationLimiter,
+  verificationLimiter,
   validate(verifyValidation),
   verificationController.verifyEmailCode,
 );
 
 router.post(
   "/resend-email-code",
-  //   verificationLimiter,
+  verificationLimiter,
   validate(emailValidation),
   verificationController.resendEmailCode,
+);
+
+// ==================== NEW OTP LOGIN ROUTES ====================
+
+/**
+ * @route   POST /api/verification/send-login-otp
+ * @desc    Send OTP for login
+ * @access  Public
+ */
+router.post(
+  "/send-login-otp",
+  verificationLimiter,
+  validate(emailValidation),
+  verificationController.sendLoginOtp,
+);
+
+/**
+ * @route   POST /api/verification/verify-login-otp
+ * @desc    Verify OTP and login
+ * @access  Public
+ */
+router.post(
+  "/verify-login-otp",
+  verificationLimiter,
+  validate(verifyValidation),
+  verificationController.verifyLoginOtp,
+);
+
+/**
+ * @route   POST /api/verification/resend-login-otp
+ * @desc    Resend OTP for login
+ * @access  Public
+ */
+router.post(
+  "/resend-login-otp",
+  verificationLimiter,
+  validate(emailValidation),
+  verificationController.resendLoginOtp,
 );
 
 module.exports = router;

@@ -15,7 +15,7 @@ const verificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["email", "password-reset", "login-pin"],
+      enum: ["email", "password-reset", "login-otp"], // 👈 ADD "login-otp" HERE
       required: true,
     },
     attempts: {
@@ -29,7 +29,7 @@ const verificationSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       required: true,
-      default: () => new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      default: () => new Date(Date.now() + 10 * 60 * 1000),
     },
   },
   {
@@ -37,7 +37,6 @@ const verificationSchema = new mongoose.Schema(
   },
 );
 
-// Index for automatic expiration
 verificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model("Verification", verificationSchema);
