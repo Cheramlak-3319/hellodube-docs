@@ -221,52 +221,44 @@ router.post(
  * @desc    Resend OTP for login
  * @access  Public
  */
-router.post(
-  "/resend-otp",
-  verificationLimiter,
-  validate(emailValidation),
-  async (req, res) => {
-    try {
-      const { email } = req.body;
+router.post("/resend-otp", validate(emailValidation), async (req, res) => {
+  try {
+    const { email } = req.body;
 
-      // Delete old OTPs
-      await Verification.deleteMany({
-        email,
-        type: "login-otp",
-        verified: false,
-      });
+    // Delete old OTPs
+    await Verification.deleteMany({
+      email,
+      type: "login-otp",
+      verified: false,
+    });
 
-      // Reuse your existing sendEmailCode method
-      req.body.type = "login-otp";
-      return verificationController.sendEmailCode(req, res);
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      res.status(500).json({
-        error: true,
-        message: "Failed to resend OTP",
-      });
-    }
-  },
-);
+    // Reuse your existing sendEmailCode method
+    req.body.type = "login-otp";
+    return verificationController.sendEmailCode(req, res);
+  } catch (error) {
+    console.error("Resend OTP error:", error);
+    res.status(500).json({
+      error: true,
+      message: "Failed to resend OTP",
+    });
+  }
+});
 
 // Keep your existing routes
 router.post(
   "/send-email-code",
-  verificationLimiter,
   validate(emailValidation),
   verificationController.sendEmailCode,
 );
 
 router.post(
   "/verify-email-code",
-  verificationLimiter,
   validate(verifyValidation),
   verificationController.verifyEmailCode,
 );
 
 router.post(
   "/resend-email-code",
-  verificationLimiter,
   validate(emailValidation),
   verificationController.resendEmailCode,
 );
