@@ -2152,3 +2152,67 @@ paths:
         $ref: "#/components/responses/Forbidden"
       "500":
         $ref: "#/components/responses/ServerError"
+  /dube/international/getcanceledmerchantcredits.php:
+  post:
+    tags:
+      - Dube International
+    summary: Get canceled merchant credits
+    description: Retrieves a list of canceled credits for a merchant, filtered by wallet and settlement wallet.
+    x-roles:
+      - dube-admin
+      - dube-viewer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - wallet
+              - settlementWallet
+            properties:
+              wallet:
+                type: string
+                description: The merchant wallet identifier
+                example: "1234567890"
+              settlementWallet:
+                type: string
+                description: The settlement credit wallet identifier
+                example: "0987654321"
+    responses:
+      "200":
+        description: OK – list of canceled credits retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: boolean
+                  example: false
+                message:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      transactionId:
+                        type: string
+                        example: "CXL123456"
+                      amount:
+                        type: number
+                        example: 50.00
+                      reason:
+                        type: string
+                        example: "Duplicate transaction"
+                      canceledAt:
+                        type: string
+                        format: date-time
+                        example: "2025-03-10T12:00:00Z"
+      "400":
+        $ref: "#/components/responses/BadRequest"
+      "401":
+        $ref: "#/components/responses/Unauthorized"
+      "403":
+        $ref: "#/components/responses/Forbidden"
+      "500":
+        $ref: "#/components/responses/ServerError"
