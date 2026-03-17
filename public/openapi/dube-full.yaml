@@ -2073,200 +2073,200 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
   /dube/international/gettransferhistory.php:
-  post:
-    tags:
-      - Dube International
-    summary: Get international transfer history
-    description: Retrieve incoming or outgoing transfer history with pagination and date filtering.
-    x-roles:
-      - dube-admin
-      - dube-viewer
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - direction
-            properties:
-              direction:
-                type: string
-                enum: [incoming, outgoing]
-                description: Direction of transfers (incoming or outgoing)
-                example: incoming
-              limit:
-                type: integer
-                description: Number of records to return
-                example: 20
-              offset:
-                type: integer
-                description: Pagination offset
-                example: 0
-              start:
-                type: string
-                format: date-time
-                description: Start date for filtering transfers
-                example: 2024-01-01T00:00:00Z
-              end:
-                type: string
-                format: date-time
-                description: End date for filtering transfers
-                example: 2024-12-31T23:59:59Z
-    responses:
-      "200":
-        description: OK
+    post:
+      tags:
+        - Dube International
+      summary: Get international transfer history
+      description: Retrieve incoming or outgoing transfer history with pagination and date filtering.
+      x-roles:
+        - dube-admin
+        - dube-viewer
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - direction
               properties:
-                error:
-                  type: boolean
-                  example: false
-                message:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      transactionId:
-                        type: string
-                        example: TRX123456
-                      amount:
-                        type: number
-                        example: 150.75
-                      currency:
-                        type: string
-                        example: USD
-                      direction:
-                        type: string
-                        example: incoming
-                      createdAt:
-                        type: string
-                        format: date-time
-      "400":
-        $ref: "#/components/responses/BadRequest"
-      "401":
-        $ref: "#/components/responses/Unauthorized"
-      "403":
-        $ref: "#/components/responses/Forbidden"
-      "500":
-        $ref: "#/components/responses/ServerError"
-  /dube/international/getcanceledmerchantcredits.php:
-  post:
-    tags:
-      - Dube International
-    summary: Get canceled merchant credits
-    description: Retrieves a list of canceled credits for a merchant, filtered by wallet and settlement wallet.
-    x-roles:
-      - dube-admin
-      - dube-viewer
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - wallet
-              - settlementWallet
-            properties:
-              wallet:
-                type: string
-                description: The merchant wallet identifier
-                example: "1234567890"
-              settlementWallet:
-                type: string
-                description: The settlement credit wallet identifier
-                example: "0987654321"
-    responses:
-      "200":
-        description: OK – list of canceled credits retrieved successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: boolean
-                  example: false
-                message:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      transactionId:
-                        type: string
-                        example: "CXL123456"
-                      amount:
-                        type: number
-                        example: 50.00
-                      reason:
-                        type: string
-                        example: "Duplicate transaction"
-                      canceledAt:
-                        type: string
-                        format: date-time
-                        example: "2025-03-10T12:00:00Z"
-      "400":
-        $ref: "#/components/responses/BadRequest"
-      "401":
-        $ref: "#/components/responses/Unauthorized"
-      "403":
-        $ref: "#/components/responses/Forbidden"
-      "500":
-        $ref: "#/components/responses/ServerError"
-  /dube/international/updateproject.php:
-  post:
-    tags:
-      - Dube International
-    summary: Update an existing project
-    description: Updates project details such as name and model. Only accessible by administrators.
-    x-roles:
-      - dube-admin
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - projectId
-              - projectModel
-              - projectName
-            properties:
-              projectId:
-                type: string
-                description: Unique identifier of the project
-                example: "proj_abc123"
-              projectModel:
-                type: string
-                enum: [sponsorship, marketplace, distribution, disbursement]
-                description: The business model of the project
-                example: "sponsorship"
-              projectName:
-                type: string
-                description: Updated name of the project
-                example: "Ethiopia Food Security Initiative"
-    responses:
-      "200":
-        description: Project updated successfully
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: boolean
-                  example: false
-                message:
+                direction:
                   type: string
-                  example: "Project updated successfully"
-      "400":
-        $ref: "#/components/responses/BadRequest"
-      "401":
-        $ref: "#/components/responses/Unauthorized"
-      "403":
-        $ref: "#/components/responses/Forbidden"
-      "500":
-        $ref: "#/components/responses/ServerError"
+                  enum: [incoming, outgoing]
+                  description: Direction of transfers (incoming or outgoing)
+                  example: incoming
+                limit:
+                  type: integer
+                  description: Number of records to return
+                  example: 20
+                offset:
+                  type: integer
+                  description: Pagination offset
+                  example: 0
+                start:
+                  type: string
+                  format: date-time
+                  description: Start date for filtering transfers
+                  example: 2024-01-01T00:00:00Z
+                end:
+                  type: string
+                  format: date-time
+                  description: End date for filtering transfers
+                  example: 2024-12-31T23:59:59Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transactionId:
+                          type: string
+                          example: TRX123456
+                        amount:
+                          type: number
+                          example: 150.75
+                        currency:
+                          type: string
+                          example: USD
+                        direction:
+                          type: string
+                          example: incoming
+                        createdAt:
+                          type: string
+                          format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /dube/international/getcanceledmerchantcredits.php:
+    post:
+      tags:
+        - Dube International
+      summary: Get canceled merchant credits
+      description: Retrieves a list of canceled credits for a merchant, filtered by wallet and settlement wallet.
+      x-roles:
+        - dube-admin
+        - dube-viewer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - wallet
+                - settlementWallet
+              properties:
+                wallet:
+                  type: string
+                  description: The merchant wallet identifier
+                  example: "1234567890"
+                settlementWallet:
+                  type: string
+                  description: The settlement credit wallet identifier
+                  example: "0987654321"
+      responses:
+        "200":
+          description: OK – list of canceled credits retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transactionId:
+                          type: string
+                          example: "CXL123456"
+                        amount:
+                          type: number
+                          example: 50.00
+                        reason:
+                          type: string
+                          example: "Duplicate transaction"
+                        canceledAt:
+                          type: string
+                          format: date-time
+                          example: "2025-03-10T12:00:00Z"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /dube/international/updateproject.php:
+    post:
+      tags:
+        - Dube International
+      summary: Update an existing project
+      description: Updates project details such as name and model. Only accessible by administrators.
+      x-roles:
+        - dube-admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - projectId
+                - projectModel
+                - projectName
+              properties:
+                projectId:
+                  type: string
+                  description: Unique identifier of the project
+                  example: "proj_abc123"
+                projectModel:
+                  type: string
+                  enum: [sponsorship, marketplace, distribution, disbursement]
+                  description: The business model of the project
+                  example: "sponsorship"
+                projectName:
+                  type: string
+                  description: Updated name of the project
+                  example: "Ethiopia Food Security Initiative"
+      responses:
+        "200":
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Project updated successfully"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
