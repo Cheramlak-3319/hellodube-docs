@@ -1376,3 +1376,69 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
+  /dube/international/invoice/invoicebills.php:
+    post:
+      tags:
+        - Dube International
+      summary: Process invoice bills
+      description: Submit a list of invoice bill identifiers for processing, associated with an operator name.
+      x-roles:
+        - dube-admin
+        - dube-viewer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - operatorName
+                - bills
+              properties:
+                operatorName:
+                  type: string
+                  description: Name of the operator processing the bills
+                  example: "Michael Tesfaye"
+                bills:
+                  type: array
+                  description: Array of invoice bill identifiers
+                  items:
+                    type: string
+                  example: ["DW64920443uWW6915"]
+      responses:
+        "200":
+          description: Bills processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Bills processed successfully"
+                  processed:
+                    type: array
+                    items:
+                      type: string
+                    description: List of successfully processed bill IDs
+                  failed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        billId:
+                          type: string
+                        reason:
+                          type: string
+                    description: List of bills that failed with reasons
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
