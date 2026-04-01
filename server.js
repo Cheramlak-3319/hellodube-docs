@@ -39,12 +39,7 @@ app.use(
 /* =========================================================
    SERVE STATIC FILES - THIS IS CRITICAL FOR login.html
 ========================================================= */
-app.use(
-  express.static(path.join(__dirname, "public"), {
-    extensions: ["html"],
-    index: "login.html",
-  }),
-);
+app.use(express.static(path.join(__dirname, "public"), {}));
 
 /* =========================================================
    SERVE SWAGGER STATIC ASSETS
