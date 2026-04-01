@@ -2336,3 +2336,59 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/ServerError"
+  /dube/international/invoice/settleinvoice.php:
+    post:
+      tags:
+        - Dube International
+        - Invoices
+      summary: Settle an invoice
+      description: Marks an invoice as settled using a specified payment method and customer user ID.
+      x-roles:
+        - dube-admin
+        - dube-viewer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoiceId
+                - paidWith
+                - customerUserId
+              properties:
+                invoiceId:
+                  type: string
+                  description: Unique identifier of the invoice to be settled
+                  example: "INV111502"
+                paidWith:
+                  type: string
+                  description: Payment method used to settle the invoice
+                  enum: [MAINWALLETTOPUP, CASH, BANKTRANSFER, MERCHANTCREDIT]
+                  example: "MAINWALLETTOPUP"
+                customerUserId:
+                  type: string
+                  description: Identifier of the customer making the payment
+                  example: "332946"
+      responses:
+        "200":
+          description: Invoice settled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invoice settled successfully"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/ServerError"
