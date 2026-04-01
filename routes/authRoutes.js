@@ -13,7 +13,6 @@ const Verification = require("../models/Verification");
 // Rate limiter for verification endpoints
 const verificationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // 5 requests per hour
   message: {
     error: true,
     message: "Too many verification attempts. Please try again later.",
