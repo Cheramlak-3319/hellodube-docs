@@ -2340,7 +2340,6 @@ paths:
     post:
       tags:
         - Dube International
-        - Invoices
       summary: Settle an invoice
       description: Marks an invoice as settled using a specified payment method and customer user ID.
       x-roles:
